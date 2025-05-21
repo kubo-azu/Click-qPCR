@@ -18,6 +18,12 @@
 # Example code in package build process
 *-Ex.R
 
+# Output files from R CMD build
+/*.tar.gz
+
+# Output files from R CMD check
+/*.Rcheck/
+
 # Renv files
 # Cache, library, sandbox, and staging directories are typically ignored.
 renv/library/
@@ -42,13 +48,36 @@ rsconnect/
 # file_uploads/
 
 # General common temporary files
-*.Rproj.user
+# *.Rproj.user # Already listed above under RStudio Desktop
 *.Renviron.site
 *.Rprofile.site
 *.swp
 *~
 *.bak
 *.tmp
+
+# OAuth2 token, see https://github.com/hadley/httr/releases/tag/v0.3
+.httr-oauth
+
+# knitr and R markdown default cache directories
+*_cache/
+/cache/
+
+# Temporary files created by R markdown
+*.utf8.md
+*.knit.md
+
+# R Environment Variables
+# .Renviron # Generally not ignored unless it contains secrets. 
+            # If it's project-specific and safe to share, version it.
+            # If it contains secrets, ensure it's in .gitignore.
+            # For now, let's keep it versioned unless you have secrets.
+
+# pkgdown site
+docs/
+
+# translation temp files
+po/*~
 
 # If your "Easy-qPCR/" directory (mentioned in your git status) contains
 # output files, large data files that shouldn't be versioned, or other
