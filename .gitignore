@@ -1,0 +1,61 @@
+# History files
+.Rhistory
+.Rapp.history
+
+# Session Data files
+.RData
+.RDataTmp
+
+# User-specific files
+.Ruserdata
+
+# RStudio Desktop
+.Rproj.user/
+
+# RStudio Cloud
+# .rstudio_project_settings/ # Uncomment if using RStudio Cloud and want to ignore these
+
+# Example code in package build process
+*-Ex.R
+
+# Renv files
+# Cache, library, sandbox, and staging directories are typically ignored.
+renv/library/
+renv/python/
+renv/sandbox/
+renv/staging/
+renv/cache/
+
+# macOS specific
+.DS_Store
+.AppleDouble
+.LSOverride
+
+# Windows specific
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+
+# Shiny specific
+rsconnect/
+# If you have a directory for temporary file uploads, add it here e.g.
+# file_uploads/
+
+# General common temporary files
+*.Rproj.user
+*.Renviron.site
+*.Rprofile.site
+*.swp
+*~
+*.bak
+*.tmp
+
+# If your "Easy-qPCR/" directory (mentioned in your git status) contains
+# output files, large data files that shouldn't be versioned, or other
+# generated content, you might want to ignore it or specific subdirectories/files within it.
+# For example, if it's purely for scripts that ARE part of the app, then DO NOT ignore it.
+# If it contains generated outputs, you might do:
+# Easy-qPCR/outputs/
+# Easy-qPCR/*.csv # If these are generated results, not input data
+
+# If you have other specific files or directories to ignore, add them below.
