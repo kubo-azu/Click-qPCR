@@ -1,6 +1,8 @@
 # Easy-qPCR
 Ultra-simple tool for interactive qPCR data analysis developed by R and Shiny.
 
+[Read this document in Japanese (日本語版はこちら)](README_jp.md)
+
 ## Overview
 
 Easy-qPCR is a user-friendly Shiny web application designed for the straightforward analysis of quantitative PCR (qPCR) data. **This tool is readily accessible via a web browser at [https://kubo-azu.shinyapps.io/Easy-qPCR/](https://kubo-azu.shinyapps.io/Easy-qPCR/), requiring no local installation for end-users.** It allows users to upload their Ct (threshold cycle) values, perform ΔCt and ΔΔCt calculations, visualize results as bar plots with individual data points, and download both the statistical summaries and publication-quality plots. For users who prefer to run or modify the application locally, the source code is also available (see Installation and Usage section below).
@@ -14,6 +16,9 @@ This tool aims to simplify common qPCR data analysis workflows, making them more
 ## Features
 
 * **Interactive Data Upload:** Easily upload your qPCR data in CSV format.
+    * Download a template CSV file to guide data formatting.
+
+* **Data Preview:** View the head of your uploaded data.
 
 * **ΔCt Analysis:**
     * Select reference and target genes.
@@ -29,12 +34,9 @@ This tool aims to simplify common qPCR data analysis workflows, making them more
     * Performs Welch's t-test for statistical significance.
     * Visualizes results as a bar plot showing mean fold-change ± SD, with individual data points overlaid.
 
-* **Data Preview:** View the head of your uploaded data.
-
 * **Downloadable Results:**
     * Download statistical summary tables in CSV format.
     * Download plots in PNG format.
-    * Download a template CSV file to guide data formatting.
 
 
 ## Installation and Usage
@@ -81,7 +83,7 @@ git clone [https://github.com/kubo-azu/Easy-qPCR.git](https://github.com/kubo-az
 
 2. Navigate to the cloned directory in R or open the Easy-qPCR.Rproj file in RStudio.
 
-3. If you are using renv (recommended for reproducibility), restore the R environment:
+3. If you are using `renv` (recommended for reproducibility), restore the R environment:
 
 ```R
 if (!requireNamespace("renv", quietly = TRUE)) install.packages("renv")
@@ -127,5 +129,3 @@ Each row should represent the Ct value of one gene in one sample. If you have te
 ## License
 
 This project is licensed under the MIT License. See the LICENSE file for details.
-
-
