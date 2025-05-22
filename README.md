@@ -1,11 +1,17 @@
-# Easy-qPCR
+# Click-qPCR
 Ultra-simple tool for interactive qPCR data analysis developed by R and Shiny.
 
 [Read this document in Japanese (日本語版はこちら)](README_jp.md)
 
 ## Overview
 
-Easy-qPCR is a user-friendly Shiny web application designed for the straightforward analysis of quantitative PCR (qPCR) data. **This tool is readily accessible via a web browser at [https://kubo-azu.shinyapps.io/Easy-qPCR/](https://kubo-azu.shinyapps.io/Easy-qPCR/), requiring no local installation for end-users.** It allows users to upload their Ct (threshold cycle) values, perform ΔCt and ΔΔCt calculations, visualize results as bar plots with individual data points, and download both the statistical summaries and publication-quality plots. For users who prefer to run or modify the application locally, the source code is also available (see Installation and Usage section below).
+Click-qPCR is a user-friendly Shiny web application designed for the straightforward analysis of quantitative PCR (qPCR) data. 
+
+**This tool is readily accessible via a web browser at [https://kubo-azu.shinyapps.io/Click-qPCR/](https://kubo-azu.shinyapps.io/Click-qPCR/), requiring no local installation for end-users.** 
+
+It allows users to upload their Ct (threshold cycle) values, perform ΔCt and ΔΔCt calculations, visualize results as bar plots with individual data points, and download both the statistical summaries and publication-quality plots. 
+
+For users who prefer to run or modify the application locally, the source code is also available (see Installation and Usage section below).
 
 This tool aims to simplify common qPCR data analysis workflows, making them more accessible to researchers without requiring extensive programming knowledge.
 
@@ -65,11 +71,11 @@ install.packages(c("shiny", "dplyr", "ggplot2", "tidyr", "DT", "RColorBrewer"))
 
 Option 1: Directly from GitHub (simplest for most users)
 
-You can run Easy-qPCR directly from GitHub within R or RStudio using the shiny::runGitHub() function:
+You can run Click-qPCR directly from GitHub within R or RStudio using the shiny::runGitHub() function:
 
 ```R
 if (!requireNamespace("shiny", quietly = TRUE)) install.packages("shiny")
-shiny::runGitHub("kubo-azu/Easy-qPCR")
+shiny::runGitHub("kubo-azu/Click-qPCR")
 ```
 
 
@@ -78,10 +84,10 @@ Option 2: Cloning the Repository Locally
 1. Clone this repository to your local machine:
 
 ```sh
-git clone [https://github.com/kubo-azu/Easy-qPCR.git](https://github.com/kubo-azu/Easy-qPCR.git)
+git clone [https://github.com/kubo-azu/Click-qPCR.git](https://github.com/kubo-azu/Click-qPCR.git)
 ```
 
-2. Navigate to the cloned directory in R or open the Easy-qPCR.Rproj file in RStudio.
+2. Navigate to the cloned directory in R or open the Click-qPCR.Rproj file in RStudio.
 
 3. If you are using `renv` (recommended for reproducibility), restore the R environment:
 
@@ -100,7 +106,7 @@ shiny::runApp()
 
 Prepare your data as a CSV file with the following four columns:
 
- - sample: Unique sample identifier (e.g., Mouse_A, CellLine_1).
+ - sample: Unique sample identifier (e.g., Patient_A, CellLine_1).
  - group: Experimental group or condition (e.g., Control, Treatment_X).
  - gene: Gene name (e.g., Gapdh, Actb, YourGeneOfInterest).
  - Ct: Threshold Cycle value (numeric).
