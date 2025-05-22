@@ -83,7 +83,7 @@ ui <- fluidPage(
       fileInput("file", "Upload CSV File"),
       h4("Uploaded Data Preview:"),
       div(style = "max-height: 300px; overflow-y: auto;", tableOutput("data_preview")),
-      br(),
+      br(), br(),
       uiOutput("refgene_selector"),
       uiOutput("gene_selector"),
       uiOutput("group1_selector"),
