@@ -61,7 +61,7 @@ ui <- fluidPage(
   br(),
   div(align = "left",
       style = "font-size: 40px; font-weight: bold; color: #2c3e50; margin-top: 4px; margin-bottom: 1px; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;",
-      HTML("📊 Easy-qPCR <span style='font-size:32px; font-weight:normal;'>(Ultra-Simple Tool for Interactive qPCR Data Analysis)</span>")
+      HTML("📊 Click-qPCR <span style='font-size:32px; font-weight:normal;'>(Ultra-Simple Tool for Interactive qPCR Data Analysis)</span>")
   ),
   br(), br(),
   sidebarLayout(
