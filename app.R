@@ -12,6 +12,7 @@ library(ggplot2)
 library(tidyr)
 library(DT)
 library(RColorBrewer)
+library(fontawesome)
 
 # --- Sample CSV string and global sample dataframe ---
 sample_csv_text <- "sample,group,gene,Ct
@@ -61,9 +62,15 @@ ui <- fluidPage(
   br(),
   div(align = "left",
       style = "font-size: 40px; font-weight: bold; color: #2c3e50; margin-top: 4px; margin-bottom: 1px; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;",
-      HTML("📊 Click-qPCR <span style='font-size:32px; font-weight:normal;'>(Ultra-Simple Tool for Interactive qPCR Data Analysis)</span>")
+      HTML("🧬 Click-qPCR 🧬 <span style='font-size:32px; font-weight:normal;'>(Ultra-Simple Tool for Interactive qPCR Data Analysis)</span>")
   ),
-  br(), br(),
+  div(align = "left", style = "margin-bottom: 16px;", 
+      tags$a(href = "https://github.com/kubo-azu/Click-qPCR",
+             target = "_blank",
+             icon("github"), 
+             "View Source Code on GitHub")
+  ),
+  br(),
   sidebarLayout(
     sidebarPanel(
       p(HTML("Prepare your data as a CSV file with the following four columns:<br>
@@ -97,20 +104,24 @@ ui <- fluidPage(
       br(), br(),
       downloadButton("ddct_csv", "Download ΔΔCt Stats (CSV)"),
       downloadButton("ddct_plot", "Download ΔΔCt Plot (PNG)")
-    ),
+    ), # sidebarPanel closing
     mainPanel(
       h4("Analysis Plot:"),
       plotOutput("resultPlot", height = "600px"),
-      br(), h4("Statistical Summary Table:"),
+      br(), 
+      h4("Statistical Summary Table:"),
       DT::dataTableOutput("summary_table"),
-      br(), h4("ΔΔCt Plot:"),
+      br(), 
+      h4("ΔΔCt Plot:"),
       plotOutput("ddct_plot_output", height = "600px"),
-      br(), h4("ΔΔCt Table:"),
+      br(), 
+      h4("ΔΔCt Table:"),
       DT::dataTableOutput("ddct_table_output")
-    )
-  )
-)
+    ) # mainPanel closing
+  ) # sidebarLayout closing
+) # fluidPage closing
 
+# Server logic
 server <- function(input, output, session) {
   raw_data <- reactiveVal()
   
@@ -267,7 +278,6 @@ server <- function(input, output, session) {
       mutate(xmin=get_x_pos(gene,input$group1,levels(summary_data_plot$label)), xmax=get_x_pos(gene,input$group2,levels(summary_data_plot$label)), y=y_max_val) %>%
       ungroup() %>% filter(!is.na(xmin)&!is.na(xmax))
     
-    # Define a color palette for deltaCt plot (using RColorBrewer "Set2")
     group_names_deltaCt <- unique(summary_data_plot$group) 
     num_groups_deltaCt <- length(group_names_deltaCt)
     deltaCt_color_palette <- if(num_groups_deltaCt > 0 && num_groups_deltaCt <= brewer.pal.info["Set2", "maxcolors"]) {
@@ -275,9 +285,8 @@ server <- function(input, output, session) {
     } else if (num_groups_deltaCt > brewer.pal.info["Set2", "maxcolors"]) {
       setNames(rep(brewer.pal(n = brewer.pal.info["Set2", "maxcolors"], name = "Set2"), length.out = num_groups_deltaCt), group_names_deltaCt)
     } else { 
-      setNames("grey70", if(length(group_names_deltaCt)>0) group_names_deltaCt else "DefaultGroup") # Handle empty group_names_deltaCt
+      setNames("grey70", if(length(group_names_deltaCt)>0) group_names_deltaCt else "DefaultGroup")
     }
-    
     
     p <- ggplot(summary_data_plot, aes(x=label, y=Mean, fill=group)) +
       geom_bar(stat="identity", position=position_dodge(0.7), width=0.7, color="black") + 
@@ -358,7 +367,6 @@ server <- function(input, output, session) {
     y_max_ddct <- if(nrow(ddct_summary)>0&&any(!is.na(ddct_summary$Mean_FoldChange)))max(ddct_summary$Mean_FoldChange+ddct_summary$SD_FoldChange,0,na.rm=TRUE)*1.2 else 1
     if(is.infinite(y_max_ddct)||is.na(y_max_ddct)||y_max_ddct==0)y_max_ddct<-1
     
-    # Define a different color palette for ddCt plot (using RColorBrewer "Paired")
     ddct_group_names_plot <- unique(ddct_summary$group)
     num_ddct_groups_plot <- length(ddct_group_names_plot)
     ddct_color_palette <- if(num_ddct_groups_plot > 0 && num_ddct_groups_plot <= brewer.pal.info["Paired", "maxcolors"]) {
@@ -366,7 +374,7 @@ server <- function(input, output, session) {
     } else if (num_ddct_groups_plot > brewer.pal.info["Paired", "maxcolors"]) {
       setNames(rep(brewer.pal(n = brewer.pal.info["Paired", "maxcolors"], name = "Paired"), length.out = num_ddct_groups_plot), ddct_group_names_plot)
     } else {
-      setNames("grey50", if(length(ddct_group_names_plot)>0) ddct_group_names_plot else "DefaultGroup") # Handle empty group_names
+      setNames("grey50", if(length(ddct_group_names_plot)>0) ddct_group_names_plot else "DefaultGroup") 
     }
     
     p_ddct <- ggplot(ddct_summary, aes(x=factor(group), y=Mean_FoldChange, fill=factor(group))) +
@@ -427,7 +435,7 @@ server <- function(input, output, session) {
   
   output$download_csv <- downloadHandler(filename=function(){time_str<-if(!is.null(input$client_time))input$client_time else format(Sys.time(),"%Y-%m-%d_%H%M");paste0(time_str,"_qPCR_stats.csv")},content=function(file){req(deltaCt_stats_data());write.csv(deltaCt_stats_data(),file,row.names=FALSE)})
   output$download_plot <- downloadHandler(filename=function(){time_str<-if(!is.null(input$client_time))input$client_time else format(Sys.time(),"%Y-%m-%d_%H%M");paste0(time_str,"_qPCR_plot.png")},content=function(file){req(deltaCt_plot_obj());ggsave(file,plot=deltaCt_plot_obj(),width=10,height=8,dpi=300)})
-  output$download_template <- downloadHandler(filename=function(){"Easy-qPCR_template.csv"},content=function(file){write.csv(sample_df_server,file,row.names=FALSE)})
+  output$download_template <- downloadHandler(filename=function(){"Click-qPCR_template.csv"},content=function(file){write.csv(sample_df_server,file,row.names=FALSE)})
   output$ddct_csv <- downloadHandler(filename=function(){time_str<-if(!is.null(input$client_time))input$client_time else format(Sys.time(),"%Y-%m-%d_%H%M");paste0(time_str,"_ddCt_stats.csv")},content=function(file){req(ddCt_stats_data());write.csv(ddCt_stats_data(),file,row.names=FALSE)})
   output$ddct_plot <- downloadHandler(filename=function(){time_str<-if(!is.null(input$client_time))input$client_time else format(Sys.time(),"%Y-%m-%d_%H%M");paste0(time_str,"_ddCt_plot.png")},content=function(file){req(ddCt_plot_obj());ggsave(file,plot=ddCt_plot_obj(),width=10,height=8,dpi=300)})
 }
