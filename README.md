@@ -67,7 +67,7 @@ You can run Easy-qPCR directly from GitHub within R or RStudio using the shiny::
 
 ```R
 if (!requireNamespace("shiny", quietly = TRUE)) install.packages("shiny")
-shiny::runGitHub("kubo-azu/Easy-qPCR") # Replace 'kubo-azu/Easy-qPCR' with your actual GitHub username/repository
+shiny::runGitHub("kubo-azu/Easy-qPCR")
 ```
 
 
