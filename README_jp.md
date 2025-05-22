@@ -1,5 +1,7 @@
 # Click-qPCR: ユーザーガイド（日本語版）
 
+[Read this document in English](README.md)
+
 ## 概要
 
 Click-qPCRはリアルタイムPCR (qPCR) データの直接的な解析のために設計された，ユーザーフレンドリーなShinyウェブアプリケーションです。**本ツールは、ローカルへのインストールを必要とせず，ウェブブラウザから直接 [https://kubo-azu.shinyapps.io/Click-qPCR/](https://kubo-azu.shinyapps.io/Click-qPCR/) にて利用可能です。
