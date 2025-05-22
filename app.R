@@ -11,7 +11,7 @@ library(dplyr)
 library(ggplot2)
 library(tidyr)
 library(DT)
-library(RColorBrewer) # RColorBrewerパッケージを読み込み
+library(RColorBrewer)
 
 # --- Sample CSV string and global sample dataframe ---
 sample_csv_text <- "sample,group,gene,Ct
