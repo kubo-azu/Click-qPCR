@@ -16,7 +16,7 @@ For users who prefer to run or modify the application locally, the source code i
 This tool aims to simplify common qPCR data analysis workflows, making them more accessible to researchers without requiring extensive programming knowledge.
 
 
-**[Optional: Add a sentence here if this tool is associated with a publication, e.g., "This tool is described in our XXXXX (link to be added upon acceptance)."]**
+**[Article Information]**
 
 
 ## Features
