@@ -75,7 +75,7 @@ ui <- fluidPage(
     sidebarPanel(
       p(HTML("Prepare your data as a CSV file with the following four columns:<br>
              <strong>sample</strong> (sample identifier), <strong>group</strong> (e.g., treatment or condition), <strong>gene</strong> (gene name), and <strong>Ct</strong> (threshold cycle value).<br>
-             Each row should represent the Ct value of one gene in one sample.<br><strong>Hint: </strong>If you have several Ct values as the technocal replicates, please use the mean value to analyze this tool.<br>")),
+             Each row should represent the Ct value of one gene in one sample.<br><strong>Hint: </strong>If you have several Ct values as the technocal replicates, please use the mean value to analyze on this tool.<br>")),
       br(),
       actionButton("load_example", "Use Example Data"),
       downloadButton("download_template", "Download Template CSV"),
