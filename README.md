@@ -156,6 +156,8 @@ Select Control_X for "Select Group 1"; Treatment_X for "Select Group 2".
 
 Click the "Analyze" button.
 
+![Example Plot](images/qPCR_plot_example.png)
+
 | gene | group       | Mean               | SD                 | N | label          | p (Welch's t-test) | sig |
 |------|-------------|--------------------|--------------------|---|----------------|--------------------|-----|
 | Hoge | Control_X   | 0.0125438740925487 | 0.00212617864080159| 3 | Hoge Control_X | 0.0031981903298982 | ** |
@@ -178,6 +180,8 @@ Group Selection (グループの選択):
 Select Control_X for "Select Control Group to Calculate Fold-Change"; Select Treatment_X for "Select Target Group to Calculate Fold-Change".
 
 Click the "Run ΔΔCt Analysis" button.
+
+![Example Plot](images/ddCt_plot_example.png)
 
 | group       | Mean_FoldChange    | SD_FoldChange      | N | SE_FoldChange      | p-value (vs Control) | Significance |
 |-------------|--------------------|--------------------|---|--------------------|----------------------|--------------|
