@@ -84,7 +84,7 @@ Option 2: Cloning the Repository Locally
 1. Clone this repository to your local machine:
 
 ```sh
-git clone [https://github.com/kubo-azu/Click-qPCR.git](https://github.com/kubo-azu/Click-qPCR.git)
+git clone https://github.com/kubo-azu/Click-qPCR.git
 ```
 
 2. Navigate to the cloned directory in R or open the Click-qPCR.Rproj file in RStudio.
