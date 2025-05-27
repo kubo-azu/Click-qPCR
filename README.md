@@ -182,3 +182,9 @@ Click the "Run ΔΔCt Analysis" button.
 ## License
 
 This project is licensed under the MIT License. See the LICENSE file for details.
+
+## Appendix
+
+If you wish to report a problem, please use the Issues tab on GitHub.
+
+
