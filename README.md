@@ -136,23 +136,19 @@ Each row should represent the Ct value of one gene in one sample. If you have te
 
 This section describes how to use the embedded sample data within Click-qPCR and the kind of results you can expect. This allows users to verify that the tool is functioning correctly.
 
+By following these steps and comparing your results with the expected outputs described, you can verify the basic functionality of Click-qPCR.
+
 ### 1. Load sample data
 
 In the Click-qPCR interface, click the "Use Example Data" button. The dataset will be automatically loaded, and a preview will be shown in the sidebar.
 
 ### 2. Perform ΔCt analysis
 
-Reference Gene Selection:
+Reference Gene Selection: Select Gapdh from the "Select Reference Gene" dropdown menu.
 
-   Select Gapdh from the "Select Reference Gene" dropdown menu.
+Target Gene Selection: Select Hoge from the "Select Target Gene(s)" dropdown menu.
 
-Target Gene Selection: 
-
-Select Hoge from the "Select Target Gene(s)" dropdown menu.
-
-Group Selection:
-
-Select Control_X for "Select Group 1"; Treatment_X for "Select Group 2".
+Group Selection: Select Control_X for "Select Group 1"; Select Treatment_X for "Select Group 2".
 
 Click the "Analyze" button.
 
@@ -167,17 +163,11 @@ Click the "Analyze" button.
 
 Navigate to the "ΔΔCt Analysis" section in the sidebar.
 
-Reference Gene:
+Reference Gene: This should be automatically set to Gapdh based on the selection in the main ΔCt analysis panel.
 
-This should be automatically set to Gapdh based on the selection in the main ΔCt analysis panel.
+Target Gene Selection: Select Hoge from the "Target Gene" dropdown menu.
 
-Target Gene Selection:
-
-Select Hoge from the "Target Gene" dropdown menu.
-
-Group Selection (グループの選択):
-
-Select Control_X for "Select Control Group to Calculate Fold-Change"; Select Treatment_X for "Select Target Group to Calculate Fold-Change".
+Group Selection: Select Control_X for "Select Control Group to Calculate Fold-Change"; Select Treatment_X for "Select Target Group to Calculate Fold-Change".
 
 Click the "Run ΔΔCt Analysis" button.
 
@@ -188,7 +178,6 @@ Click the "Run ΔΔCt Analysis" button.
 | Control_X   | 1.0091403201697    | 0.171048639239055  | 3 | 0.0987549779091876 | NA                   | NA           |
 | Treatment_X | 1.86180837790177   | 0.156498694213234  | 3 | 0.0903545632318353 | 0.0031981903298982   | ** |
 
-By following these steps and comparing your results with the expected outputs described (and shown in the example images/data you will insert), you can verify the basic functionality of Click-qPCR.
 
 ## License
 
