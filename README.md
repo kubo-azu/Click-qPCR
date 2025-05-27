@@ -1,7 +1,7 @@
 # Click-qPCR
 Ultra-simple tool for interactive qPCR data analysis developed by R and Shiny.
 
-[Read this document in Japanese (日本語版はこちら)](README_jp.md)
+[Read this document in Japanese (日本語版のユーザーガイドはこちら)](README_jp.md)
 
 ## Overview
 
