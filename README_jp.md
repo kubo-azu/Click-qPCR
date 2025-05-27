@@ -6,7 +6,7 @@
 
 Click-qPCRはリアルタイムPCR (qPCR) データの簡単な解析のために設計された，ユーザーフレンドリーなShinyウェブアプリケーションです。
 
-本ツールは、ローカルへのインストールを必要とせず，ウェブブラウザから直接 [https://kubo-azu.shinyapps.io/Click-qPCR/](https://kubo-azu.shinyapps.io/Click-qPCR/) にて利用可能です。
+本ツールはローカルへのインストールを必要とせず，ウェブブラウザから直接 [https://kubo-azu.shinyapps.io/Click-qPCR/](https://kubo-azu.shinyapps.io/Click-qPCR/) にて利用可能です。
 
 Ct値を含む簡潔なCSVファイルをアップロードすることで，ΔCtおよびΔΔCtの計算，統計処理と作図に加えて，統計サマリーと論文品質のプロットの両方をダウンロードすることができます。
 
@@ -46,7 +46,7 @@ Ct値を含む簡潔なCSVファイルをアップロードすることで，ΔC
 ### 必要なもの
 
 * R (バージョン 4.4.2 以降を推奨)
-* RStudio (使いやすさのため推奨しますが、Rコンソールから実行する場合は必須ではありません)
+* RStudio (使いやすさのため推奨しますが，Rコンソールから実行する場合は必須ではありません)
 * 以下のRパッケージ（およびそれらの依存パッケージ）:
     * `shiny`
     * `dplyr`
@@ -55,7 +55,7 @@ Ct値を含む簡潔なCSVファイルをアップロードすることで，ΔC
     * `DT`
     * `RColorBrewer`
 
-これらのパッケージは、Rで以下のようにインストールできます:
+これらのパッケージはRで以下のようにインストールできます:
 
 ```R
 install.packages(c("shiny", "dplyr", "ggplot2", "tidyr", "DT", "RColorBrewer"))
@@ -66,7 +66,7 @@ install.packages(c("shiny", "dplyr", "ggplot2", "tidyr", "DT", "RColorBrewer"))
 
 Option 1: GitHubから直接実行
 
-Click-qPCRは、RまたはRStudio内で shiny::runGitHub() 関数を使用してGitHubから直接実行できます:
+RまたはRStudio内で shiny::runGitHub() 関数を使用してGitHubから直接実行できます:
 
 ```R
 if (!requireNamespace("shiny", quietly = TRUE)) install.packages("shiny")
@@ -84,7 +84,7 @@ git clone [https://github.com/kubo-azu/Click-qPCR.git](https://github.com/kubo-a
 
 2. Rでクローンしたディレクトリに移動するか，RStudioで Click-qPCR.Rproj ファイルを開きます。
 
-3. `renv` を使用している場合（再現性のために推奨）は、R環境を復元します:
+3. `renv` を使用している場合（再現性のために推奨）はR環境を復元します:
 
 ```R
 if (!requireNamespace("renv", quietly = TRUE)) install.packages("renv")
@@ -109,7 +109,7 @@ CSVファイルとして，以下に示すの4つの列を持つデータを準�
 ※ Excelでやるのが簡単です
 ※ 全てアルファベットで，日本語は使わないでください（予期せぬエラーを避けるため）
 
-各行は、1つのサンプルにおける1つの遺伝子のCt値を表すようにしてください。
+各行は1つのサンプルにおける1つの遺伝子のCt値を表すようにしてください。
 
 Ct値にテクニカルリプリケートがある場合，それらの平均値をご自身で計算し，本ツールではその平均値を使用してください。
 
@@ -127,7 +127,7 @@ Ct値にテクニカルリプリケートがある場合，それらの平均値
  - "Analyze" をクリック
 
 3. ΔΔCt Analysis:
- - リファレンス遺伝子については，最初に選択したものが自動的に使用されます
+ - リファレンス遺伝子は最初に選択したものが自動的に使用されます
  - ターゲット遺伝子を選択
  - Fold-change値の計算時に基準としたい群を選択
  - Fold-change値の計算対象としたい群を選択
