@@ -179,6 +179,11 @@ Select Control_X for "Select Control Group to Calculate Fold-Change"; Select Tre
 
 Click the "Run ΔΔCt Analysis" button.
 
+| group       | Mean_FoldChange    | SD_FoldChange      | N | SE_FoldChange      | p-value (vs Control) | Significance |
+|-------------|--------------------|--------------------|---|--------------------|----------------------|--------------|
+| Control_X   | 1.0091403201697    | 0.171048639239055  | 3 | 0.0987549779091876 | NA                   | NA           |
+| Treatment_X | 1.86180837790177   | 0.156498694213234  | 3 | 0.0903545632318353 | 0.0031981903298982   | ** |
+
 By following these steps and comparing your results with the expected outputs described (and shown in the example images/data you will insert), you can verify the basic functionality of Click-qPCR.
 
 ## License
