@@ -79,7 +79,7 @@ Option 2: リポジトリをローカルにクローンする
 1. このリポジトリをユーザのローカルマシン（お使いのPC）にクローンします:
 
 ```sh
-git clone [https://github.com/kubo-azu/Click-qPCR.git](https://github.com/kubo-azu/Click-qPCR.git)
+git clone https://github.com/kubo-azu/Click-qPCR.git
 ```
 
 2. Rでクローンしたディレクトリに移動するか，RStudioで Click-qPCR.Rproj ファイルを開きます。
