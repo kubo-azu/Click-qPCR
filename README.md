@@ -156,6 +156,11 @@ Select Control_X for "Select Group 1"; Treatment_X for "Select Group 2".
 
 Click the "Analyze" button.
 
+| gene | group       | Mean               | SD                 | N | label          | p (Welch's t-test) | sig |
+|------|-------------|--------------------|--------------------|---|----------------|--------------------|-----|
+| Hoge | Control_X   | 0.0125438740925487 | 0.00212617864080159| 3 | Hoge Control_X | 0.0031981903298982 | ** |
+| Hoge | Treatment_X | 0.0231427576622098 | 0.00194531907666613| 3 | Hoge Treatment_X | 0.0031981903298982 | ** |
+
 ### 3. Perform ΔΔCt analysis
 
 Navigate to the "ΔΔCt Analysis" section in the sidebar.
