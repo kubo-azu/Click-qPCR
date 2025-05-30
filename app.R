@@ -57,6 +57,15 @@ Mouse_L,Control_Y,Gapdh,20.61"
 ui <- fluidPage(
   tags$head(
     tags$script(HTML("setInterval(function(){var d=new Date();var pad=n=>n<10?'0'+n:n;var datetime=d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())+'_'+pad(d.getHours())+pad(d.getMinutes());Shiny.setInputValue('client_time',datetime);},1000);")),
+    tags$script(async = NA, src = "https://www.googletagmanager.com/gtag/js?id=G-7J5FG35PN3"),
+    tags$script(HTML(
+      "
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'YOUR_MEASUREMENT_ID');
+      "
+    )),
     tags$style(HTML("label { font-size: 20px !important; font-weight: bold; }"))
   ),
   br(),
