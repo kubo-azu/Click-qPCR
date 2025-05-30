@@ -63,7 +63,8 @@ ui <- fluidPage(
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
-      gtag('config', 'YOUR_MEASUREMENT_ID');
+      
+      gtag('config', 'G-7J5FG35PN3');
       "
     )),
     tags$style(HTML("label { font-size: 20px !important; font-weight: bold; }"))
