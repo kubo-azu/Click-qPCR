@@ -74,12 +74,22 @@ ui <- fluidPage(
       style = "font-size: 40px; font-weight: bold; color: #2c3e50; margin-top: 4px; margin-bottom: 1px; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;",
       HTML("🧬 Click-qPCR 🧬 <span style='font-size:32px; font-weight:normal;'>(Ultra-Simple Tool for Interactive qPCR Data Analysis)</span>")
   ),
-  div(align = "left", style = "margin-bottom: 16px;", 
+  
+  br(),
+  div(align = "left", style = "margin-bottom: 15px; font-size: 18px; color: #555;",
+      HTML(
+        "<strong>Notice:</strong> Please cite this paper if you use this app in your research.<br>",
+        "A Kubota, et al. <i>bioRxiv</i>. (2025). <a href='https://doi.org/10.1101/2025.05.29.656779' target='_blank'>https://doi.org/10.1101/2025.05.29.656779</a>.<br>"
+      )
+  ),
+  
+  div(align = "left", style = "margin-bottom: 3px;", 
       tags$a(href = "https://github.com/kubo-azu/Click-qPCR",
              target = "_blank",
              icon("github"), 
              "View Source Code on GitHub")
   ),
+  
   br(),
   sidebarLayout(
     sidebarPanel(
