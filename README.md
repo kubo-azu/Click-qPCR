@@ -15,12 +15,13 @@ For users who prefer to run or modify the application locally, the source code i
 
 This tool aims to simplify common qPCR data analysis workflows, making them more accessible to researchers without requiring extensive programming knowledge.
 
+### <ins>Notice</ins>
+
 This repository contains the source code for the Shiny app accompanying the preprint:
 
-A Kubota, et al. bioRxiv. (2025). [https://doi.org/10.1101/2025.05.29.656779](https://doi.org/10.1101/2025.05.29.656779).
+A Kubota, et al. *bioRxiv*. (2025). [https://doi.org/10.1101/2025.05.29.656779](https://doi.org/10.1101/2025.05.29.656779).
 
-**Please cite this paper if you use this code or app in your research.**
-
+**Please cite this paper if you use this app or code in your research.**
 
 ## Features
 
