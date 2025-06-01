@@ -15,7 +15,7 @@ For users who prefer to run or modify the application locally, the source code i
 
 This tool aims to simplify common qPCR data analysis workflows, making them more accessible to researchers without requiring extensive programming knowledge.
 
-### Notice
+### <ins>Notice</ins>
 
 This repository contains the source code for the Shiny app accompanying the preprint:
 
