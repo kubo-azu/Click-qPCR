@@ -54,7 +54,7 @@ Mouse_L,Control_Y,Fuga,29.42
 Mouse_L,Control_Y,Gapdh,20.61"
 
 # UI Definition
-ui <- fluidPage(
+ui <- fluidPage(title = "Click-qPCR: Ultra-Simple Tool for Interactive qPCR Data Analysis",
   tags$head(
     tags$script(HTML("setInterval(function(){var d=new Date();var pad=n=>n<10?'0'+n:n;var datetime=d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())+'_'+pad(d.getHours())+pad(d.getMinutes());Shiny.setInputValue('client_time',datetime);},1000);")),
     tags$script(async = NA, src = "https://www.googletagmanager.com/gtag/js?id=G-7J5FG35PN3"),
@@ -87,7 +87,7 @@ ui <- fluidPage(
       tags$a(href = "https://github.com/kubo-azu/Click-qPCR",
              target = "_blank",
              icon("github"), 
-             "View Source Code on GitHub")
+             "View User Guide and Source Code on GitHub")
   ),
   
   br(),
