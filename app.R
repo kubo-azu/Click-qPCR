@@ -76,10 +76,10 @@ ui <- fluidPage(title = "Click-qPCR: Ultra-Simple Tool for Interactive qPCR Data
   ),
   
   br(),
-  div(align = "left", style = "margin-bottom: 15px; font-size: 18px; color: #555;",
+  div(align = "left", style = "margin-bottom: 15px; font-size: 17px; color: #555;",
       HTML(
         "<strong>Notice:</strong> Please cite this paper if you use this app in your research.",
-        "A Kubota, et al. <i>bioRxiv</i>. (2025). <a href='https://doi.org/10.1101/2025.05.29.656779' target='_blank'>https://doi.org/10.1101/2025.05.29.656779</a>.<br>"
+        "<u>A Kubota, et al. <i>bioRxiv</i>. (2025). <a href='https://doi.org/10.1101/2025.05.29.656779' target='_blank'>https://doi.org/10.1101/2025.05.29.656779</a>.</u><br>"
       )
   ),
   
