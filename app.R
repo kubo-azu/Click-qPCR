@@ -78,7 +78,7 @@ ui <- fluidPage(title = "Click-qPCR: Ultra-Simple Tool for Interactive qPCR Data
   br(),
   div(align = "left", style = "margin-bottom: 15px; font-size: 18px; color: #555;",
       HTML(
-        "<strong>Notice:</strong> Please cite this paper if you use this app in your research.<br>",
+        "<strong>Notice:</strong> Please cite this paper if you use this app in your research.",
         "A Kubota, et al. <i>bioRxiv</i>. (2025). <a href='https://doi.org/10.1101/2025.05.29.656779' target='_blank'>https://doi.org/10.1101/2025.05.29.656779</a>.<br>"
       )
   ),
@@ -87,7 +87,7 @@ ui <- fluidPage(title = "Click-qPCR: Ultra-Simple Tool for Interactive qPCR Data
       tags$a(href = "https://github.com/kubo-azu/Click-qPCR",
              target = "_blank",
              icon("github"), 
-             "View User Guide (English and Japanese) and Source Code on GitHub")
+             "View User Guide (English, Japanese) and Source Code on GitHub")
   ),
   
   br(),
