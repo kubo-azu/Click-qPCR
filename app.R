@@ -87,7 +87,7 @@ ui <- fluidPage(title = "Click-qPCR: Ultra-Simple Tool for Interactive qPCR Data
       tags$a(href = "https://github.com/kubo-azu/Click-qPCR",
              target = "_blank",
              icon("github"), 
-             "View User Guide and Source Code on GitHub")
+             "View User Guide (English and Japanese) and Source Code on GitHub")
   ),
   
   br(),
