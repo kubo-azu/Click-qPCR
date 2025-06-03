@@ -187,6 +187,8 @@ Click the "Run ΔΔCt Analysis" button.
 
 This project is licensed under the MIT License. See the LICENSE file for details.
 
+The data file 'example.csv' is under the CC0 public domain.
+
 ## Appendix
 
 If you wish to report a problem, please use the Issues tab on GitHub.
