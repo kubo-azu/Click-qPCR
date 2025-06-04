@@ -5,7 +5,7 @@ Ultra-simple tool for interactive qPCR data analysis developed by R and Shiny.
 
 ## Overview
 
-Click-qPCR is a user-friendly Shiny web application designed for the straightforward analysis of quantitative PCR (qPCR) data. 
+Click-qPCR is a user-friendly Shiny web application designed for the straightforward analysis of real-time quantitative PCR (qPCR) data. 
 
 **This tool is readily accessible via a web browser at [https://kubo-azu.shinyapps.io/Click-qPCR/](https://kubo-azu.shinyapps.io/Click-qPCR/), requiring no local installation for end-users.** 
 
@@ -186,6 +186,8 @@ Click the "Run ΔΔCt Analysis" button.
 ## License
 
 This project is licensed under the MIT License. See the LICENSE file for details.
+
+The data file 'example.csv' is under the CC0 public domain.
 
 ## Appendix
 
