@@ -287,7 +287,7 @@ server <- function(input, output, session) {
     
     summary_data <- long_data %>% group_by(gene, group) %>% summarise(Mean=mean(RelExp, na.rm=TRUE), SD=sd(RelExp, na.rm=TRUE), N=n(), .groups="drop") %>% mutate(label=paste(gene, group))
     significance <- long_data %>% group_by(gene) %>%
-      summarise(p_value=if(NROW(na.omit(RelExp[group==input$group1]))>=2 && NROW(na.omit(RelExp[group==input$group2]))>=2){t.test(RelExp[group==input$group1], RelExp[group==input$group2])$p.value}else{NA_real_}, .groups="drop") %>%
+      summarise(p_value=if(NROW(na.omit(RelExp[group==input$group1]))>=2 && NROW(na.omit(RelExp[group==input$group2]))>=2){t.test(deltaCt_val[group==input$group1], deltaCt_val[group==input$group2])$p.value}else{NA_real_}, .groups="drop") %>%
       rename(`p (Welch's t-test)`=p_value) %>%
       mutate(sig=case_when(is.na(`p (Welch's t-test)`)~"N/A", `p (Welch's t-test)`<0.001~"***", `p (Welch's t-test)`<0.01~"**", `p (Welch's t-test)`<0.05~"*", TRUE~"ns"))
     y_max_val <- max(summary_data$Mean+summary_data$SD,0,na.rm=TRUE)*1.15
