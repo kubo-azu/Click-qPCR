@@ -285,7 +285,15 @@ server <- function(input, output, session) {
     
     if(is.null(long_data)||nrow(long_data)==0){ showNotification("No valid data after ΔCt calculation. Ensure samples have Ct for ref and target genes.", type="error", duration=15); return() }
     
-    summary_data <- long_data %>% group_by(gene, group) %>% summarise(Mean=mean(RelExp, na.rm=TRUE), SD=sd(RelExp, na.rm=TRUE), N=n(), .groups="drop") %>% mutate(label=paste(gene, group))
+    summary_data <- long_data %>% group_by(gene, group) %>%
+      summarise(
+        Mean = mean(RelExp, na.rm=TRUE),
+        SD = sd(RelExp, na.rm=TRUE),
+        N = n(),
+        SE = SD / sqrt(N),
+        .groups="drop"
+      ) %>%
+      mutate(label=paste(gene, group))
     significance <- long_data %>% group_by(gene) %>%
       summarise(p_value=if(NROW(na.omit(RelExp[group==input$group1]))>=2 && NROW(na.omit(RelExp[group==input$group2]))>=2){t.test(deltaCt_val[group==input$group1], deltaCt_val[group==input$group2])$p.value}else{NA_real_}, .groups="drop") %>%
       rename(`p (Welch's t-test)`=p_value) %>%
