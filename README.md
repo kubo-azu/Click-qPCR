@@ -68,7 +68,13 @@ Kubota, et al. *bioRxiv*. (2025). <https://doi.org/10.1101/2025.05.29.656779>.
 
 -   **Diagnostics Tab:**
 
-    -   Run a series of internal checks on the sample data to verify that all core calculation and statistical functions of the app are working correctly.
+    -   This tab provides a self-testing function for the application. When you click the "Run Diagnostics" button, the app uses its built-in sample data to automatically test that three of its core functions are working correctly:
+
+        1. Sample Data Loading: Confirms that the data can be loaded without issues.
+        2. ΔCq Analysis Validation: Verifies that the ΔCq calculation and t-test correctly detect an expected statistically significant difference.
+        3. ΔΔCq Analysis Validation: Verifies that the ΔΔCq (Fold Change) calculation and t-test also correctly show an expected significant result.
+
+    -   If all tests show "Passed ✅", you can be confident that the app's basic calculation and statistical processing capabilities are functioning as intended. This is useful for verifying the app's integrity, especially when running the code in a local environment or after making modifications.
 
 ## Installation and Usage
 
