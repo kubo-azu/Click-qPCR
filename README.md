@@ -140,7 +140,7 @@ Prepare your data as a CSV file with the following four columns:
 -   `gene`: The name of the gene being measured (e.g., Gapdh, Actb).
 -   `Cq`: The Quantification Cycle value (numeric). **Note:** This column must be named `Cq`.
 
-Each row must represent the Cq value of one gene in one sample. If you have technical replicates, please calculate and use their mean value. A template file ([Click-qPCR_template.csv(Click-qPCR_template.csv)]) can be downloaded from the application sidebar.
+Each row must represent the Cq value of one gene in one sample. If you have technical replicates, please calculate and use their mean value. A template file ([Click-qPCR_template.csv](Click-qPCR_template.csv)) can be downloaded from the application sidebar.
 
 ## How to Use
 
@@ -170,7 +170,7 @@ Each row must represent the Cq value of one gene in one sample. If you have tech
 
 ## Example Analysis with Sample Data
 
-This example uses the updated sample data ([Click-qPCR_template.csv(Click-qPCR_template.csv)]) which includes genes designed to show up-regulation, down-regulation, and no change.
+This example uses the updated sample data ([Click-qPCR_template.csv](Click-qPCR_template.csv)) which includes genes designed to show up-regulation, down-regulation, and no change.
 
 ### 1. Load Sample Data and Perform Analysis
 
