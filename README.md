@@ -58,8 +58,7 @@ Kubota, et al. *bioRxiv*. (2025). <https://doi.org/10.1101/2025.05.29.656779>.
 -   **Two Download Modes:**
 
     1.  **Download Plot:** Saves an image using your custom dimension and DPI settings, perfect for publications.
-
-2.  **Save Displayed Size:** Saves an image that is an exact replica of the plot shown on the screen, ideal for presentations.
+    2.  **Save Displayed Size:** Saves an image that is an exact replica of the plot shown on the screen, ideal for presentations.
 
 -   **Robust & Informative:**
 
