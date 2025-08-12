@@ -79,13 +79,57 @@ While the app is available online, you can also run it locally.
 -   R (version 4.1 or later recommended)
 -   The following R packages: `shiny`, `dplyr`, `ggplot2`, `tidyr`, `DT`, `RColorBrewer`, `fontawesome`
 
-You can install these packages in R using: `R install.packages(c("shiny", "dplyr", "ggplot2", "tidyr", "DT", "RColorBrewer", "fontawesome"))`
+### Requirements
+
+* R (version 4.4.2 or later recommended)
+* RStudio (recommended for ease of use, but not required if running from the R console)
+* The following R packages (and their dependencies):
+* `shiny`
+* `dplyr`
+* `ggplot2`
+* `tidyr`
+* `DT`
+* `RColorBrewer`
+
+These packages can be installed in R as follows:
+
+```R
+install.packages(c("shiny", "dplyr", "ggplot2", "tidyr", "DT", "RColorBrewer"))
+```
 
 ### Running the Application
 
-1.  **Clone or Download:** Get the source code from this GitHub repository.
-2.  **Open:** Open the `app.R` file in RStudio.
-3.  **Run:** Click the "Run App" button at the top of the RStudio editor.
+<ins>Option 1: Run Directly from GitHub</ins>
+
+You can run directly from GitHub using the shiny::runGitHub() function in R or RStudio:
+
+```R
+if (!requireNamespace("shiny", quietly = TRUE)) install.packages("shiny")
+shiny::runGitHub("kubo-azu/Click-qPCR")
+```
+
+<ins>Option 2: Clone the repository locally</ins>
+
+1. Clone this repository to your local machine (your PC):
+
+```sh
+git clone https://github.com/kubo-azu/Click-qPCR.git
+```
+
+2. Navigate to the cloned directory in R, or open the Click-qPCR.Rproj file in RStudio.
+
+3. If you are using `renv` (recommended for reproducibility), restore your R environment:
+
+```R
+if (!requireNamespace("renv", quietly = TRUE)) install.packages("renv")
+renv::restore()
+```
+
+4. Run the application:
+
+```R
+shiny::runApp()
+```
 
 ## Data Format
 
