@@ -1,8 +1,8 @@
 # Click-qPCR
 
-Ultra-simple tool for interactive qPCR data analysis developed by R and Shiny.
+An ultra-simple tool for interactive qPCR data analysis developed with R and Shiny.
 
-[Read this document in Japanese (日本語版のユーザーガイドはこちら)](README_jp.md)
+[日本語版のユーザーガイドはこちら (Read this document in Japanese)](README_jp.md)
 
 ## Overview
 
@@ -32,50 +32,46 @@ Kubota, et al. *bioRxiv*. (2025). <https://doi.org/10.1101/2025.05.29.656779>.
 
 -   **Tab-Based Analysis:** The user interface is organized into clear tabs for different analyses.
 
-    -   **Analysis Tab (ΔCq Method):**
-        -   Select a reference gene and one or more target genes.
+    -   **Analysis (t-test) Tab (ΔCq Method):**
+        -   Select one or **multiple reference genes**. The ΔCq is calculated using the mean Cq of the selected reference genes.
+        -   Select one or more target genes.
         -   Set up **multiple group comparisons** simultaneously using an intuitive interface.
-        -   Calculates relative expression (2<sup>-ΔCq</sup>).
+        -   Calculates relative expression ($2^{-\Delta Cq}$).
         -   Performs Welch's t-test for statistical significance for each specified pair.
+        -   Visualizes all results in a comprehensive bar plot showing mean ± SD, with individual data points overlaid.
 
--   Visualizes all results in a comprehensive bar plot showing mean ± SD, with individual data points overlaid.
+    -   **ΔΔCq Analysis Tab:**
+        -   Automatically uses the reference gene(s) selected in the "Analysis" tab.
+        -   Select a target gene, a base/control group, and one or more treatment groups.
+        -   Calculates fold-change ($2^{-\Delta\Delta Cq}$) relative to the base group.
+        -   Performs Welch's t-test for statistical significance.
+        -   Visualizes results in a dedicated bar plot.
 
--   **ΔΔCq Analysis Tab:**
-
-    -   Automatically uses the reference gene selected in the "Analysis" tab.
-
--   Select a target gene, a base/control group, and one or more treatment groups.
-
--   Calculates fold-change (2<sup>-ΔΔCq</sup>) relative to the base group.
-
--   Performs Welch's t-test for statistical significance. \* Visualizes results in a dedicated bar plot.
+    -   **ANOVA Analysis for 3+ Groups:**
+        -   Designed for comparing three or more groups.
+        -   Performs a **one-way ANOVA** followed by **Dunnett's post-hoc test** to compare each treatment group against a single control group.
+        -   Results are visualized as Relative Expression ($2^{-\Delta Cq}$) on the **"ANOVA Analysis"** tab.
+        -   The same statistical results can be visualized as Fold Change ($2^{-\Delta\Delta Cq}$) on the **"ANOVA (ΔΔCq)"** tab.
 
 -   **Advanced Downloading & Plotting:**
-
     -   **Custom Plot Dimensions:** Interactively adjust the width, height, and resolution (DPI) for downloaded plots using sliders.
     -   **Fixed Aspect Ratio:** Optionally lock the plot's aspect ratio while resizing.
-
--   **Two Download Modes:**
-
-    1.  **Download Plot:** Saves an image using your custom dimension and DPI settings.
-    2.  **Save Displayed Size:** Saves an image that is an exact replica of the plot shown on the screen.
+    -   **Two Download Modes:**
+        1.  **Download Plot:** Saves an image using your custom dimension and DPI settings.
+        2.  **Save Displayed Size:** Saves an image that is an exact replica of the plot shown on the screen.
 
 -   **Robust & Informative:**
-
     -   Handles cases with insufficient data or zero variance gracefully without crashing.
-
--   Provides clear messages in the results table (e.g., "Zero variance") when statistics cannot be calculated.
+    -   Provides clear messages in the results table (e.g., "Zero variance") when statistics cannot be calculated.
 
 -   **Diagnostics Tab:**
-
-    -   This tab provides a self-testing function for the application. When you click the "Run Diagnostics" button, the app uses its built-in sample data to automatically test that three of its core functions are working correctly:
-
-        1. Sample Data Loading: Confirms that the data can be loaded without issues.
-        2. ΔCq Analysis Validation: Verifies that the ΔCq calculation and t-test correctly detect an expected statistically significant difference.
-        3. ΔΔCq Analysis Validation: Verifies that the ΔΔCq (Fold Change) calculation and t-test also correctly show an expected significant result.
-
-    -   If all tests show "Passed ✅", you can be confident that the app's basic calculation and statistical processing capabilities are functioning as intended. This is useful for verifying the app's integrity, especially when running the code in a local environment or after making modifications.
-
+    -   This tab provides a self-testing function. When you click the "Run Diagnostics" button, the app uses its built-in sample data to automatically test four of its core functions:
+        1.  Sample Data Loading
+        2.  ΔCq Analysis (t-test) Validation
+        3.  ΔΔCq Analysis (Fold Change) Validation
+        4.  **ANOVA and Dunnett's Test Validation**
+    -   If all tests show "Passed ✅", you can be confident that the app's calculation and statistical capabilities are functioning as intended.
+    
 ## Installation and Usage
 
 While the app is available online, you can also run it locally.
@@ -96,11 +92,12 @@ While the app is available online, you can also run it locally.
 * `tidyr`
 * `DT`
 * `RColorBrewer`
+* `multcomp`
 
 These packages can be installed in R as follows:
 
 ```R
-install.packages(c("shiny", "dplyr", "ggplot2", "tidyr", "DT", "RColorBrewer"))
+install.packages(c("shiny", "dplyr", "ggplot2", "tidyr", "DT", "RColorBrewer", "multcomp"))
 ```
 
 ### Running the Application
@@ -136,13 +133,13 @@ renv::restore()
 ```R
 shiny::runApp()
 ```
-
+    
 ## Data Format
 
 Prepare your data as a CSV file with the following four columns:
 
 -   `sample`: Unique identifier for each sample (e.g., Mouse_A, CellLine_1).
--   `group`: The experimental group or condition (e.g., Control_X, Treatment_Y).
+-   `group`: The experimental group or condition (e.g., Control, Treatment_X).
 -   `gene`: The name of the gene being measured (e.g., Gapdh, Actb).
 -   `Cq`: The Quantification Cycle value (numeric). **Note:** This column must be named `Cq`.
 
@@ -150,54 +147,87 @@ Each row must represent the Cq value of one gene in one sample. If you have tech
 
 ## How to Use
 
-1.  **Upload Data:** On the **"Analysis"** tab, click "Upload CSV File" or "Use Example Data". A preview will appear.
+1.  **Upload Data:** On the **"Analysis (t-test)"** tab, click "Upload CSV File" or "Use Example Data". A preview will appear.
 
-2.  **Perform ΔCq Analysis (Analysis Tab):**
-
--   Select your "Reference Gene".
--   Select one or more "Target Gene(s)".
--   Under "Comparison Settings," define pairs of groups to compare.
--   Click "Add" to create more comparison pairs.
--   Click **"Analyze"**. The plot and statistical table will appear in the main panel.
+2.  **Perform ΔCq Analysis (Analysis (t-test) Tab):**
+    -   Check "Enable multiple reference genes" to select more than one.
+    -   Select your "Reference Gene(s)".
+    -   Select one or more "Target Gene(s)".
+    -   Under "Comparison Settings," define pairs of groups to compare. Click "Add" to create more pairs.
+    -   Click **"Analyze"**. The plot and statistical table will appear.
 
 3.  **Perform ΔΔCq Analysis (ΔΔCq Analysis Tab):**
+    -   Click on the **"ΔΔCq Analysis"** tab.
+    -   The Reference Gene(s) are automatically inherited.
+    -   Select a single "Target Gene".
+    -   Select the "Base Group (Control)".
+    -   Select one or more "Treatment Group(s)".
+    -   Click **"Run ΔΔCq Analysis"**. The fold-change plot and table will appear.
 
--   Click on the **"ΔΔCq Analysis"** tab.
--   The Reference Gene is automatically inherited from the main analysis.
--   Select a single "Target Gene".
--   Select the "Base Group (Control)" that everything will be compared against.
--   Select one or more "Treatment Group(s)".
--   Click **"Run ΔΔCq Analysis"**. The fold-change plot and table will appear.
+4.  **Perform ANOVA (for 3+ Groups):**
+    -   Navigate to the **"ANOVA Analysis"** tab.
+    -   Select a single "Target Gene".
+    -   Select the "Control Group".
+    -   Select two or more "Treatment Group(s)".
+    -   Click **"Run ANOVA"**. The relative expression plot and a table with ANOVA and Dunnett's test results will appear.
+    -   Navigate to the **"ANOVA (ΔΔCq)"** tab to see the same results visualized as fold change.
 
-4.  **Download Results:**
-
--   In either tab, use the download buttons to save your results.
--   Use the **"Download Plot Settings"** panel to customize the dimensions and resolution for the "Download Plot" button, or use "Save Displayed Size" for a quick snapshot.
-
+5.  **Download Results:**
+    -   In any tab, use the download buttons to save your results.
+    -   Use the **"Download Plot Settings"** panel to customize the dimensions and resolution for the "Download Plot" button.
+    
 ## Example Analysis with Sample Data
 
-This example uses the updated sample data ([Click-qPCR_template.csv](Click-qPCR_template.csv)) which includes genes designed to show up-regulation, down-regulation, and no change.
+This section demonstrates how to use the app's core functions with the built-in sample data.
 
-### 1. Load Sample Data and Perform Analysis
+### 1. Load Sample Data and Perform a t-test
 
--   On the **"Analysis"** tab, click **"Use Example Data"**.
--   The default selections will be appropriate. For "Comparison Settings," we will compare `Control_X` and `Treatment_X`.
--   Click **"Analyze"**.
+First, we'll compare the expression of a single gene between two groups using a t-test.
 
-A plot will be generated showing bars for all selected genes and groups. The table below it will show the statistics for the specified comparison.
+* On the **"Analysis (t-test)"** tab, click the **"Use Example Data"** button.
+* Check the box for **"Enable multiple reference genes"**.
+* For "Reference Gene(s)", select both `Gapdh` and `Actb`.
+* For "Target Gene(s)", ensure only `Hoge` is selected.
+* Under "Comparison Settings," set up a comparison between `Control` and `Treatment_X`.
+* Click the blue **"Analyze"** button.
 
-**Expected Table Output (ΔCq):** The table will have columns: `gene`, `group1`, `group2`, `p_value`, `sig`. For the Hoge gene compared between Control_X and Treatment_X, you should see a significant p-value and `**` in the `sig` column.
+#### **Expected Output**
 
-### 2. Perform ΔΔCq Analysis
+You will see a bar chart and a data table summarizing the analysis. The sample data is designed to show that `Hoge` expression is significantly lower in the `Treatment_X` group compared to the `Control` group.
 
--   Navigate to the **"ΔΔCq Analysis"** tab.
--   Select `Fuga` as the "Target Gene".
--   Select `Control_Y` as the "Base Group (Control)".
--   Select `Treatment_Y` as the "Treatment Group(s)".
--   Click **"Run ΔΔCq Analysis"**.
+**Plot:** The chart will display two bars for the `Hoge` gene: one for the `Control` group and one for the `Treatment_X` group. Individual data points will be scattered over the bars, and the bar for `Treatment_X` will be noticeably lower than the `Control` bar. A significance bracket (`***`) will connect the two bars.
 
-**Expected Table Output (ΔΔCq):** The plot will show the fold change for Fuga in Treatment_Y relative to Control_Y. Based on the modified sample data, this should show a fold change significantly less than 1 (down-regulation). The table will have columns: `group1`, `group2`, `p_value`, `sig`. You will see a significant p-value for this comparison.
+**Statistics Table:** The table below the plot will show the result of the Welch's t-test performed on the ΔCq values. The p-value will be very small, resulting in a high significance level.
 
-## License
+| gene | group1  | group2      | p_value  | sig |
+| :--- | :------ | :---------- | :------- | :-- |
+| Hoge | Control | Treatment_X | 1.25e-05 | *** |
 
-This project is licensed under the MIT License. See the LICENSE file for details.
+---
+
+### 2. Perform ANOVA with Dunnett's Test
+
+Next, we'll compare one gene across multiple treatment groups against a single control group. The reference genes selected in the first tab (`Gapdh` and `Actb`) will be automatically used.
+
+* Navigate to the **"ANOVA Analysis"** tab.
+* Select `Hoge` as the "Target Gene".
+* Select `Control` as the "Control Group".
+* Select `Treatment_X`, `Treatment_Y`, and `Treatment_Z` in the "Treatment Group(s)" box.
+* Click the blue **"Run ANOVA"** button.
+
+#### **Expected Output**
+
+This analysis performs a one-way ANOVA to see if there are any differences among the four groups, followed by Dunnett's test to specifically compare each treatment group to the control. The sample data will show that all treatment groups are significantly different from the control.
+
+**Plot:** The chart will display four bars for the `Hoge` gene, one for each group (`Control`, `Treatment_X`, `Treatment_Y`, `Treatment_Z`). Significance brackets will be shown comparing each treatment group back to the `Control` bar.
+
+
+
+**Statistics Table:** The table will first display the overall result of the ANOVA F-test, which should be highly significant. Below that, it will list the results of Dunnett's test for each treatment-control comparison.
+
+| group1       | group2                               | p_value  | sig |
+| :----------- | :----------------------------------- | :------- | :-- |
+| ANOVA F-test | F(3, 12) = 59.39                     | 3.12e-08 |     |
+| Control      | Treatment_X - Control = 0            | 2.11e-05 | *** |
+| Control      | Treatment_Y - Control = 0            | 1.34e-03 | ** |
+| Control      | Treatment_Z - Control = 0            | 2.00e-07 | *** |

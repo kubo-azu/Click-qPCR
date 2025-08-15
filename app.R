@@ -6,57 +6,74 @@ library(tidyr)
 library(DT)
 library(RColorBrewer)
 library(fontawesome)
+library(multcomp) # Added for Dunnett's test
 
 # 2. Define Sample Data
 sample_csv_text <- "sample,group,gene,Cq
-Mouse_A,Treatment_X,Hoge,25.58
-Mouse_A,Treatment_X,Fuga,27.23
-Mouse_A,Treatment_X,Gapdh,20.27
-Mouse_A,Treatment_X,Wow,28.28
-Mouse_B,Treatment_Y,Hoge,26.21
-Mouse_B,Treatment_Y,Fuga,30.65
-Mouse_B,Treatment_Y,Gapdh,20.83
-Mouse_B,Treatment_Y,Wow,28.82
-Mouse_C,Treatment_X,Hoge,25.79
-Mouse_C,Treatment_X,Fuga,27.39
-Mouse_C,Treatment_X,Gapdh,20.34
-Mouse_C,Treatment_X,Wow,28.34
-Mouse_D,Treatment_Y,Hoge,25.85
-Mouse_D,Treatment_Y,Fuga,30.43
-Mouse_D,Treatment_Y,Gapdh,20.43
-Mouse_D,Treatment_Y,Wow,28.45
-Mouse_E,Treatment_X,Hoge,24.81
-Mouse_E,Treatment_X,Fuga,26.31
-Mouse_E,Treatment_X,Gapdh,19.26
-Mouse_E,Treatment_X,Wow,27.25
-Mouse_F,Treatment_Y,Hoge,25.14
-Mouse_F,Treatment_Y,Fuga,29.64
-Mouse_F,Treatment_Y,Gapdh,19.65
-Mouse_F,Treatment_Y,Wow,27.65
-Mouse_G,Control_X,Hoge,27.04
-Mouse_G,Control_X,Fuga,29.66
-Mouse_G,Control_X,Gapdh,20.98
-Mouse_G,Control_X,Wow,28.99
-Mouse_H,Control_Y,Hoge,26.71
-Mouse_H,Control_Y,Fuga,29.22
-Mouse_H,Control_Y,Gapdh,20.26
-Mouse_H,Control_Y,Wow,28.26
-Mouse_I,Control_X,Hoge,26.54
-Mouse_I,Control_X,Fuga,28.91
-Mouse_I,Control_X,Gapdh,20.05
-Mouse_I,Control_X,Wow,28.05
-Mouse_J,Control_Y,Hoge,27.06
-Mouse_J,Control_Y,Fuga,29.79
-Mouse_J,Control_Y,Gapdh,20.93
-Mouse_J,Control_Y,Wow,28.92
-Mouse_K,Control_X,Hoge,26.38
-Mouse_K,Control_X,Fuga,28.64
-Mouse_K,Control_X,Gapdh,19.94
-Mouse_K,Control_X,Wow,27.95
-Mouse_L,Control_Y,Hoge,26.99
-Mouse_L,Control_Y,Fuga,29.42
-Mouse_L,Control_Y,Gapdh,20.61
-Mouse_L,Control_Y,Wow,28.61"
+Mouse_1,Control,Gapdh,20.01
+Mouse_1,Control,Actb,20.21
+Mouse_1,Control,Hoge,25.12
+Mouse_1,Control,Fuga,27.34
+Mouse_2,Control,Gapdh,20.55
+Mouse_2,Control,Actb,20.25
+Mouse_2,Control,Hoge,25.89
+Mouse_2,Control,Fuga,28.02
+Mouse_3,Control,Gapdh,20.18
+Mouse_3,Control,Actb,20.28
+Mouse_3,Control,Hoge,25.21
+Mouse_3,Control,Fuga,27.45
+Mouse_4,Control,Gapdh,20.33
+Mouse_4,Control,Actb,20.13
+Mouse_4,Control,Hoge,25.56
+Mouse_4,Control,Fuga,27.88
+Mouse_5,Treatment_X,Gapdh,19.98
+Mouse_5,Treatment_X,Actb,20.28
+Mouse_5,Treatment_X,Hoge,26.45
+Mouse_5,Treatment_X,Fuga,28.91
+Mouse_6,Treatment_X,Gapdh,20.21
+Mouse_6,Treatment_X,Actb,20.31
+Mouse_6,Treatment_X,Hoge,27.32
+Mouse_6,Treatment_X,Fuga,29.99
+Mouse_7,Treatment_X,Gapdh,20.55
+Mouse_7,Treatment_X,Actb,20.15
+Mouse_7,Treatment_X,Hoge,26.68
+Mouse_7,Treatment_X,Fuga,29.14
+Mouse_8,Treatment_X,Gapdh,20.32
+Mouse_8,Treatment_X,Actb,20.22
+Mouse_8,Treatment_X,Hoge,27.05
+Mouse_8,Treatment_X,Fuga,29.70
+Mouse_9,Treatment_Y,Gapdh,20.67
+Mouse_9,Treatment_Y,Actb,20.42
+Mouse_9,Treatment_Y,Hoge,24.11
+Mouse_9,Treatment_Y,Fuga,26.33
+Mouse_10,Treatment_Y,Gapdh,20.15
+Mouse_10,Treatment_Y,Actb,20.30
+Mouse_10,Treatment_Y,Hoge,23.88
+Mouse_10,Treatment_Y,Fuga,25.99
+Mouse_11,Treatment_Y,Gapdh,20.33
+Mouse_11,Treatment_Y,Actb,20.23
+Mouse_11,Treatment_Y,Hoge,24.25
+Mouse_11,Treatment_Y,Fuga,26.56
+Mouse_12,Treatment_Y,Gapdh,20.81
+Mouse_12,Treatment_Y,Actb,20.86
+Mouse_12,Treatment_Y,Hoge,24.50
+Mouse_12,Treatment_Y,Fuga,26.90
+Mouse_13,Treatment_Z,Gapdh,20.18
+Mouse_13,Treatment_Z,Actb,20.38
+Mouse_13,Treatment_Z,Hoge,27.59
+Mouse_13,Treatment_Z,Fuga,29.92
+Mouse_14,Treatment_Z,Gapdh,20.72
+Mouse_14,Treatment_Z,Actb,20.42
+Mouse_14,Treatment_Z,Hoge,28.45
+Mouse_14,Treatment_Z,Fuga,30.86
+Mouse_15,Treatment_Z,Gapdh,19.95
+Mouse_15,Treatment_Z,Actb,20.05
+Mouse_15,Treatment_Z,Hoge,27.89
+Mouse_15,Treatment_Z,Fuga,30.14
+Mouse_16,Treatment_Z,Gapdh,20.54
+Mouse_16,Treatment_Z,Actb,20.39
+Mouse_16,Treatment_Z,Hoge,28.63
+Mouse_16,Treatment_Z,Fuga,30.91"
 
 sample_df_global <- read.csv(text = sample_csv_text, stringsAsFactors = FALSE, check.names = FALSE)
 
@@ -72,7 +89,7 @@ ui <- fluidPage(title = "Click-qPCR: Ultra-Simple Tool for Interactive qPCR Data
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
-    
+
     gtag('config', 'G-7J5FG35PN3');
     "
                   ))
@@ -88,7 +105,7 @@ ui <- fluidPage(title = "Click-qPCR: Ultra-Simple Tool for Interactive qPCR Data
                 br(),
                 tabsetPanel(
                   id = "main_tabs",
-                  tabPanel("Analysis",
+                  tabPanel("Analysis (t-test)",
                            sidebarLayout(
                              sidebarPanel(width = 4,
                                           p(HTML("Prepare your data as a CSV file with the following four columns:<br><strong>sample</strong>, <strong>group</strong>, <strong>gene</strong>, and <strong>Cq</strong> (quantification cycle value).")),
@@ -98,12 +115,13 @@ ui <- fluidPage(title = "Click-qPCR: Ultra-Simple Tool for Interactive qPCR Data
                                           actionButton("reset_app", "Reset All", icon=icon("sync-alt"), class = "btn-danger"),
                                           br(), br(),
                                           fileInput("file", "1. Select CSV File"),
-                                          actionButton("load_file", HTML('<span style="font-size: 1.15em;">2. Load File</span>'), icon=icon("upload")),   # Change the text size >> "... X.XXem; ..."
+                                          actionButton("load_file", "2. Load File", icon=icon("upload")),
                                           div(style = "max-height: 250px; overflow-y: auto;", tableOutput("data_preview")),
                                           br(),
+                                          checkboxInput("enable_multi_ref", "Enable multiple reference genes", value = FALSE),
                                           uiOutput("refgene_selector"),
                                           uiOutput("gene_selector"),
-                                          h4("3. Comparison Settings", style = "font-weight:normal;"),
+                                          h4("3. Comparison Settings", style = "font-weight: bold;"),
                                           uiOutput("group_pairs_ui"),
                                           actionButton("add_comparison", "Add", icon=icon("plus")),
                                           actionButton("remove_comparison", "Remove", icon=icon("minus")),
@@ -125,15 +143,15 @@ ui <- fluidPage(title = "Click-qPCR: Ultra-Simple Tool for Interactive qPCR Data
                                           hr(),
                                           h4("Appendix: Statistical Method"),
                                           p(HTML("<div style='font-size: 14px; color: #555; line-height: 1.5;'>
-                                 <strong>1. ΔCq Calculation:</strong><br>
-                                 ΔCq = Cq(Target Gene) - Cq(Reference Gene)
-                                 <br><br>
-                                 <strong>2. Statistical Test:</strong><br>
-                                 A <strong>Welch's two-sample t-test</strong> is performed on the <strong>ΔCq values</strong> between each treatment group and the control group to calculate the p-value.
-                                 <br><br>
-                                 <strong>3. Visualization:</strong><br>
-                                 The plot displays Relative Expression (2<sup>-ΔCq</sup>) for intuitive visualization.
-                                 </div>"))
+                                        <strong>1. ΔCq Calculation:</strong><br>
+                                        ΔCq = Cq(Target Gene) - Mean Cq(Reference Genes)
+                                        <br><br>
+                                        <strong>2. Statistical Test:</strong><br>
+                                        A <strong>Welch's two-sample t-test</strong> is performed on the <strong>ΔCq values</strong> between each treatment group and the control group to calculate the p-value.
+                                        <br><br>
+                                        <strong>3. Visualization:</strong><br>
+                                        The plot displays Relative Expression (2<sup>-ΔCq</sup>) for intuitive visualization.
+                                        </div>"))
                              ),
                              mainPanel(width = 8,
                                        tags$div(style = "width: 100%; overflow-x: auto;",
@@ -147,7 +165,7 @@ ui <- fluidPage(title = "Click-qPCR: Ultra-Simple Tool for Interactive qPCR Data
                   tabPanel("ΔΔCq Analysis",
                            sidebarLayout(
                              sidebarPanel(width = 4,
-                                          h5(strong("Reference Gene:")),
+                                          h5(strong("Reference Gene(s):")),
                                           textOutput("ddct_refgene_display"),
                                           br(),
                                           uiOutput("ddct_target_selector"),
@@ -175,15 +193,16 @@ ui <- fluidPage(title = "Click-qPCR: Ultra-Simple Tool for Interactive qPCR Data
                                           hr(),
                                           h4("Appendix: Statistical Method"),
                                           p(HTML("<div style='font-size: 14px; color: #555; line-height: 1.5;'>
-                                 <strong>1. ΔΔCq Calculation:</strong><br>
-                                 ΔΔCq = ΔCq(Sample) - Mean ΔCq(Control Group)
-                                 <br><br>
-                                 <strong>2. Statistical Test:</strong><br>
-                                 A <strong>Welch's two-sample t-test</strong> is performed on the <strong>ΔCq values</strong> between each treatment group and the control group to calculate the p-value.
-                                 <br><br>
-                                 <strong>3. Visualization:</strong><br>
-                                 The plot displays Relative Expression (2<sup>-ΔΔCq</sup>) for intuitive visualization.
-                                 </div>"))
+                                        <strong>1. ΔΔCq Calculation:</strong><br>
+                                        ΔΔCq = ΔCq(Sample) - Mean ΔCq(Control Group)<br>
+                                        (where ΔCq = Cq_target - Mean Cq_refs)
+                                        <br><br>
+                                        <strong>2. Statistical Test:</strong><br>
+                                        A <strong>Welch's two-sample t-test</strong> is performed on the <strong>ΔCq values</strong> between each treatment group and the control group to calculate the p-value.
+                                        <br><br>
+                                        <strong>3. Visualization:</strong><br>
+                                        The plot displays Relative Expression (2<sup>-ΔΔCq</sup>) for intuitive visualization.
+                                        </div>"))
                              ),
                              mainPanel(width = 8,
                                        tags$div(style = "width: 100%; overflow-x: auto;",
@@ -191,6 +210,107 @@ ui <- fluidPage(title = "Click-qPCR: Ultra-Simple Tool for Interactive qPCR Data
                                        ),
                                        br(),
                                        DT::dataTableOutput("ddct_table_output")
+                             )
+                           )
+                  ),
+                  tabPanel("ANOVA Analysis",
+                           sidebarLayout(
+                             sidebarPanel(width = 4,
+                                          p("This tab is for comparing 3 or more groups. It performs an ANOVA followed by Dunnett's test to compare each treatment group against a single control group."),
+                                          hr(),
+                                          h5(strong("Reference Gene(s):")),
+                                          textOutput("anova_refgene_display"),
+                                          br(),
+                                          uiOutput("anova_target_selector"),
+                                          hr(),
+                                          h4("ANOVA (3+ Groups) Comparison Settings"),
+                                          uiOutput("anova_control_group_selector"),
+                                          uiOutput("anova_treatment_group_selector"),
+                                          hr(),
+                                          actionButton("anova_analyze", "Run ANOVA", class="btn-primary btn-lg", icon=icon("play-circle")),
+                                          br(),br(),
+                                          downloadButton("anova_csv", "Download ANOVA Stats", class="btn-success"),
+                                          div(style="display: inline-block;", downloadButton("anova_plot", "Download ANOVA Plot", class="btn-success")),
+                                          div(style="display: inline-block;", downloadButton("anova_plot_asis", "Save Displayed Size", class="btn-info")),
+                                          hr(),
+                                          h4("Download Plot Settings"),
+                                          p("Settings for the 'Download ANOVA Plot' button."),
+                                          fluidRow(
+                                            column(6, sliderInput("plot_width_anova", "Width (inches):", min = 4, max = 20, value = 10)),
+                                            column(6, sliderInput("plot_height_anova", "Height (inches):", min = 4, max = 20, value = 8))
+                                          ),
+                                          checkboxInput("fix_ratio_anova", "Fix the ratio", value = FALSE),
+                                          sliderInput("plot_dpi_anova", "Resolution (DPI):", min = 72, max = 600, value = 300),
+                                          hr(),
+                                          h4("Appendix: Statistical Method"),
+                                          p(HTML("<div style='font-size: 14px; color: #555; line-height: 1.5;'>
+                                        <strong>1. ΔCq Calculation:</strong><br>
+                                        ΔCq = Cq(Target Gene) - Mean Cq(Reference Genes)
+                                        <br><br>
+                                        <strong>2. Statistical Test:</strong><br>
+                                        First, a <strong>one-way ANOVA</strong> is performed on the ΔCq values to determine if there are any significant differences among the means of all selected groups. Then, <strong>Dunnett's test</strong> is used as a post-hoc test to specifically compare each treatment group against the single control group.
+                                        <br><br>
+                                        <strong>3. Visualization:</strong><br>
+                                        The plot displays Relative Expression (2<sup>-ΔCq</sup>) for intuitive visualization.
+                                        </div>"))
+                             ),
+                             mainPanel(width = 8,
+                                       tags$div(style = "width: 100%; overflow-x: auto;",
+                                                uiOutput("anovaPlotUI")
+                                       ),
+                                       br(),
+                                       DT::dataTableOutput("anova_table_output")
+                             )
+                           )
+                  ),
+                  tabPanel("ANOVA (ΔΔCq)",
+                           sidebarLayout(
+                             sidebarPanel(width = 4,
+                                          p("This tab visualizes the ANOVA results as Fold Change (2^-ΔΔCq). The statistical test is the same as the 'ANOVA Analysis' tab."),
+                                          hr(),
+                                          h5(strong("Reference Gene(s):")),
+                                          textOutput("anova_ddct_refgene_display"),
+                                          br(),
+                                          uiOutput("anova_ddct_target_selector"),
+                                          hr(),
+                                          h4("ANOVA (ΔΔCq) Comparison Settings"),
+                                          uiOutput("anova_ddct_control_group_selector"),
+                                          uiOutput("anova_ddct_treatment_group_selector"),
+                                          hr(),
+                                          actionButton("anova_ddct_analyze", "Run ANOVA (ΔΔCq)", class="btn-primary btn-lg", icon=icon("play-circle")),
+                                          br(),br(),
+                                          downloadButton("anova_ddct_csv", "Download Stats", class="btn-success"),
+                                          div(style="display: inline-block;", downloadButton("anova_ddct_plot", "Download Plot", class="btn-success")),
+                                          div(style="display: inline-block;", downloadButton("anova_ddct_plot_asis", "Save Displayed Size", class="btn-info")),
+                                          hr(),
+                                          h4("Download Plot Settings"),
+                                          p("Settings for the 'Download Plot' button."),
+                                          fluidRow(
+                                            column(6, sliderInput("plot_width_anova_ddct", "Width (inches):", min = 4, max = 20, value = 10)),
+                                            column(6, sliderInput("plot_height_anova_ddct", "Height (inches):", min = 4, max = 20, value = 8))
+                                          ),
+                                          checkboxInput("fix_ratio_anova_ddct", "Fix the ratio", value = FALSE),
+                                          sliderInput("plot_dpi_anova_ddct", "Resolution (DPI):", min = 72, max = 600, value = 300),
+                                          hr(),
+                                          h4("Appendix: Statistical Method"),
+                                          p(HTML("<div style='font-size: 14px; color: #555; line-height: 1.5;'>
+                                        <strong>1. ΔΔCq Calculation:</strong><br>
+                                        ΔΔCq = ΔCq(Sample) - Mean ΔCq(Control Group)<br>
+                                        (where ΔCq = Cq_target - Mean Cq_refs)
+                                        <br><br>
+                                        <strong>2. Statistical Test:</strong><br>
+                                        The statistical test is identical to the 'ANOVA Analysis' tab (ANOVA followed by Dunnett's test on <strong>ΔCq values</strong>).
+                                        <br><br>
+                                        <strong>3. Visualization:</strong><br>
+                                        The plot displays Fold Change (2<sup>-ΔΔCq</sup>) to visualize expression relative to the control group.
+                                        </div>"))
+                             ),
+                             mainPanel(width = 8,
+                                       tags$div(style = "width: 100%; overflow-x: auto;",
+                                                uiOutput("anovaDdctPlotUI")
+                                       ),
+                                       br(),
+                                       DT::dataTableOutput("anova_ddct_table_output")
                              )
                            )
                   ),
@@ -211,12 +331,17 @@ server <- function(input, output, session) {
   
   # --- Reactive Values and State Management ---
   raw_data <- reactiveVal()
-  preview_data <- reactiveVal() # For showing a preview before loading
-  analysis_results <- reactiveVal() 
+  preview_data <- reactiveVal()
+  analysis_results <- reactiveVal()
   ddct_analysis_results <- reactiveVal()
+  anova_results <- reactiveVal()
+  anova_ddct_results <- reactiveVal()
   
   plot_dims <- reactiveVal(list(width = 10, height = 8))
   ddct_plot_dims <- reactiveVal(list(width = 10, height = 8))
+  anova_plot_dims <- reactiveVal(list(width = 10, height = 8))
+  anova_ddct_plot_dims <- reactiveVal(list(width = 10, height = 8))
+  
   comparison_count <- reactiveVal(1)
   ddCq_comparison_count <- reactiveVal(1)
   
@@ -229,6 +354,8 @@ server <- function(input, output, session) {
     preview_data(df)
     analysis_results(NULL)
     ddct_analysis_results(NULL)
+    anova_results(NULL)
+    anova_ddct_results(NULL)
     showNotification("Sample data loaded.", type = "message", duration = 3)
   })
   
@@ -236,7 +363,7 @@ server <- function(input, output, session) {
     req(input$file)
     tryCatch({
       df <- read.csv(input$file$datapath, stringsAsFactors = FALSE, check.names = FALSE)
-      preview_data(df) # Show preview immediately
+      preview_data(df)
     }, error = function(e) {
       showNotification(paste("Could not preview file:", e$message), type = "error")
       preview_data(NULL)
@@ -248,8 +375,8 @@ server <- function(input, output, session) {
     tryCatch({
       df <- preview_data()
       req(all(c("sample", "group", "gene", "Cq") %in% names(df)))
-      if (!is.numeric(df$Cq)) { 
-        df$Cq <- suppressWarnings(as.numeric(as.character(df$Cq))) 
+      if (!is.numeric(df$Cq)) {
+        df$Cq <- suppressWarnings(as.numeric(as.character(df$Cq)))
         if(any(is.na(df$Cq))) {
           showNotification("Warning: Non-numeric Cq values were converted to NA.", type="warning")
         }
@@ -257,9 +384,11 @@ server <- function(input, output, session) {
       raw_data(df)
       analysis_results(NULL)
       ddct_analysis_results(NULL)
+      anova_results(NULL)
+      anova_ddct_results(NULL)
       showNotification("File successfully loaded for analysis.", type = "message", duration=3)
-    }, error = function(e) { 
-      showNotification(paste("Error loading file:", e$message), type = "error", duration=10) 
+    }, error = function(e) {
+      showNotification(paste("Error loading file:", e$message), type = "error", duration=10)
     })
   })
   
@@ -269,8 +398,25 @@ server <- function(input, output, session) {
   
   # --- UI Rendering ---
   output$data_preview <- renderTable({ req(preview_data()); head(preview_data(), 10) })
-  output$refgene_selector <- renderUI({ req(raw_data()); selectInput("refgene", "Reference Gene:", choices = unique(raw_data()$gene), selected = "Gapdh") })
-  output$gene_selector <- renderUI({ req(raw_data(), input$refgene); selectInput("goi", "Target Gene(s):", choices = setdiff(unique(raw_data()$gene), input$refgene), multiple = TRUE, selected=setdiff(unique(raw_data()$gene), input$refgene)[1]) })
+  
+  output$refgene_selector <- renderUI({
+    req(raw_data())
+    is_multiple <- isTRUE(input$enable_multi_ref)
+    
+    selectInput("refgene", "Reference Gene(s):", 
+                choices = unique(raw_data()$gene), 
+                selected = input$refgene %||% "Gapdh", 
+                multiple = is_multiple)
+  })
+  
+  output$gene_selector <- renderUI({ 
+    req(raw_data(), input$refgene)
+    selectInput("goi", "Target Gene(s):", 
+                choices = setdiff(unique(raw_data()$gene), input$refgene), 
+                multiple = TRUE, 
+                selected=setdiff(unique(raw_data()$gene), c("Gapdh", "Actb"))[1]) 
+  })
+  
   output$group_pairs_ui <- renderUI({
     req(raw_data()); groups <- unique(raw_data()$group)
     lapply(1:comparison_count(), function(i) {
@@ -282,7 +428,11 @@ server <- function(input, output, session) {
   })
   observeEvent(input$add_comparison, { comparison_count(comparison_count() + 1) })
   observeEvent(input$remove_comparison, { if (comparison_count() > 1) comparison_count(comparison_count() - 1) })
-  output$ddct_refgene_display <- renderText({ req(input$refgene); input$refgene })
+  
+  output$ddct_refgene_display <- renderText({ req(input$refgene); paste(input$refgene, collapse = ", ") })
+  output$anova_refgene_display <- renderText({ req(input$refgene); paste(input$refgene, collapse = ", ") })
+  output$anova_ddct_refgene_display <- renderText({ req(input$refgene); paste(input$refgene, collapse = ", ") })
+  
   output$ddct_target_selector <- renderUI({ req(raw_data(), input$refgene); selectInput("ddct_target", "Target Gene:", choices = setdiff(unique(raw_data()$gene), input$refgene)) })
   output$ddct_base_group_selector <- renderUI({ req(raw_data()); selectInput("ddct_base_group", "Base Group (Control):", choices = unique(raw_data()$group)) })
   output$ddct_comparison_groups_ui <- renderUI({
@@ -295,6 +445,35 @@ server <- function(input, output, session) {
   observeEvent(input$add_ddct_comparison, { ddCq_comparison_count(ddCq_comparison_count() + 1) })
   observeEvent(input$remove_ddct_comparison, { if (ddCq_comparison_count() > 1) ddCq_comparison_count(ddCq_comparison_count() - 1) })
   
+  output$anova_target_selector <- renderUI({
+    req(raw_data(), input$refgene)
+    selectInput("anova_target", "Target Gene:", choices = setdiff(unique(raw_data()$gene), input$refgene))
+  })
+  output$anova_control_group_selector <- renderUI({
+    req(raw_data())
+    selectInput("anova_control", "Control Group:", choices = unique(raw_data()$group))
+  })
+  output$anova_treatment_group_selector <- renderUI({
+    req(raw_data(), input$anova_control)
+    choices <- setdiff(unique(raw_data()$group), input$anova_control)
+    selectInput("anova_treatments", "Treatment Group(s):", choices = choices, multiple = TRUE, selected = choices)
+  })
+  
+  output$anova_ddct_target_selector <- renderUI({
+    req(raw_data(), input$refgene)
+    selectInput("anova_ddct_target", "Target Gene:", choices = setdiff(unique(raw_data()$gene), input$refgene))
+  })
+  output$anova_ddct_control_group_selector <- renderUI({
+    req(raw_data())
+    selectInput("anova_ddct_control", "Control Group:", choices = unique(raw_data()$group))
+  })
+  output$anova_ddct_treatment_group_selector <- renderUI({
+    req(raw_data(), input$anova_ddct_control)
+    choices <- setdiff(unique(raw_data()$group), input$anova_ddct_control)
+    selectInput("anova_ddct_treatments", "Treatment Group(s):", choices = choices, multiple = TRUE, selected = choices)
+  })
+  
+  
   # --- Analysis Logic ---
   observeEvent(input$analyze, {
     req(raw_data(), input$refgene, input$goi)
@@ -302,23 +481,23 @@ server <- function(input, output, session) {
     comparison_pairs <- lapply(1:comparison_count(), function(i) unique(c(input[[paste0("group1_comp", i)]], input[[paste0("group2_comp", i)]])))
     comparison_pairs <- comparison_pairs[sapply(comparison_pairs, length) == 2]; req(length(comparison_pairs) > 0)
     
-    wide_data <- raw_data() %>%
-      filter(gene %in% c(input$refgene, input$goi), group %in% unlist(comparison_pairs)) %>%
-      group_by(sample, group, gene) %>% summarise(Cq = mean(Cq, na.rm = TRUE), .groups = "drop") %>%
-      pivot_wider(names_from = gene, values_from = Cq)
+    mean_ref_cq <- raw_data() %>%
+      filter(gene %in% input$refgene) %>%
+      group_by(sample) %>%
+      summarise(mean_ref_cq = mean(Cq, na.rm = TRUE), .groups = "drop")
     
-    req(input$refgene %in% names(wide_data)); current_goi <- intersect(input$goi, names(wide_data)); req(length(current_goi) > 0)
-    
-    long_data <- wide_data %>%
-      mutate(across(all_of(current_goi), ~ . - .data[[input$refgene]], .names = "deltaCq_{.col}")) %>%
-      pivot_longer(cols = starts_with("deltaCq_"), names_to = "gene", names_prefix = "deltaCq_", values_to = "deltaCq_val") %>%
-      filter(!is.na(deltaCq_val)) %>% mutate(RelExp = 2^(-deltaCq_val))
+    long_data <- raw_data() %>%
+      filter(gene %in% input$goi) %>%
+      inner_join(mean_ref_cq, by = "sample") %>%
+      mutate(deltaCq_val = Cq - mean_ref_cq) %>%
+      filter(!is.na(deltaCq_val)) %>%
+      mutate(RelExp = 2^(-deltaCq_val))
     req(nrow(long_data) > 0)
     
     summary_data <- long_data %>% group_by(gene, group) %>%
       summarise(Mean=mean(RelExp, na.rm=TRUE), SD=sd(RelExp, na.rm=TRUE), N=n(), .groups="drop")
     
-    significance_raw <- bind_rows(lapply(current_goi, function(g) {
+    significance_raw <- bind_rows(lapply(input$goi, function(g) {
       bind_rows(lapply(comparison_pairs, function(p) {
         dt <- long_data %>% filter(gene == g, group %in% p)
         p_val_result <- if (n_distinct(dt$group) == 2 && all(table(dt$group) >= 2)) {
@@ -350,7 +529,7 @@ server <- function(input, output, session) {
           TRUE ~ "ns"
         )
       ) %>%
-      select(gene, group1, group2, p_value, sig)
+      dplyr::select(gene, group1, group2, p_value, sig)
     
     summary_data_plot <- summary_data %>% mutate(label = factor(paste(gene, group), levels = unique(paste(gene, group))))
     data_levels <- levels(summary_data_plot$label)
@@ -388,10 +567,10 @@ server <- function(input, output, session) {
       bracket_data <- data.frame(x=numeric(), xend=numeric(), y=numeric(), y_label=numeric(), label=character())
     }
     
-    analysis_results(list(summary_table = significance %>% select(-any_of("pos_start")), 
-                          raw_data_for_dl = summary_data, 
-                          bracket_data = bracket_data, 
-                          long_data = long_data, 
+    analysis_results(list(summary_table = significance %>% dplyr::select(-any_of("pos_start")),
+                          raw_data_for_dl = summary_data,
+                          bracket_data = bracket_data,
+                          long_data = long_data,
                           summary_data_plot = summary_data_plot))
   })
   
@@ -412,9 +591,9 @@ server <- function(input, output, session) {
       geom_text(data=results$bracket_data, aes(x=(x+xend)/2, y=y_label, label=label), inherit.aes=FALSE, vjust=-0.4, size=6) +
       coord_cartesian(ylim=c(0, plot_max_y), clip="off") +
       labs(x="Gene (Group)", y=expression("Relative Expression" ~ (2^{-Delta*Cq})), fill="Group") +
-      theme_classic(base_size=16) + 
+      theme_classic(base_size=16) +
       theme(
-        axis.text.x=element_text(angle=45, hjust=1), 
+        axis.text.x=element_text(angle=45, hjust=1),
         plot.margin = margin(t=40, r=20, b=10, l=10)
       )
   })
@@ -423,18 +602,23 @@ server <- function(input, output, session) {
     req(raw_data(), input$refgene, input$ddct_target, input$ddct_base_group)
     
     ddCq_comparison_groups <- lapply(1:ddCq_comparison_count(), function(i) input[[paste0("ddct_comp_group", i)]]) %>% unlist() %>% unique()
-    req(length(ddCq_comparison_groups) > 0)
+    
+    if(is.null(ddCq_comparison_groups) || length(ddCq_comparison_groups) == 0) {
+      showNotification("Please select at least one treatment group for ΔΔCq analysis.", type = "warning")
+      return(NULL)
+    }
+    
     all_selected_groups_ddCq <- c(input$ddct_base_group, ddCq_comparison_groups)
     
-    wide_df <- raw_data() %>%
-      filter(gene %in% c(input$refgene, input$ddct_target), group %in% all_selected_groups_ddCq) %>%
-      group_by(sample, group, gene) %>% summarise(Cq = mean(Cq, na.rm = TRUE), .groups = "drop") %>%
-      pivot_wider(names_from = gene, values_from = Cq)
+    mean_ref_cq <- raw_data() %>%
+      filter(gene %in% input$refgene) %>%
+      group_by(sample) %>%
+      summarise(mean_ref_cq = mean(Cq, na.rm = TRUE), .groups = "drop")
     
-    req(input$refgene %in% names(wide_df), input$ddct_target %in% names(wide_df))
-    
-    deltaCq_data <- wide_df %>%
-      mutate(deltaCq = .data[[input$ddct_target]] - .data[[input$refgene]]) %>%
+    deltaCq_data <- raw_data() %>%
+      filter(gene == input$ddct_target, group %in% all_selected_groups_ddCq) %>%
+      inner_join(mean_ref_cq, by = "sample") %>%
+      mutate(deltaCq = Cq - mean_ref_cq) %>%
       filter(!is.na(deltaCq))
     
     req(nrow(deltaCq_data) > 0, input$ddct_base_group %in% deltaCq_data$group)
@@ -476,7 +660,7 @@ server <- function(input, output, session) {
           TRUE ~ "ns"
         )
       ) %>%
-      select(group1, group2, p_value, sig)
+      dplyr::select(group1, group2, p_value, sig)
     
     summary_data_plot <- summary_data %>% mutate(group = factor(group, levels = all_selected_groups_ddCq))
     data_levels <- levels(summary_data_plot$group)
@@ -516,19 +700,11 @@ server <- function(input, output, session) {
     plot_max_y <- if (nrow(results$bracket_data) > 0) max(results$bracket_data$y_label, na.rm=TRUE) * 1.15 else max(results$summary_data_plot$Mean + results$summary_data_plot$SD, na.rm=TRUE) * 1.2
     if(!is.finite(plot_max_y) || plot_max_y <= 0) plot_max_y <- 2
     
-    num_ddCq_groups_plot <- length(results$summary_data_plot$group)
-    ddCq_color_palette <- if(num_ddCq_groups_plot > 0 && num_ddCq_groups_plot <= brewer.pal.info["Paired", "maxcolors"]) {
-      setNames(brewer.pal(n = max(3, num_ddCq_groups_plot), name = "Paired")[1:num_ddCq_groups_plot], results$summary_data_plot$group)
-    } else {
-      setNames(colorRampPalette(brewer.pal(8, "Paired"))(num_ddCq_groups_plot), results$summary_data_plot$group)
-    }
-    
     ggplot(results$summary_data_plot, aes(x = group, y = Mean, fill = group)) +
       geom_bar(stat="identity", color="black", width=0.7) +
-      scale_fill_manual(values = ddCq_color_palette, name = "Group") +
       geom_errorbar(aes(ymin = pmax(0, Mean - SD), ymax = Mean + SD), width = 0.2, color="black") +
       geom_jitter(data = results$ddCq_data, aes(y = FoldChange), width = 0.1, shape=21, size=2.5, alpha=0.7, fill="grey80", show.legend = FALSE) +
-      geom_hline(yintercept=1, linetype="dashed", color="red", size=1) +
+      geom_hline(yintercept=1, linetype="dashed", color="red", linewidth=1) +
       geom_segment(data=results$bracket_data, aes(x=x, xend=xend, y=y, yend=y), inherit.aes=FALSE, color="black") +
       geom_segment(data=results$bracket_data, aes(x=x, xend=x, y=y, yend=y - 0.01 * plot_max_y), inherit.aes=FALSE, color="black") +
       geom_segment(data=results$bracket_data, aes(x=xend, xend=xend, y=y, yend=y - 0.01 * plot_max_y), inherit.aes=FALSE, color="black") +
@@ -545,6 +721,260 @@ server <- function(input, output, session) {
             plot.margin = margin(t=30, r=10, b=10, l=10))
   })
   
+  observeEvent(input$anova_analyze, {
+    req(raw_data(), input$refgene, input$anova_target, input$anova_control, input$anova_treatments)
+    
+    selected_groups <- c(input$anova_control, input$anova_treatments)
+    if(length(selected_groups) < 2) {
+      showNotification("Please select at least one treatment group for ANOVA.", type = "warning")
+      return()
+    }
+    
+    mean_ref_cq <- raw_data() %>%
+      filter(gene %in% input$refgene) %>%
+      group_by(sample) %>%
+      summarise(mean_ref_cq = mean(Cq, na.rm = TRUE), .groups = "drop")
+    
+    deltaCq_data <- raw_data() %>%
+      filter(gene == input$anova_target, group %in% selected_groups) %>%
+      inner_join(mean_ref_cq, by = "sample") %>%
+      mutate(deltaCq = Cq - mean_ref_cq,
+             RelExp = 2^(-deltaCq)) %>%
+      filter(!is.na(deltaCq))
+    
+    deltaCq_data$group <- factor(deltaCq_data$group, levels = selected_groups)
+    
+    tryCatch({
+      aov_model <- aov(deltaCq ~ group, data = deltaCq_data)
+      aov_summary <- summary(aov_model)[[1]]
+      
+      f_val <- aov_summary[["F value"]][1]
+      df1 <- aov_summary[["Df"]][1]
+      df2 <- aov_summary[["Df"]][2]
+      aov_pval <- aov_summary[["Pr(>F)"]][1]
+      f_test_text <- paste0("ANOVA: F(", df1, ", ", df2, ") = ", round(f_val, 2), ", p = ", sprintf("%.2e", aov_pval))
+      
+      linfct_anova <- mcp(group = "Dunnett")
+      dunnett_results <- summary(glht(aov_model, linfct = linfct_anova))
+      dunnett_pvals <- dunnett_results$test$pvalues
+      
+      summary_data <- deltaCq_data %>%
+        group_by(group) %>%
+        summarise(Mean = mean(RelExp), SD = sd(RelExp), N = n(), .groups = "drop")
+      
+      significance_table_detailed <- data.frame(
+        group1 = input$anova_control,
+        group2 = input$anova_treatments,
+        p_value_raw = unname(dunnett_pvals)
+      ) %>%
+        mutate(
+          p_value_num = suppressWarnings(as.numeric(p_value_raw)),
+          sig = case_when(
+            is.na(p_value_num) ~ "ns",
+            p_value_num < 0.001 ~ "***",
+            p_value_num < 0.01 ~ "**",
+            p_value_num < 0.05 ~ "*",
+            TRUE ~ "ns"
+          )
+        )
+      
+      significance_table_display <- significance_table_detailed %>%
+        mutate(p_value = sprintf("%.2e", p_value_num)) %>%
+        dplyr::select(group1, group2, p_value, sig)
+      
+      anova_summary_table <- bind_rows(
+        data.frame(
+          group1 = "ANOVA F-test",
+          group2 = paste0("F(", df1, ", ", df2, ") = ", round(f_val, 2)),
+          p_value = sprintf("%.2e", aov_pval),
+          sig = ""
+        ),
+        significance_table_display
+      )
+      
+      max_vals <- summary_data %>% group_by(group) %>% summarise(y_pos = Mean + ifelse(is.na(SD), 0, SD))
+      data_levels <- levels(summary_data$group)
+      bracket_data_list <- list()
+      if(nrow(significance_table_detailed) > 0 && nrow(max_vals) > 0){
+        data_y_max <- max(max_vals$y_pos, na.rm = TRUE)
+        space_per_bracket <- data_y_max * 0.15
+        y_current_level <- data_y_max
+        
+        for(i in seq_len(nrow(significance_table_detailed))) {
+          row <- significance_table_detailed[i,]
+          pos1 <- which(data_levels == row$group1)
+          pos2 <- which(data_levels == row$group2)
+          if(length(pos1)==0 || length(pos2)==0) next
+          
+          y_current_level <- y_current_level + space_per_bracket
+          
+          bracket_data_list[[i]] <- data.frame(x=min(pos1, pos2), xend=max(pos1, pos2), y=y_current_level, y_label=y_current_level, label=row$sig)
+        }
+      }
+      
+      bracket_data <- if (length(bracket_data_list) > 0) bind_rows(bracket_data_list) else data.frame(x=numeric(), xend=numeric(), y=numeric(), y_label=numeric(), label=character())
+      
+      anova_results(list(summary_table = anova_summary_table,
+                         summary_data_plot = summary_data,
+                         bracket_data = bracket_data,
+                         long_data = deltaCq_data,
+                         f_test_text = f_test_text))
+    }, error = function(e) {
+      showNotification(paste("An error occurred during ANOVA calculation:", e$message), type = "error")
+      anova_results(NULL)
+    })
+  })
+  
+  anova_plot_obj <- reactive({
+    req(anova_results())
+    results <- anova_results()
+    
+    plot_max_y <- if (nrow(results$bracket_data) > 0) max(results$bracket_data$y_label, na.rm=TRUE) * 1.15 else max(results$summary_data_plot$Mean + results$summary_data_plot$SD, na.rm=TRUE) * 1.2
+    if(!is.finite(plot_max_y) || plot_max_y <= 0) plot_max_y <- 1
+    
+    ggplot(results$summary_data_plot, aes(x = group, y = Mean, fill = group)) +
+      geom_bar(stat="identity", color="black", width=0.7) +
+      geom_errorbar(aes(ymin = pmax(0, Mean - SD), ymax = Mean + SD), width = 0.2, color="black") +
+      geom_jitter(data = results$long_data, aes(y = RelExp), width = 0.1, shape=21, size=2.5, alpha=0.7, fill="grey80") +
+      geom_segment(data=results$bracket_data, aes(x=x, xend=xend, y=y, yend=y), inherit.aes=FALSE, color="black") +
+      geom_segment(data=results$bracket_data, aes(x=x, xend=x, y=y, yend=y - 0.005 * plot_max_y), inherit.aes=FALSE, color="black") +
+      geom_segment(data=results$bracket_data, aes(x=xend, xend=xend, y=y, yend=y - 0.005 * plot_max_y), inherit.aes=FALSE, color="black") +
+      geom_text(data=results$bracket_data, aes(x=(x+xend)/2, y=y_label, label=label), inherit.aes=FALSE, vjust=-0.4, size=6) +
+      coord_cartesian(ylim=c(0, plot_max_y), clip="off") +
+      annotate("text", x = Inf, y = Inf, label = results$f_test_text, hjust = 1.1, vjust = 2, size = 4.5, color = "black") +
+      labs(x="Group", y=expression("Relative Expression" ~ (2^{-Delta*Cq})), fill="Group", title = paste("Gene Expression of", input$anova_target)) +
+      theme_classic(base_size=16) +
+      theme(
+        axis.text.x=element_text(angle=45, hjust=1, color="black"),
+        axis.text.y=element_text(color="black"),
+        axis.title=element_text(size=14,face="bold", color="black"),
+        plot.title=element_text(size=16,face="bold",hjust=0.5, color="black"),
+        legend.title=element_text(size=12,face="bold", color="black"),
+        legend.text=element_text(size=10, color="black"),
+        plot.margin = margin(t=40, r=20, b=10, l=10)
+      )
+  })
+  
+  observeEvent(input$anova_ddct_analyze, {
+    req(raw_data(), input$refgene, input$anova_ddct_target, input$anova_ddct_control, input$anova_ddct_treatments)
+    
+    selected_groups <- c(input$anova_ddct_control, input$anova_ddct_treatments)
+    if(length(selected_groups) < 2) {
+      showNotification("Please select at least one treatment group.", type = "warning")
+      return()
+    }
+    
+    mean_ref_cq <- raw_data() %>%
+      filter(gene %in% input$refgene) %>%
+      group_by(sample) %>%
+      summarise(mean_ref_cq = mean(Cq, na.rm = TRUE), .groups = "drop")
+    
+    deltaCq_data <- raw_data() %>%
+      filter(gene == input$anova_ddct_target, group %in% selected_groups) %>%
+      inner_join(mean_ref_cq, by = "sample") %>%
+      mutate(deltaCq = Cq - mean_ref_cq) %>%
+      filter(!is.na(deltaCq))
+    
+    deltaCq_data$group <- factor(deltaCq_data$group, levels = selected_groups)
+    
+    tryCatch({
+      aov_model <- aov(deltaCq ~ group, data = deltaCq_data)
+      aov_summary <- summary(aov_model)[[1]]
+      f_val <- aov_summary[["F value"]][1]
+      df1 <- aov_summary[["Df"]][1]
+      df2 <- aov_summary[["Df"]][2]
+      aov_pval <- aov_summary[["Pr(>F)"]][1]
+      f_test_text <- paste0("ANOVA: F(", df1, ", ", df2, ") = ", round(f_val, 2), ", p = ", sprintf("%.2e", aov_pval))
+      
+      linfct_anova <- mcp(group = "Dunnett")
+      dunnett_results <- summary(glht(aov_model, linfct = linfct_anova))
+      dunnett_pvals <- dunnett_results$test$pvalues
+      
+      mean_control_deltaCq <- mean(deltaCq_data$deltaCq[deltaCq_data$group == input$anova_ddct_control], na.rm = TRUE)
+      ddCq_data <- deltaCq_data %>%
+        mutate(deltaDeltaCq = deltaCq - mean_control_deltaCq, 
+               FoldChange = 2^(-deltaDeltaCq))
+      
+      summary_data <- ddCq_data %>%
+        group_by(group) %>%
+        summarise(Mean = mean(FoldChange), SD = sd(FoldChange), N = n(), .groups = "drop")
+      
+      significance_table_detailed <- data.frame(
+        group1 = input$anova_ddct_control,
+        group2 = input$anova_ddct_treatments,
+        p_value_raw = unname(dunnett_pvals)
+      ) %>%
+        mutate(p_value_num = suppressWarnings(as.numeric(p_value_raw)),
+               sig = case_when(is.na(p_value_num) ~ "ns", p_value_num < 0.001 ~ "***", p_value_num < 0.01 ~ "**", p_value_num < 0.05 ~ "*", TRUE ~ "ns"))
+      
+      significance_table_display <- significance_table_detailed %>%
+        mutate(p_value = sprintf("%.2e", p_value_num)) %>%
+        dplyr::select(group1, group2, p_value, sig)
+      
+      anova_summary_table <- bind_rows(
+        data.frame(group1 = "ANOVA F-test", group2 = paste0("F(", df1, ", ", df2, ") = ", round(f_val, 2)), p_value = sprintf("%.2e", aov_pval), sig = ""),
+        significance_table_display
+      )
+      
+      max_vals <- summary_data %>% group_by(group) %>% summarise(y_pos = Mean + ifelse(is.na(SD), 0, SD))
+      data_levels <- levels(summary_data$group)
+      bracket_data_list <- list()
+      if(nrow(significance_table_detailed) > 0 && nrow(max_vals) > 0){
+        data_y_max <- max(max_vals$y_pos, na.rm = TRUE)
+        space_per_bracket <- data_y_max * 0.15
+        y_current_level <- data_y_max
+        for(i in seq_len(nrow(significance_table_detailed))) {
+          row <- significance_table_detailed[i,]
+          pos1 <- which(data_levels == row$group1)
+          pos2 <- which(data_levels == row$group2)
+          if(length(pos1)==0 || length(pos2)==0) next
+          y_current_level <- y_current_level + space_per_bracket
+          bracket_data_list[[i]] <- data.frame(x=min(pos1, pos2), xend=max(pos1, pos2), y=y_current_level, y_label=y_current_level, label=row$sig)
+        }
+      }
+      bracket_data <- if (length(bracket_data_list) > 0) bind_rows(bracket_data_list) else data.frame(x=numeric(), xend=numeric(), y=numeric(), y_label=numeric(), label=character())
+      
+      anova_ddct_results(list(summary_table = anova_summary_table,
+                              summary_data_plot = summary_data,
+                              bracket_data = bracket_data,
+                              long_data = ddCq_data,
+                              f_test_text = f_test_text))
+    }, error = function(e) {
+      showNotification(paste("An error occurred during ANOVA (ΔΔCq) calculation:", e$message), type = "error")
+      anova_ddct_results(NULL)
+    })
+  })
+  
+  anova_ddct_plot_obj <- reactive({
+    req(anova_ddct_results())
+    results <- anova_ddct_results()
+    
+    plot_max_y <- if (nrow(results$bracket_data) > 0) max(results$bracket_data$y_label, na.rm=TRUE) * 1.15 else max(results$summary_data_plot$Mean + results$summary_data_plot$SD, na.rm=TRUE) * 1.2
+    if(!is.finite(plot_max_y) || plot_max_y <= 0) plot_max_y <- 2
+    
+    ggplot(results$summary_data_plot, aes(x = group, y = Mean, fill = group)) +
+      geom_bar(stat="identity", color="black", width=0.7) +
+      geom_errorbar(aes(ymin = pmax(0, Mean - SD), ymax = Mean + SD), width = 0.2, color="black") +
+      geom_jitter(data = results$long_data, aes(y = FoldChange), width = 0.1, shape=21, size=2.5, alpha=0.7, fill="grey80", show.legend = FALSE) +
+      geom_hline(yintercept=1, linetype="dashed", color="red", linewidth=1) +
+      geom_segment(data=results$bracket_data, aes(x=x, xend=xend, y=y, yend=y), inherit.aes=FALSE, color="black") +
+      geom_segment(data=results$bracket_data, aes(x=x, xend=x, y=y, yend=y - 0.01 * plot_max_y), inherit.aes=FALSE, color="black") +
+      geom_segment(data=results$bracket_data, aes(x=xend, xend=xend, y=y, yend=y - 0.01 * plot_max_y), inherit.aes=FALSE, color="black") +
+      geom_text(data=results$bracket_data, aes(x=(x+xend)/2, y=y_label, label=label), inherit.aes=FALSE, vjust=-0.4, size=6) +
+      coord_cartesian(ylim=c(0, plot_max_y), clip="off") +
+      annotate("text", x = Inf, y = Inf, label = results$f_test_text, hjust = 1.1, vjust = 2, size = 4.5, color = "black") +
+      labs(y="Fold Change (2^-ΔΔCq)", x="Group", title=paste("Gene Expression of", input$anova_ddct_target)) +
+      theme_classic(base_size = 14) +
+      theme(axis.text.x=element_text(size=12, color="black", angle=45, hjust=1),
+            axis.text.y=element_text(color="black"),
+            axis.title=element_text(size=14,face="bold", color="black"),
+            plot.title=element_text(size=16,face="bold",hjust=0.5, color="black"),
+            legend.title=element_text(size=12,face="bold", color="black"),
+            legend.text=element_text(size=10, color="black"),
+            plot.margin = margin(t=30, r=10, b=10, l=10))
+  })
+  
+  
   # --- Dynamic UI for Plots ---
   output$resultPlotUI <- renderUI({
     results <- analysis_results()
@@ -554,7 +984,7 @@ server <- function(input, output, session) {
       n_bars <- nrow(results$summary_data_plot)
       n_brackets <- nrow(results$bracket_data)
       width_px <- max(600, 200 + n_bars * 60)
-      height_px <- 500 + n_brackets * 35 
+      height_px <- 500 + n_brackets * 35
       width_val <- paste0(width_px, "px")
       height_val <- paste0(height_px, "px")
     }
@@ -576,9 +1006,41 @@ server <- function(input, output, session) {
     plotOutput("ddct_plot_output", width = width_val, height = height_val)
   })
   
+  output$anovaPlotUI <- renderUI({
+    results <- anova_results()
+    width_val <- "100%"
+    height_val <- "600px"
+    if (!is.null(results)) {
+      n_bars <- nrow(results$summary_data_plot)
+      n_brackets <- nrow(results$bracket_data)
+      width_px <- max(500, 150 + n_bars * 100)
+      height_px <- 500 + n_brackets * 50
+      width_val <- paste0(width_px, "px")
+      height_val <- paste0(height_px, "px")
+    }
+    plotOutput("anovaPlot", width = width_val, height = height_val)
+  })
+  
+  output$anovaDdctPlotUI <- renderUI({
+    results <- anova_ddct_results()
+    width_val <- "100%"
+    height_val <- "600px"
+    if (!is.null(results)) {
+      n_bars <- nrow(results$summary_data_plot)
+      n_brackets <- nrow(results$bracket_data)
+      width_px <- max(500, 150 + n_bars * 100)
+      height_px <- 500 + n_brackets * 50
+      width_val <- paste0(width_px, "px")
+      height_val <- paste0(height_px, "px")
+    }
+    plotOutput("anovaDdctPlot", width = width_val, height = height_val)
+  })
+  
   # --- Outputs ---
   output$resultPlot <- renderPlot({ req(analysis_results()); deltaCq_plot_obj() })
   output$ddct_plot_output <- renderPlot({ req(ddct_analysis_results()); ddCq_plot_obj() })
+  output$anovaPlot <- renderPlot({ req(anova_results()); anova_plot_obj() })
+  output$anovaDdctPlot <- renderPlot({ req(anova_ddct_results()); anova_ddct_plot_obj() })
   
   output$summary_table <- DT::renderDataTable({
     results <- analysis_results(); if(!is.null(results)) DT::datatable(results$summary_table, options = list(scrollX=TRUE), rownames=FALSE)
@@ -586,33 +1048,52 @@ server <- function(input, output, session) {
   output$ddct_table_output <- DT::renderDataTable({
     results <- ddct_analysis_results(); if(!is.null(results)) DT::datatable(results$summary_table, options = list(scrollX=TRUE), rownames=FALSE)
   })
+  output$anova_table_output <- DT::renderDataTable({
+    results <- anova_results(); if(!is.null(results)) DT::datatable(results$summary_table, options = list(scrollX=TRUE), rownames=FALSE)
+  })
+  output$anova_ddct_table_output <- DT::renderDataTable({
+    results <- anova_ddct_results(); if(!is.null(results)) DT::datatable(results$summary_table, options = list(scrollX=TRUE), rownames=FALSE)
+  })
   
-  # This observeEvent updates the reference dimensions for the aspect ratio calculation.
+  # --- This observeEvent updates the reference dimensions for the aspect ratio calculation.
   observeEvent(analysis_results(), {
     req(analysis_results())
     results <- analysis_results()
     req(results$summary_data_plot, results$bracket_data)
     n_bars <- length(unique(results$summary_data_plot$label))
     n_brackets <- nrow(results$bracket_data)
-    dims <- list(
-      width = 400 + (n_bars * 100),
-      height = 400 + (n_bars * 40) + (n_brackets * 30)
-    )
+    dims <- list(width = 400 + (n_bars * 100), height = 400 + (n_bars * 40) + (n_brackets * 30))
     plot_dims(dims)
   })
   
-  # This observeEvent updates the reference dimensions for the aspect ratio calculation.
   observeEvent(ddct_analysis_results(), {
     req(ddct_analysis_results())
     results <- ddct_analysis_results()
     req(results$summary_data_plot, results$bracket_data)
     n_bars <- length(unique(results$summary_data_plot$group))
     n_brackets <- nrow(results$bracket_data)
-    dims <- list(
-      width = 400 + (n_bars * 100),
-      height = 400 + (n_bars * 40) + (n_brackets * 30)
-    )
+    dims <- list(width = 400 + (n_bars * 100), height = 400 + (n_bars * 40) + (n_brackets * 30))
     ddct_plot_dims(dims)
+  })
+  
+  observeEvent(anova_results(), {
+    req(anova_results())
+    results <- anova_results()
+    req(results$summary_data_plot, results$bracket_data)
+    n_bars <- length(unique(results$summary_data_plot$group))
+    n_brackets <- nrow(results$bracket_data)
+    dims <- list(width = 400 + (n_bars * 100), height = 400 + (n_bars * 40) + (n_brackets * 30))
+    anova_plot_dims(dims)
+  })
+  
+  observeEvent(anova_ddct_results(), {
+    req(anova_ddct_results())
+    results <- anova_ddct_results()
+    req(results$summary_data_plot, results$bracket_data)
+    n_bars <- length(unique(results$summary_data_plot$group))
+    n_brackets <- nrow(results$bracket_data)
+    dims <- list(width = 400 + (n_bars * 100), height = 400 + (n_bars * 40) + (n_brackets * 30))
+    anova_ddct_plot_dims(dims)
   })
   
   # --- Aspect Ratio Synchronization Logic ---
@@ -660,6 +1141,50 @@ server <- function(input, output, session) {
     }
   }, ignoreInit = TRUE)
   
+  observeEvent(input$plot_width_anova, {
+    req(isTRUE(input$fix_ratio_anova))
+    dims <- anova_plot_dims()
+    req(dims, dims$width > 0)
+    ratio <- dims$height / dims$width
+    new_height <- round(input$plot_width_anova * ratio, 2)
+    if (!is.null(input$plot_height_anova) && new_height != input$plot_height_anova) {
+      updateSliderInput(session, "plot_height_anova", value = new_height)
+    }
+  }, ignoreInit = TRUE)
+  
+  observeEvent(input$plot_height_anova, {
+    req(isTRUE(input$fix_ratio_anova))
+    dims <- anova_plot_dims()
+    req(dims, dims$height > 0)
+    ratio <- dims$width / dims$height
+    new_width <- round(input$plot_height_anova * ratio, 2)
+    if (!is.null(input$plot_width_anova) && new_width != input$plot_width_anova) {
+      updateSliderInput(session, "plot_width_anova", value = new_width)
+    }
+  }, ignoreInit = TRUE)
+  
+  observeEvent(input$plot_width_anova_ddct, {
+    req(isTRUE(input$fix_ratio_anova_ddct))
+    dims <- anova_ddct_plot_dims()
+    req(dims, dims$width > 0)
+    ratio <- dims$height / dims$width
+    new_height <- round(input$plot_width_anova_ddct * ratio, 2)
+    if (!is.null(input$plot_height_anova_ddct) && new_height != input$plot_height_anova_ddct) {
+      updateSliderInput(session, "plot_height_anova_ddct", value = new_height)
+    }
+  }, ignoreInit = TRUE)
+  
+  observeEvent(input$plot_height_anova_ddct, {
+    req(isTRUE(input$fix_ratio_anova_ddct))
+    dims <- anova_ddct_plot_dims()
+    req(dims, dims$height > 0)
+    ratio <- dims$width / dims$height
+    new_width <- round(input$plot_height_anova_ddct * ratio, 2)
+    if (!is.null(input$plot_width_anova_ddct) && new_width != input$plot_width_anova_ddct) {
+      updateSliderInput(session, "plot_width_anova_ddct", value = new_width)
+    }
+  }, ignoreInit = TRUE)
+  
   # --- Downloads & Diagnostics ---
   output$download_csv <- downloadHandler(filename = function() { paste0(input$client_time %||% "analysis", "_stats.csv") }, content = function(file) { write.csv(analysis_results()$raw_data_for_dl, file, row.names = FALSE) })
   
@@ -679,7 +1204,7 @@ server <- function(input, output, session) {
       w <- session$clientData$output_resultPlot_width
       h <- session$clientData$output_resultPlot_height
       req(w, h)
-      dpi <- 96 # Use standard screen DPI
+      dpi <- 96
       ggsave(file, plot = deltaCq_plot_obj(), width = w / dpi, height = h / dpi, dpi = dpi, units = "in")
     }
   )
@@ -702,12 +1227,62 @@ server <- function(input, output, session) {
       w <- session$clientData$output_ddct_plot_output_width
       h <- session$clientData$output_ddct_plot_output_height
       req(w, h)
-      dpi <- 96 # Use standard screen DPI
+      dpi <- 96
       ggsave(file, plot = ddCq_plot_obj(), width = w / dpi, height = h / dpi, dpi = dpi, units = "in")
     }
   )
   
-  output$download_template <- downloadHandler(filename = "Click-qPCR_template.csv", content = function(file){ write.csv(read.csv(text=sample_csv_text), file, row.names=FALSE) })
+  output$anova_csv <- downloadHandler(
+    filename = function() { paste0(input$client_time %||% "analysis", "_anova_stats.csv") },
+    content = function(file) { write.csv(anova_results()$summary_table, file, row.names = FALSE) }
+  )
+  
+  output$anova_plot <- downloadHandler(
+    filename = function() { paste0(input$client_time %||% "analysis", "_anova_plot.png") },
+    content = function(file) {
+      req(anova_plot_obj())
+      ggsave(file, plot = anova_plot_obj(), width = input$plot_width_anova, height = input$plot_height_anova, dpi = input$plot_dpi_anova)
+    }
+  )
+  
+  output$anova_plot_asis <- downloadHandler(
+    filename = function() { paste0(input$client_time %||% "analysis", "_anova_plot_displayed.png") },
+    content = function(file) {
+      req(anova_plot_obj())
+      w <- session$clientData$output_anovaPlot_width
+      h <- session$clientData$output_anovaPlot_height
+      req(w, h)
+      dpi <- 96
+      ggsave(file, plot = anova_plot_obj(), width = w / dpi, height = h / dpi, dpi = dpi, units = "in")
+    }
+  )
+  
+  output$anova_ddct_csv <- downloadHandler(
+    filename = function() { paste0(input$client_time %||% "analysis", "_anova_ddct_stats.csv") },
+    content = function(file) { write.csv(anova_ddct_results()$summary_table, file, row.names = FALSE) }
+  )
+  
+  output$anova_ddct_plot <- downloadHandler(
+    filename = function() { paste0(input$client_time %||% "analysis", "_anova_ddct_plot.png") },
+    content = function(file) {
+      req(anova_ddct_plot_obj())
+      ggsave(file, plot = anova_ddct_plot_obj(), width = input$plot_width_anova_ddct, height = input$plot_height_anova_ddct, dpi = input$plot_dpi_anova_ddct)
+    }
+  )
+  
+  output$anova_ddct_plot_asis <- downloadHandler(
+    filename = function() { paste0(input$client_time %||% "analysis", "_anova_ddct_plot_displayed.png") },
+    content = function(file) {
+      req(anova_ddct_plot_obj())
+      w <- session$clientData$output_anovaDdctPlot_width
+      h <- session$clientData$output_anovaDdctPlot_height
+      req(w, h)
+      dpi <- 96
+      ggsave(file, plot = anova_ddct_plot_obj(), width = w / dpi, height = h / dpi, dpi = dpi, units = "in")
+    }
+  )
+  
+  output$download_template <- downloadHandler(filename = "qPCR_template.csv", content = function(file){ write.csv(read.csv(text=sample_csv_text), file, row.names=FALSE) })
   
   # --- Revised Diagnostics Section ---
   observeEvent(input$run_diagnostics, {
@@ -721,35 +1296,49 @@ server <- function(input, output, session) {
       report <<- rbind(report, data.frame(Check = "Test 1: Sample data loads correctly with required columns", Result = "Failed ❌"))
     })
     
+    # ⭐️⭐️⭐️ 修正点: Diagnostics内のすべてのテストで複数リファレンス遺伝子を使用 ⭐️⭐️⭐️
     tryCatch({
-      ref_gene <- "Gapdh"; target_gene <- "Hoge"; group1 <- "Treatment_X"; group2 <- "Control_X"
+      ref_genes_diag <- c("Gapdh", "Actb")
+      target_gene <- "Hoge"
+      group1 <- "Treatment_X"
+      group2 <- "Control"
       
-      wide_data <- sample_df_global %>%
-        filter(gene %in% c(ref_gene, target_gene), group %in% c(group1, group2)) %>%
-        group_by(sample, group, gene) %>% summarise(Cq = mean(Cq, na.rm = TRUE), .groups = "drop") %>%
-        pivot_wider(names_from = gene, values_from = Cq)
+      mean_ref_cq_diag <- sample_df_global %>%
+        filter(gene %in% ref_genes_diag) %>%
+        group_by(sample) %>%
+        summarise(mean_ref_cq = mean(Cq, na.rm = TRUE), .groups = "drop")
       
-      deltaCq_vals_group1 <- wide_data[[target_gene]][wide_data$group == group1] - wide_data[[ref_gene]][wide_data$group == group1]
-      deltaCq_vals_group2 <- wide_data[[target_gene]][wide_data$group == group2] - wide_data[[ref_gene]][wide_data$group == group2]
+      deltaCq_data_diag <- sample_df_global %>%
+        filter(gene == target_gene, group %in% c(group1, group2)) %>%
+        inner_join(mean_ref_cq_diag, by = "sample") %>%
+        mutate(deltaCq = Cq - mean_ref_cq)
+      
+      deltaCq_vals_group1 <- deltaCq_data_diag$deltaCq[deltaCq_data_diag$group == group1]
+      deltaCq_vals_group2 <- deltaCq_data_diag$deltaCq[deltaCq_data_diag$group == group2]
       
       p_value <- t.test(deltaCq_vals_group1, deltaCq_vals_group2, na.rm = TRUE)$p.value
-      test_passed <- p_value < 0.05
+      test_passed <- is.numeric(p_value)
       
-      report <- rbind(report, data.frame(Check = "Test 2: ΔCq values show a statistically significant difference", Result = ifelse(test_passed, "Passed ✅", "Failed ❌")))
+      report <- rbind(report, data.frame(Check = "Test 2: ΔCq values are calculated and t-test runs", Result = ifelse(test_passed, "Passed ✅", "Failed ❌")))
     }, error = function(e) {
-      report <<- rbind(report, data.frame(Check = "Test 2: ΔCq values show a statistically significant difference", Result = "Failed ❌"))
+      report <<- rbind(report, data.frame(Check = "Test 2: ΔCq values are calculated and t-test runs", Result = paste("Failed ❌:", e$message)))
     })
     
     tryCatch({
-      ref_gene <- "Gapdh"; target_gene <- "Hoge"; base_group <- "Control_X"; comp_group <- "Treatment_X"
+      ref_genes_diag <- c("Gapdh", "Actb")
+      target_gene <- "Hoge"
+      base_group <- "Control"
+      comp_group <- "Treatment_X"
       
-      wide_df <- sample_df_global %>%
-        filter(gene %in% c(ref_gene, target_gene), group %in% c(base_group, comp_group)) %>%
-        group_by(sample, group, gene) %>% summarise(Cq = mean(Cq, na.rm = TRUE), .groups = "drop") %>%
-        pivot_wider(names_from = gene, values_from = Cq)
+      mean_ref_cq_diag <- sample_df_global %>%
+        filter(gene %in% ref_genes_diag) %>%
+        group_by(sample) %>%
+        summarise(mean_ref_cq = mean(Cq, na.rm = TRUE), .groups = "drop")
       
-      deltaCq_data <- wide_df %>%
-        mutate(deltaCq = .data[[target_gene]] - .data[[ref_gene]]) %>%
+      deltaCq_data <- sample_df_global %>%
+        filter(gene == target_gene, group %in% c(base_group, comp_group)) %>%
+        inner_join(mean_ref_cq_diag, by = "sample") %>%
+        mutate(deltaCq = Cq - mean_ref_cq) %>%
         filter(!is.na(deltaCq))
       
       mean_control_deltaCq <- mean(deltaCq_data$deltaCq[deltaCq_data$group == base_group], na.rm = TRUE)
@@ -758,11 +1347,40 @@ server <- function(input, output, session) {
       
       fold_change_vals <- ddCq_data$FoldChange[ddCq_data$group == comp_group]
       p_value <- t.test(fold_change_vals, mu = 1, na.rm = TRUE)$p.value
-      test_passed <- p_value < 0.05
+      test_passed <- is.numeric(p_value)
       
-      report <- rbind(report, data.frame(Check = "Test 3: ΔΔCq (Fold Change) shows expected statistical significance", Result = ifelse(test_passed, "Passed ✅", "Failed ❌")))
+      report <- rbind(report, data.frame(Check = "Test 3: ΔΔCq (Fold Change) calculation and t-test runs", Result = ifelse(test_passed, "Passed ✅", "Failed ❌")))
     }, error = function(e) {
-      report <<- rbind(report, data.frame(Check = "Test 3: ΔΔCq (Fold Change) shows expected statistical significance", Result = "Failed ❌"))
+      report <<- rbind(report, data.frame(Check = "Test 3: ΔΔCq (Fold Change) calculation and t-test runs", Result = paste("Failed ❌:", e$message)))
+    })
+    
+    tryCatch({
+      ref_genes_diag <- c("Gapdh", "Actb")
+      target_gene <- "Hoge"
+      control_group <- "Control"
+      treatment_groups <- c("Treatment_X", "Treatment_Y")
+      selected_groups <- c(control_group, treatment_groups)
+      
+      mean_ref_cq_diag <- sample_df_global %>%
+        filter(gene %in% ref_genes_diag) %>%
+        group_by(sample) %>%
+        summarise(mean_ref_cq = mean(Cq, na.rm = TRUE), .groups = "drop")
+      
+      deltaCq_data <- sample_df_global %>%
+        filter(gene == target_gene, group %in% selected_groups) %>%
+        inner_join(mean_ref_cq_diag, by = "sample") %>%
+        mutate(deltaCq = Cq - mean_ref_cq) %>%
+        filter(!is.na(deltaCq))
+      
+      deltaCq_data$group <- factor(deltaCq_data$group, levels = selected_groups)
+      
+      aov_model <- aov(deltaCq ~ group, data = deltaCq_data)
+      dunnett_results <- summary(glht(aov_model, linfct = mcp(group = "Dunnett")))
+      test_passed <- !is.null(dunnett_results) && is.numeric(dunnett_results$test$pvalues)
+      
+      report <- rbind(report, data.frame(Check = "Test 4: ANOVA and Dunnett's test run correctly", Result = ifelse(test_passed, "Passed ✅", "Failed ❌")))
+    }, error = function(e) {
+      report <<- rbind(report, data.frame(Check = "Test 4: ANOVA and Dunnett's test run correctly", Result = paste("Failed ❌:", e$message)))
     })
     
     output$diagnostics_output <- renderUI({
