@@ -32,7 +32,7 @@ Kubota, et al. *bioRxiv*. (2025). <https://doi.org/10.1101/2025.05.29.656779>.
 
 -   **Tab-Based Analysis:** The user interface is organized into clear tabs for different analyses.
 
-    -   **Analysis (t-test) Tab (ΔCq Method):**
+    -   **Preproceccing and ΔCq Analysis:**
         -   Select one or **multiple reference genes**. The ΔCq is calculated using the mean Cq of the selected reference genes.
         -   Select one or more target genes.
         -   Set up **multiple group comparisons** simultaneously using an intuitive interface.
@@ -40,18 +40,18 @@ Kubota, et al. *bioRxiv*. (2025). <https://doi.org/10.1101/2025.05.29.656779>.
         -   Performs Welch's t-test for statistical significance for each specified pair.
         -   Visualizes all results in a comprehensive bar plot showing mean ± SD, with individual data points overlaid.
 
-    -   **ΔΔCq Analysis Tab:**
-        -   Automatically uses the reference gene(s) selected in the "Analysis" tab.
+    -   **ΔΔCq Analysis:**
+        -   Automatically uses the reference gene(s) selected in the "Preproceccing and ΔCq Analysis" tab.
         -   Select a target gene, a base/control group, and one or more treatment groups.
         -   Calculates fold-change ($2^{-\Delta\Delta Cq}$) relative to the base group.
         -   Performs Welch's t-test for statistical significance.
         -   Visualizes results in a dedicated bar plot.
 
-    -   **ANOVA Analysis for 3+ Groups:**
+    -   **ANOVA (Dunnett's post-hoc):**
         -   Designed for comparing three or more groups.
         -   Performs a **one-way ANOVA** followed by **Dunnett's post-hoc test** to compare each treatment group against a single control group.
-        -   Results are visualized as Relative Expression ($2^{-\Delta Cq}$) on the **"ANOVA Analysis"** tab.
-        -   The same statistical results can be visualized as Fold Change ($2^{-\Delta\Delta Cq}$) on the **"ANOVA (ΔΔCq)"** tab.
+        -   Results are visualized as Relative Expression ($2^{-\Delta Cq}$) on the **"ΔCq ANOVA (Dunnett's post-hoc)"** tab.
+        -   The same statistical results can be visualized as Fold Change ($2^{-\Delta\Delta Cq}$) on the **"ΔΔCq ANOVA (Dunnett's post-hoc)"** tab.
 
 -   **Advanced Downloading & Plotting:**
     -   **Custom Plot Dimensions:** Interactively adjust the width, height, and resolution (DPI) for downloaded plots using sliders.
@@ -79,7 +79,7 @@ While the app is available online, you can also run it locally.
 ### Prerequisites
 
 -   R (version 4.1 or later recommended)
--   The following R packages: `shiny`, `dplyr`, `ggplot2`, `tidyr`, `DT`, `RColorBrewer`, `fontawesome`
+-   The following R packages: `shiny`, `dplyr`, `ggplot2`, `tidyr`, `DT`, `RColorBrewer`, `fontawesome`, `multcomp`
 
 ### Requirements
 
@@ -92,12 +92,13 @@ While the app is available online, you can also run it locally.
 * `tidyr`
 * `DT`
 * `RColorBrewer`
+* `fontawesome`
 * `multcomp`
 
 These packages can be installed in R as follows:
 
 ```R
-install.packages(c("shiny", "dplyr", "ggplot2", "tidyr", "DT", "RColorBrewer", "multcomp"))
+install.packages(c("shiny", "dplyr", "ggplot2", "tidyr", "DT", "RColorBrewer", "fontawesome", "multcomp"))
 ```
 
 ### Running the Application
@@ -149,14 +150,14 @@ Each row must represent the Cq value of one gene in one sample. If you have tech
 
 1.  **Upload Data:** On the **"Analysis (t-test)"** tab, click "Upload CSV File" or "Use Example Data". A preview will appear.
 
-2.  **Perform ΔCq Analysis (Analysis (t-test) Tab):**
+2.  **Perform ΔCq Analysis:**
     -   Check "Enable multiple reference genes" to select more than one.
     -   Select your "Reference Gene(s)".
     -   Select one or more "Target Gene(s)".
     -   Under "Comparison Settings," define pairs of groups to compare. Click "Add" to create more pairs.
     -   Click **"Analyze"**. The plot and statistical table will appear.
 
-3.  **Perform ΔΔCq Analysis (ΔΔCq Analysis Tab):**
+3.  **Perform ΔΔCq Analysis:**
     -   Click on the **"ΔΔCq Analysis"** tab.
     -   The Reference Gene(s) are automatically inherited.
     -   Select a single "Target Gene".
@@ -164,13 +165,13 @@ Each row must represent the Cq value of one gene in one sample. If you have tech
     -   Select one or more "Treatment Group(s)".
     -   Click **"Run ΔΔCq Analysis"**. The fold-change plot and table will appear.
 
-4.  **Perform ANOVA (for 3+ Groups):**
-    -   Navigate to the **"ANOVA Analysis"** tab.
+4.  **Perform ANOVA and Dunnett's post-hoc:**
+    -   Navigate to the **"ΔCq ANOVA (Dunnett's post-hoc)"** tab.
     -   Select a single "Target Gene".
     -   Select the "Control Group".
     -   Select two or more "Treatment Group(s)".
     -   Click **"Run ANOVA"**. The relative expression plot and a table with ANOVA and Dunnett's test results will appear.
-    -   Navigate to the **"ANOVA (ΔΔCq)"** tab to see the same results visualized as fold change.
+    -   Navigate to the **"ΔΔCq ANOVA (Dunnett's post-hoc)"** tab to see the same results visualized as fold change.
 
 5.  **Download Results:**
     -   In any tab, use the download buttons to save your results.
@@ -180,11 +181,11 @@ Each row must represent the Cq value of one gene in one sample. If you have tech
 
 This section demonstrates how to use the app's core functions with the built-in sample data.
 
-### 1. Load Sample Data and Perform a t-test
+### 1. Load Sample Data and Perform ΔCq Analysis
 
-First, we'll compare the expression of a single gene between two groups using a t-test.
+First, we'll compare the expression of a single gene between two groups using aWelch's t-test.
 
-* On the **"Analysis (t-test)"** tab, click the **"Use Example Data"** button.
+* On the **"Preprocessing and ΔCq Analysis"** tab, click the **"Use Example Data"** button.
 * Check the box for **"Enable multiple reference genes"**.
 * For "Reference Gene(s)", select both `Gapdh` and `Actb`.
 * For "Target Gene(s)", ensure only `Hoge` is selected.
@@ -205,11 +206,11 @@ You will see a bar chart and a data table summarizing the analysis. The sample d
 
 ---
 
-### 2. Perform ANOVA with Dunnett's Test
+### 2. Perform ANOVA with Dunnett's Post-Hoc Test
 
 Next, we'll compare one gene across multiple treatment groups against a single control group. The reference genes selected in the first tab (`Gapdh` and `Actb`) will be automatically used.
 
-* Navigate to the **"ANOVA Analysis"** tab.
+* Navigate to the **"ΔCq ANOVA (Dunnett's post-hoc)"** tab.
 * Select `Hoge` as the "Target Gene".
 * Select `Control` as the "Control Group".
 * Select `Treatment_X`, `Treatment_Y`, and `Treatment_Z` in the "Treatment Group(s)" box.
@@ -221,8 +222,6 @@ This analysis performs a one-way ANOVA to see if there are any differences among
 
 **Plot:** The chart will display four bars for the `Hoge` gene, one for each group (`Control`, `Treatment_X`, `Treatment_Y`, `Treatment_Z`). Significance brackets will be shown comparing each treatment group back to the `Control` bar.
 
-
-
 **Statistics Table:** The table will first display the overall result of the ANOVA F-test, which should be highly significant. Below that, it will list the results of Dunnett's test for each treatment-control comparison.
 
 | group1       | group2                               | p_value  | sig |
@@ -231,3 +230,8 @@ This analysis performs a one-way ANOVA to see if there are any differences among
 | Control      | Treatment_X - Control = 0            | 2.11e-05 | *** |
 | Control      | Treatment_Y - Control = 0            | 1.34e-03 | ** |
 | Control      | Treatment_Z - Control = 0            | 2.00e-07 | *** |
+
+
+## Licence
+
+The Click-qPCR application and corresponding files are under MIT licence.
