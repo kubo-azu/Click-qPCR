@@ -213,7 +213,7 @@ ui <- fluidPage(title = "Click-qPCR: Ultra-Simple Tool for Interactive qPCR Data
                              )
                            )
                   ),
-                  tabPanel("ΔCq Multiple Comparison (ANOVA)",
+                  tabPanel("ΔCq ANOVA (Dunnett’s post-hoc)",
                            sidebarLayout(
                              sidebarPanel(width = 4,
                                           p("This tab is for comparing 3 or more groups. It performs an ANOVA followed by Dunnett's test to compare each treatment group against a single control group."),
@@ -263,7 +263,7 @@ ui <- fluidPage(title = "Click-qPCR: Ultra-Simple Tool for Interactive qPCR Data
                              )
                            )
                   ),
-                  tabPanel("ANOVA (ΔΔCq)",
+                  tabPanel("ΔΔCq ANOVA (Dunnett’s post-hoc)",
                            sidebarLayout(
                              sidebarPanel(width = 4,
                                           p("This tab visualizes the ANOVA results as Fold Change (2^-ΔΔCq). The statistical test is the same as the 'ANOVA Analysis' tab."),
