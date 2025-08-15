@@ -1,4 +1,4 @@
-# Click-qPCR ユーザーガイド
+# Click-qPCR 日本語版ユーザーガイド
 
 Click-qPCRは，リアルタイム定量PCR（qPCR）データ解析のために設計されたユーザーフレンドリーなShinyウェブアプリケーションです。
 
@@ -35,7 +35,7 @@ Kubota, et al. *bioRxiv*. (2025). <https://doi.org/10.1101/2025.05.29.656779>.
         -   平均±SDを示す包括的な棒グラフと，個々のデータポイントを重ねてすべての結果を視覚化します。
 
     -   **ΔΔCq解析:**
-        -   「Preprocessing and ΔCq Analysis」タブで選択されたリファレンス遺伝子が自動的に使用されます。
+        -   `Preprocessing and ΔCq Analysis`タブで選択されたリファレンス遺伝子が自動的に使用されます。
         -   ターゲット遺伝子、ベース/コントロールグループ、および1つ以上のトリートメントグループを選択します。
         -   ベースグループに対するフォールドチェンジ（2<sup>-ΔΔCq</sup>）を計算します。
         -   統計的有意性のためにWelchのt検定を実行します。
@@ -43,9 +43,9 @@ Kubota, et al. *bioRxiv*. (2025). <https://doi.org/10.1101/2025.05.29.656779>.
 
     -   **ANOVA (Dunnett's post-hoc):**
         -   3つ以上のグループを比較するために設計されています。
-        -   **一元配置分散分析（one-way ANOVA）**を実行し，それに続いて**Dunnettの多重比較検定（post-hoc test）**を行い，各トリートメントグループを単一のコントロールグループと比較します。
-        -   結果は，**「ΔCq ANOVA (Dunnett's post-hoc)」**タブで相対発現量（2<sup>-ΔCq</sup>）として視覚化されます。
-        -   同じ統計結果は，**「ΔΔCq ANOVA (Dunnett's post-hoc)」**タブでフォールドチェンジ（2<sup>-ΔΔCq</sup>）として視覚化できます。
+        -   **一元配置分散分析（one-way ANOVA）**を実行し，それに続いて**Dunnettの多重比較検定（post-hoc test**を行い，各トリートメントグループを単一のコントロールグループと比較します。
+        -   結果は，`ΔCq ANOVA (Dunnett's post-hoc)`タブで相対発現量（2<sup>-ΔCq</sup>）として視覚化されます。
+        -   同じ統計結果は，`ΔΔCq ANOVA (Dunnett's post-hoc)`タブでフォールドチェンジ（2<sup>-ΔΔCq</sup>）として視覚化できます。
 
 -   **高度なダウンロードとプロット作成:**
     -   **カスタムプロット寸法:** スライダーを使用し，ダウンロードするプロットの幅・高さ・解像度（DPI）をインタラクティブに調整できます。
@@ -66,9 +66,11 @@ Kubota, et al. *bioRxiv*. (2025). <https://doi.org/10.1101/2025.05.29.656779>.
         4. ANOVAとDunnettの検定の検証
     -   各テストの結果が**Passed ✅**と表示されれば，アプリの基本的な計算・統計処理機能が正常に動作していることを確認できます。これは，特にローカル環境でインストールした際の動作確認や，自身でコードを改変したりした場合に，アプリの健全性を確認するのに役立ちます。
 
+
 ## インストールと使い方
 
 アプリはオンラインで利用可能ですが，ローカルで実行することもできます。
+
 
 ### 前提条件
 
@@ -140,19 +142,21 @@ shiny::runApp()
 
 各行は，1つのサンプルにおける1つの遺伝子のCq値を表す必要があります。テクニカルリプリケートがある場合，その平均値を計算して使用してください。テンプレートファイル（[Click-qPCR_template.csv](Click-qPCR_template.csv)）はアプリケーションのサイドバーからダウンロードできます。
 
+
 ## 使用方法
 
-1.  **データのアップロード:** **「Preprocessing and ΔCq Analysis」**タブで、`Upload CSV File`または`Use Example Data`をクリックします。プレビューが表示されます。
+1.  **データのアップロード:**
+    -   `Preprocessing and ΔCq Analysis`タブで，`Upload CSV File`または`Use Example Data`をクリックします。プレビューが表示されます。
 
 2.  **ΔCq解析の実行:**
-    -   「Enable multiple reference genes」にチェックを入れて，複数のリファレンス遺伝子を選択可能にします。
+    -   `Enable multiple reference genes`にチェックを入れて，複数のリファレンス遺伝子を選択可能にします。
     -   `Reference Gene(s)`を選択します。
     -   1つ以上の`Target Gene(s)`を選択します。
     -   `Comparison Settings`で比較するグループのペアを定義します。`Add`をクリックして、さらに比較ペアを作成することも可能です。
     -   `Analyze`をクリックします。プロットと統計テーブルがメインパネルに表示されます。
 
 3.  **ΔΔCq解析の実行:**
-    -   **「ΔΔCq Analysis」**タブに移動します。
+    -   `ΔΔCq Analysis`タブに移動します。
     -   リファレンス遺伝子はメインの解析から自動的に継承されます。
     -   単一の`Target Gene`を選択します。
     -   発現量の基準として扱われる`Base Group (Control)`を選択します。
@@ -160,27 +164,29 @@ shiny::runApp()
     -   `Run ΔΔCq Analysis`をクリックします。フォールドチェンジのプロットとテーブルが表示されます。
 
 4.  **ANOVAとDunnettの多重比較検定の実行:**
-    -   **「ΔCq ANOVA (Dunnett's post-hoc)」**タブに移動します。
+    -   `ΔCq ANOVA (Dunnett's post-hoc)`タブに移動します。
     -   単一の`Target Gene`を選択します。
     -   `Control Group`を選択します。
     -   2つ以上の`Treatment Group(s)`を選択します。
     -   `Run ANOVA`をクリックします。相対発現量のプロットと，ANOVAおよびDunnettの検定結果を含むテーブルが表示されます。
-    -   **「ΔΔCq ANOVA (Dunnett's post-hoc)」**タブに移動すると，同じ結果がフォールドチェンジとして視覚化されます。
+    -   `ΔΔCq ANOVA (Dunnett's post-hoc)`タブに移動すると，同じ結果がフォールドチェンジとして視覚化されます。
 
 5.  **結果のダウンロード:**
     -   ダウンロードボタンを使用して結果を保存します。
-    -   **「Download Plot Settings」**パネルを使用して，`Download Plot`ボタンの寸法と解像度をカスタマイズします。
+    -   `Download Plot Settings`パネルを使用して，`Download Plot`ボタンの寸法と解像度をカスタマイズ可能です。
+
 
 ## サンプルデータを使用した解析例
 
 このセクションでは，組み込みのサンプルデータを使用してアプリのコア機能を使用する方法を説明します。
 
+
 ### 1. サンプルデータの読み込みとΔCq解析の実行
 
 まず，Welchのt検定を使用して，2つのグループ間で単一遺伝子の発現を比較します。
 
-* **「Preprocessing and ΔCq Analysis」**タブで，**`Use Example Data`**ボタンをクリックします。
-* **`Enable multiple reference genes`**のチェックボックスをオンにします。
+* `Preprocessing and ΔCq Analysis`タブで，`Use Example Data`ボタンをクリックします。
+* `Enable multiple reference genes`のチェックボックスをオンにします。
 * `Reference Gene(s)`として`Gapdh`と`Actb`の両方を選択します。
 * `Target Gene(s)`として`Hoge`のみが選択されていることを確認します。
 * `Comparison Settings`で，`Control`と`Treatment_X`を比較するように設定します。
@@ -202,9 +208,9 @@ shiny::runApp()
 
 ### 2. ANOVAとDunnettの多重比較検定の実行
 
-次に，単一のコントロールグループに対して，複数のトリートメントグループ間での1つの遺伝子を比較します。最初のタブで選択されたリファレンス遺伝子（`Gapdh`と`Actb`）は自動的に使用されます。
+次に，単一のコントロールグループに対して，複数のトリートメントグループ間での1つの遺伝子を比較します。最初の`Preprocessing and ΔCq Analysis`タブで選択されたリファレンス遺伝子（`Gapdh`と`Actb`）は自動的に使用されます。
 
-* **「ΔCq ANOVA (Dunnett's post-hoc)」**タブに移動します。
+* `ΔCq ANOVA (Dunnett's post-hoc)`タブに移動します。
 * `Target Gene`として`Hoge`を選択します。
 * `Control Group`として`Control`を選択します。
 * `Treatment Group(s)`ボックスで`Treatment_X`，`Treatment_Y`，および`Treatment_Z`を選択します。
