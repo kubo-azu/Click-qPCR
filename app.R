@@ -143,15 +143,15 @@ ui <- fluidPage(title = "Click-qPCR: Ultra-Simple Tool for Interactive qPCR Data
                                           hr(),
                                           h4("Appendix: Statistical Method"),
                                           p(HTML("<div style='font-size: 14px; color: #555; line-height: 1.5;'>
-                                        <strong>1. ΔCq Calculation:</strong><br>
-                                        ΔCq = Cq(Target Gene) - Mean Cq(Reference Genes)
-                                        <br><br>
-                                        <strong>2. Statistical Test:</strong><br>
-                                        A <strong>Welch's two-sample t-test</strong> is performed on the <strong>ΔCq values</strong> between each treatment group and the control group to calculate the p-value.
-                                        <br><br>
-                                        <strong>3. Visualization:</strong><br>
-                                        The plot displays Relative Expression (2<sup>-ΔCq</sup>) for intuitive visualization.
-                                        </div>"))
+                                    <strong>1. ΔCq Calculation:</strong><br>
+                                    ΔCq = Cq(Target Gene) - Mean Cq(Reference Genes)
+                                    <br><br>
+                                    <strong>2. Statistical Test:</strong><br>
+                                    A <strong>Welch's two-sample t-test</strong> is performed on the <strong>ΔCq values</strong> between each treatment group and the control group to calculate the p-value.
+                                    <br><br>
+                                    <strong>3. Visualization:</strong><br>
+                                    The plot displays Relative Expression (2<sup>-ΔCq</sup>) for intuitive visualization.
+                                    </div>"))
                              ),
                              mainPanel(width = 8,
                                        tags$div(style = "width: 100%; overflow-x: auto;",
@@ -193,16 +193,16 @@ ui <- fluidPage(title = "Click-qPCR: Ultra-Simple Tool for Interactive qPCR Data
                                           hr(),
                                           h4("Appendix: Statistical Method"),
                                           p(HTML("<div style='font-size: 14px; color: #555; line-height: 1.5;'>
-                                        <strong>1. ΔΔCq Calculation:</strong><br>
-                                        ΔΔCq = ΔCq(Sample) - Mean ΔCq(Control Group)<br>
-                                        (where ΔCq = Cq_target - Mean Cq_refs)
-                                        <br><br>
-                                        <strong>2. Statistical Test:</strong><br>
-                                        A <strong>Welch's two-sample t-test</strong> is performed on the <strong>ΔCq values</strong> between each treatment group and the control group to calculate the p-value.
-                                        <br><br>
-                                        <strong>3. Visualization:</strong><br>
-                                        The plot displays Relative Expression (2<sup>-ΔΔCq</sup>) for intuitive visualization.
-                                        </div>"))
+                                    <strong>1. ΔΔCq Calculation:</strong><br>
+                                    ΔΔCq = ΔCq(Sample) - Mean ΔCq(Control Group)<br>
+                                    (where ΔCq = Cq_target - Mean Cq_refs)
+                                    <br><br>
+                                    <strong>2. Statistical Test:</strong><br>
+                                    A <strong>Welch's two-sample t-test</strong> is performed on the <strong>ΔCq values</strong> between each treatment group and the control group to calculate the p-value.
+                                    <br><br>
+                                    <strong>3. Visualization:</strong><br>
+                                    The plot displays Relative Expression (2<sup>-ΔΔCq</sup>) for intuitive visualization.
+                                    </div>"))
                              ),
                              mainPanel(width = 8,
                                        tags$div(style = "width: 100%; overflow-x: auto;",
@@ -244,15 +244,15 @@ ui <- fluidPage(title = "Click-qPCR: Ultra-Simple Tool for Interactive qPCR Data
                                           hr(),
                                           h4("Appendix: Statistical Method"),
                                           p(HTML("<div style='font-size: 14px; color: #555; line-height: 1.5;'>
-                                        <strong>1. ΔCq Calculation:</strong><br>
-                                        ΔCq = Cq(Target Gene) - Mean Cq(Reference Genes)
-                                        <br><br>
-                                        <strong>2. Statistical Test:</strong><br>
-                                        First, a <strong>one-way ANOVA</strong> is performed on the ΔCq values to determine if there are any significant differences among the means of all selected groups. Then, <strong>Dunnett's test</strong> is used as a post-hoc test to specifically compare each treatment group against the single control group.
-                                        <br><br>
-                                        <strong>3. Visualization:</strong><br>
-                                        The plot displays Relative Expression (2<sup>-ΔCq</sup>) for intuitive visualization.
-                                        </div>"))
+                                    <strong>1. ΔCq Calculation:</strong><br>
+                                    ΔCq = Cq(Target Gene) - Mean Cq(Reference Genes)
+                                    <br><br>
+                                    <strong>2. Statistical Test:</strong><br>
+                                    First, a <strong>one-way ANOVA</strong> is performed on the ΔCq values to determine if there are any significant differences among the means of all selected groups. Then, <strong>Dunnett's test</strong> is used as a post-hoc test to specifically compare each treatment group against the single control group.
+                                    <br><br>
+                                    <strong>3. Visualization:</strong><br>
+                                    The plot displays Relative Expression (2<sup>-ΔCq</sup>) for intuitive visualization.
+                                    </div>"))
                              ),
                              mainPanel(width = 8,
                                        tags$div(style = "width: 100%; overflow-x: auto;",
@@ -294,16 +294,16 @@ ui <- fluidPage(title = "Click-qPCR: Ultra-Simple Tool for Interactive qPCR Data
                                           hr(),
                                           h4("Appendix: Statistical Method"),
                                           p(HTML("<div style='font-size: 14px; color: #555; line-height: 1.5;'>
-                                        <strong>1. ΔΔCq Calculation:</strong><br>
-                                        ΔΔCq = ΔCq(Sample) - Mean ΔCq(Control Group)<br>
-                                        (where ΔCq = Cq_target - Mean Cq_refs)
-                                        <br><br>
-                                        <strong>2. Statistical Test:</strong><br>
-                                        The statistical test is identical to the 'ANOVA Analysis' tab (ANOVA followed by Dunnett's test on <strong>ΔCq values</strong>).
-                                        <br><br>
-                                        <strong>3. Visualization:</strong><br>
-                                        The plot displays Fold Change (2<sup>-ΔΔCq</sup>) to visualize expression relative to the control group.
-                                        </div>"))
+                                    <strong>1. ΔΔCq Calculation:</strong><br>
+                                    ΔΔCq = ΔCq(Sample) - Mean ΔCq(Control Group)<br>
+                                    (where ΔCq = Cq_target - Mean Cq_refs)
+                                    <br><br>
+                                    <strong>2. Statistical Test:</strong><br>
+                                    The statistical test is identical to the 'ANOVA Analysis' tab (ANOVA followed by Dunnett's test on <strong>ΔCq values</strong>).
+                                    <br><br>
+                                    <strong>3. Visualization:</strong><br>
+                                    The plot displays Fold Change (2<sup>-ΔΔCq</sup>) to visualize expression relative to the control group.
+                                    </div>"))
                              ),
                              mainPanel(width = 8,
                                        tags$div(style = "width: 100%; overflow-x: auto;",
@@ -481,13 +481,15 @@ server <- function(input, output, session) {
     comparison_pairs <- lapply(1:comparison_count(), function(i) unique(c(input[[paste0("group1_comp", i)]], input[[paste0("group2_comp", i)]])))
     comparison_pairs <- comparison_pairs[sapply(comparison_pairs, length) == 2]; req(length(comparison_pairs) > 0)
     
+    all_selected_groups <- unique(unlist(comparison_pairs))
+    
     mean_ref_cq <- raw_data() %>%
       filter(gene %in% input$refgene) %>%
       group_by(sample) %>%
       summarise(mean_ref_cq = mean(Cq, na.rm = TRUE), .groups = "drop")
     
     long_data <- raw_data() %>%
-      filter(gene %in% input$goi) %>%
+      filter(gene %in% input$goi, group %in% all_selected_groups) %>%
       inner_join(mean_ref_cq, by = "sample") %>%
       mutate(deltaCq_val = Cq - mean_ref_cq) %>%
       filter(!is.na(deltaCq_val)) %>%
@@ -841,18 +843,22 @@ server <- function(input, output, session) {
       geom_segment(data=results$bracket_data, aes(x=xend, xend=xend, y=y, yend=y - 0.005 * plot_max_y), inherit.aes=FALSE, color="black") +
       geom_text(data=results$bracket_data, aes(x=(x+xend)/2, y=y_label, label=label), inherit.aes=FALSE, vjust=-0.4, size=6) +
       coord_cartesian(ylim=c(0, plot_max_y), clip="off") +
-      annotate("text", x = Inf, y = Inf, label = results$f_test_text, hjust = 1.1, vjust = 2, size = 4.5, color = "black") +
-      labs(x="Group", y=expression("Relative Expression" ~ (2^{-Delta*Cq})), fill="Group", title = paste("Gene Expression of", input$anova_target)) +
+      ### ここから変更 ###
+      labs(x="Group", y=expression("Relative Expression" ~ (2^{-Delta*Cq})), fill="Group", 
+           title = paste("Gene Expression of", input$anova_target),
+           subtitle = results$f_test_text) +
       theme_classic(base_size=16) +
       theme(
         axis.text.x=element_text(angle=45, hjust=1, color="black"),
         axis.text.y=element_text(color="black"),
         axis.title=element_text(size=14,face="bold", color="black"),
         plot.title=element_text(size=16,face="bold",hjust=0.5, color="black"),
+        plot.subtitle = element_text(size = 12, hjust = 0.5, color = "black"),
         legend.title=element_text(size=12,face="bold", color="black"),
         legend.text=element_text(size=10, color="black"),
         plot.margin = margin(t=40, r=20, b=10, l=10)
       )
+    ### ここまで変更 ###
   })
   
   observeEvent(input$anova_ddCq_analyze, {
@@ -962,16 +968,20 @@ server <- function(input, output, session) {
       geom_segment(data=results$bracket_data, aes(x=xend, xend=xend, y=y, yend=y - 0.01 * plot_max_y), inherit.aes=FALSE, color="black") +
       geom_text(data=results$bracket_data, aes(x=(x+xend)/2, y=y_label, label=label), inherit.aes=FALSE, vjust=-0.4, size=6) +
       coord_cartesian(ylim=c(0, plot_max_y), clip="off") +
-      annotate("text", x = Inf, y = Inf, label = results$f_test_text, hjust = 1.1, vjust = 2, size = 4.5, color = "black") +
-      labs(y="Fold Change (2^-ΔΔCq)", x="Group", title=paste("Gene Expression of", input$anova_ddCq_target)) +
+      ### ここから変更 ###
+      labs(y="Fold Change (2^-ΔΔCq)", x="Group", 
+           title=paste("Gene Expression of", input$anova_ddCq_target),
+           subtitle = results$f_test_text) +
       theme_classic(base_size = 14) +
       theme(axis.text.x=element_text(size=12, color="black", angle=45, hjust=1),
             axis.text.y=element_text(color="black"),
             axis.title=element_text(size=14,face="bold", color="black"),
             plot.title=element_text(size=16,face="bold",hjust=0.5, color="black"),
+            plot.subtitle = element_text(size = 12, hjust = 0.5, color = "black"),
             legend.title=element_text(size=12,face="bold", color="black"),
             legend.text=element_text(size=10, color="black"),
             plot.margin = margin(t=30, r=10, b=10, l=10))
+    ### ここまで変更 ###
   })
   
   
