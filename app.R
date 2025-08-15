@@ -843,7 +843,6 @@ server <- function(input, output, session) {
       geom_segment(data=results$bracket_data, aes(x=xend, xend=xend, y=y, yend=y - 0.005 * plot_max_y), inherit.aes=FALSE, color="black") +
       geom_text(data=results$bracket_data, aes(x=(x+xend)/2, y=y_label, label=label), inherit.aes=FALSE, vjust=-0.4, size=6) +
       coord_cartesian(ylim=c(0, plot_max_y), clip="off") +
-      ### ここから変更 ###
       labs(x="Group", y=expression("Relative Expression" ~ (2^{-Delta*Cq})), fill="Group", 
            title = paste("Gene Expression of", input$anova_target),
            subtitle = results$f_test_text) +
@@ -858,7 +857,6 @@ server <- function(input, output, session) {
         legend.text=element_text(size=10, color="black"),
         plot.margin = margin(t=40, r=20, b=10, l=10)
       )
-    ### ここまで変更 ###
   })
   
   observeEvent(input$anova_ddCq_analyze, {
@@ -968,7 +966,6 @@ server <- function(input, output, session) {
       geom_segment(data=results$bracket_data, aes(x=xend, xend=xend, y=y, yend=y - 0.01 * plot_max_y), inherit.aes=FALSE, color="black") +
       geom_text(data=results$bracket_data, aes(x=(x+xend)/2, y=y_label, label=label), inherit.aes=FALSE, vjust=-0.4, size=6) +
       coord_cartesian(ylim=c(0, plot_max_y), clip="off") +
-      ### ここから変更 ###
       labs(y="Fold Change (2^-ΔΔCq)", x="Group", 
            title=paste("Gene Expression of", input$anova_ddCq_target),
            subtitle = results$f_test_text) +
@@ -981,7 +978,6 @@ server <- function(input, output, session) {
             legend.title=element_text(size=12,face="bold", color="black"),
             legend.text=element_text(size=10, color="black"),
             plot.margin = margin(t=30, r=10, b=10, l=10))
-    ### ここまで変更 ###
   })
   
   
