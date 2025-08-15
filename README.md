@@ -1,4 +1,4 @@
-# Click-qPCR
+# 🧬 Click-qPCR 🧬
 
 An ultra-simple tool for interactive qPCR data analysis developed with R and Shiny.
 
@@ -148,7 +148,8 @@ Each row must represent the Cq value of one gene in one sample. If you have tech
 
 ## How to Use
 
-1.  **Upload Data:** On the **"Analysis (t-test)"** tab, click "Upload CSV File" or "Use Example Data". A preview will appear.
+1.  **Upload Data:**
+    -  On the **"Analysis (t-test)"** tab, click "Upload CSV File" or "Use Example Data". A preview will appear.
 
 2.  **Perform ΔCq Analysis:**
     -   Check "Enable multiple reference genes" to select more than one.
