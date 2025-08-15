@@ -69,7 +69,7 @@ Kubota, et al. *bioRxiv*. (2025). <https://doi.org/10.1101/2025.05.29.656779>.
         1.  Sample Data Loading
         2.  ΔCq Analysis (t-test) Validation
         3.  ΔΔCq Analysis (Fold Change) Validation
-        4.  **ANOVA and Dunnett's Test Validation**
+        4.  ANOVA and Dunnett's Test Validation
     -   If all tests show "Passed ✅", you can be confident that the app's calculation and statistical capabilities are functioning as intended.
     
 ## Installation and Usage
