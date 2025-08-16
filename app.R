@@ -712,7 +712,7 @@ server <- function(input, output, session) {
       geom_segment(data=results$bracket_data, aes(x=xend, xend=xend, y=y, yend=y - 0.01 * plot_max_y), inherit.aes=FALSE, color="black") +
       geom_text(data=results$bracket_data, aes(x=(x+xend)/2, y=y_label, label=label), inherit.aes=FALSE, vjust=-0.4, size=6) +
       coord_cartesian(ylim=c(0, plot_max_y), clip="off") +
-      labs(y="Fold Change (2^-ΔΔCq)", x="Group", title=paste("Gene Expression of", input$ddCq_target)) +
+      labs(y=expression("Fold Change (2"^{-ΔΔCq}*")"), x="Group", title=paste("Gene Expression of", input$ddCq_target)) +
       theme_classic(base_size = 14) +
       theme(axis.text.x=element_text(size=12, color="black", angle=45, hjust=1),
             axis.text.y=element_text(color="black"),
@@ -966,7 +966,7 @@ server <- function(input, output, session) {
       geom_segment(data=results$bracket_data, aes(x=xend, xend=xend, y=y, yend=y - 0.01 * plot_max_y), inherit.aes=FALSE, color="black") +
       geom_text(data=results$bracket_data, aes(x=(x+xend)/2, y=y_label, label=label), inherit.aes=FALSE, vjust=-0.4, size=6) +
       coord_cartesian(ylim=c(0, plot_max_y), clip="off") +
-      labs(y="Fold Change (2^-ΔΔCq)", x="Group", 
+      labs(y=expression("Fold Change (2"^{-ΔΔCq}*")"), x="Group", 
            title=paste("Gene Expression of", input$anova_ddCq_target),
            subtitle = results$f_test_text) +
       theme_classic(base_size = 14) +
