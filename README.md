@@ -236,3 +236,8 @@ This analysis performs a one-way ANOVA to see if there are any differences among
 ## Licence
 
 The Click-qPCR application and corresponding files are under MIT licence.
+
+
+## Contact
+
+Feel free to send a email to me or use GitHub Discussions.
