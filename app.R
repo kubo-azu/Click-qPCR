@@ -496,6 +496,8 @@ server <- function(input, output, session) {
       mutate(RelExp = 2^(-deltaCq_val))
     req(nrow(long_data) > 0)
     
+    long_data$gene <- factor(long_data$gene, levels = input$goi)
+    
     summary_data <- long_data %>% group_by(gene, group) %>%
       summarise(Mean=mean(RelExp, na.rm=TRUE), SD=sd(RelExp, na.rm=TRUE), N=n(), .groups="drop")
     
