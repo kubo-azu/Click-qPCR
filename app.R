@@ -134,6 +134,13 @@ ui <- fluidPage(title = "Click-qPCR: Ultra-Simple Tool for Interactive qPCR Data
                                           hr(),
                                           h4("Download Plot Settings"),
                                           p("Settings for the 'Download Plot' button."),
+                                          selectInput("color_palette_dcq", "Color Palette:",
+                                                      choices = c("Default (ggplot2)" = "Default",
+                                                                  "Balanced (Set2)" = "Set2",
+                                                                  "Colorblind-Friendly (Viridis)" = "Viridis",
+                                                                  "Paired Colors" = "Paired",
+                                                                  "Pastel (Pastel1)" = "Pastel1",
+                                                                  "Grayscale (for printing)" = "Grayscale")),
                                           fluidRow(
                                             column(6, sliderInput("plot_width", "Width (inches):", min = 4, max = 20, value = 10)),
                                             column(6, sliderInput("plot_height", "Height (inches):", min = 4, max = 20, value = 8))
@@ -184,6 +191,13 @@ ui <- fluidPage(title = "Click-qPCR: Ultra-Simple Tool for Interactive qPCR Data
                                           hr(),
                                           h4("Download Plot Settings"),
                                           p("Settings for the 'Download ΔΔCq Plot' button."),
+                                          selectInput("color_palette_ddcq", "Color Palette:",
+                                                      choices = c("Default (ggplot2)" = "Default",
+                                                                  "Balanced (Set2)" = "Set2",
+                                                                  "Colorblind-Friendly (Viridis)" = "Viridis",
+                                                                  "Paired Colors" = "Paired",
+                                                                  "Pastel (Pastel1)" = "Pastel1",
+                                                                  "Grayscale (for printing)" = "Grayscale")),
                                           fluidRow(
                                             column(6, sliderInput("plot_width_ddCq", "Width (inches):", min = 4, max = 20, value = 10)),
                                             column(6, sliderInput("plot_height_ddCq", "Height (inches):", min = 4, max = 20, value = 8))
@@ -235,6 +249,13 @@ ui <- fluidPage(title = "Click-qPCR: Ultra-Simple Tool for Interactive qPCR Data
                                           hr(),
                                           h4("Download Plot Settings"),
                                           p("Settings for the 'Download ANOVA Plot' button."),
+                                          selectInput("color_palette_anova", "Color Palette:",
+                                                      choices = c("Default (ggplot2)" = "Default",
+                                                                  "Balanced (Set2)" = "Set2",
+                                                                  "Colorblind-Friendly (Viridis)" = "Viridis",
+                                                                  "Paired Colors" = "Paired",
+                                                                  "Pastel (Pastel1)" = "Pastel1",
+                                                                  "Grayscale (for printing)" = "Grayscale")),
                                           fluidRow(
                                             column(6, sliderInput("plot_width_anova", "Width (inches):", min = 4, max = 20, value = 10)),
                                             column(6, sliderInput("plot_height_anova", "Height (inches):", min = 4, max = 20, value = 8))
@@ -285,6 +306,13 @@ ui <- fluidPage(title = "Click-qPCR: Ultra-Simple Tool for Interactive qPCR Data
                                           hr(),
                                           h4("Download Plot Settings"),
                                           p("Settings for the 'Download Plot' button."),
+                                          selectInput("color_palette_anova_ddcq", "Color Palette:",
+                                                      choices = c("Default (ggplot2)" = "Default",
+                                                                  "Balanced (Set2)" = "Set2",
+                                                                  "Colorblind-Friendly (Viridis)" = "Viridis",
+                                                                  "Paired Colors" = "Paired",
+                                                                  "Pastel (Pastel1)" = "Pastel1",
+                                                                  "Grayscale (for printing)" = "Grayscale")),
                                           fluidRow(
                                             column(6, sliderInput("plot_width_anova_ddCq", "Width (inches):", min = 4, max = 20, value = 10)),
                                             column(6, sliderInput("plot_height_anova_ddCq", "Height (inches):", min = 4, max = 20, value = 8))
@@ -585,7 +613,7 @@ server <- function(input, output, session) {
     plot_max_y <- if (nrow(results$bracket_data) > 0) max(results$bracket_data$y_label, na.rm=TRUE) * 1.15 else max(results$summary_data_plot$Mean + results$summary_data_plot$SD, na.rm=TRUE) * 1.2
     if(!is.finite(plot_max_y) || plot_max_y <= 0) plot_max_y <- 1
     
-    ggplot(results$summary_data_plot, aes(x=label, y=Mean, fill=group)) +
+    p <- ggplot(results$summary_data_plot, aes(x=label, y=Mean, fill=group)) +
       geom_bar(stat="identity", position=position_dodge(0.7), width=0.7, color="black") +
       geom_jitter(data = results$long_data, aes(x = paste(gene, group), y = RelExp), position = position_jitterdodge(jitter.width = 0.2, dodge.width = 0.7), shape = 21, color = "black", size = 2, alpha = 0.6, show.legend = FALSE) +
       geom_errorbar(aes(ymin=pmax(0,Mean-SD), ymax=Mean+SD), width=0.2, position=position_dodge(0.7), color="black") +
@@ -600,6 +628,19 @@ server <- function(input, output, session) {
         axis.text.x=element_text(angle=45, hjust=1),
         plot.margin = margin(t=40, r=20, b=10, l=10)
       )
+    
+    selected_palette <- input$color_palette_dcq
+    if (is.null(selected_palette)) { return(p) }
+    
+    if (selected_palette == "Viridis") {
+      p <- p + scale_fill_viridis_d()
+    } else if (selected_palette == "Grayscale") {
+      p <- p + scale_fill_grey()
+    } else if (selected_palette != "Default") {
+      p <- p + scale_fill_brewer(palette = selected_palette)
+    }
+    
+    return(p)
   })
   
   observeEvent(input$ddCq_analyze, {
@@ -704,7 +745,7 @@ server <- function(input, output, session) {
     plot_max_y <- if (nrow(results$bracket_data) > 0) max(results$bracket_data$y_label, na.rm=TRUE) * 1.15 else max(results$summary_data_plot$Mean + results$summary_data_plot$SD, na.rm=TRUE) * 1.2
     if(!is.finite(plot_max_y) || plot_max_y <= 0) plot_max_y <- 2
     
-    ggplot(results$summary_data_plot, aes(x = group, y = Mean, fill = group)) +
+    p <- ggplot(results$summary_data_plot, aes(x = group, y = Mean, fill = group)) +
       geom_bar(stat="identity", color="black", width=0.7) +
       geom_errorbar(aes(ymin = pmax(0, Mean - SD), ymax = Mean + SD), width = 0.2, color="black") +
       geom_jitter(data = results$ddCq_data, aes(y = FoldChange), width = 0.1, shape=21, size=2.5, alpha=0.7, fill="grey80", show.legend = FALSE) +
@@ -723,6 +764,19 @@ server <- function(input, output, session) {
             legend.title=element_text(size=12,face="bold", color="black"),
             legend.text=element_text(size=10, color="black"),
             plot.margin = margin(t=30, r=10, b=10, l=10))
+    
+    selected_palette <- input$color_palette_ddcq
+    if (is.null(selected_palette)) { return(p) }
+    
+    if (selected_palette == "Viridis") {
+      p <- p + scale_fill_viridis_d()
+    } else if (selected_palette == "Grayscale") {
+      p <- p + scale_fill_grey()
+    } else if (selected_palette != "Default") {
+      p <- p + scale_fill_brewer(palette = selected_palette)
+    }
+    
+    return(p)
   })
   
   observeEvent(input$anova_analyze, {
@@ -836,7 +890,7 @@ server <- function(input, output, session) {
     plot_max_y <- if (nrow(results$bracket_data) > 0) max(results$bracket_data$y_label, na.rm=TRUE) * 1.15 else max(results$summary_data_plot$Mean + results$summary_data_plot$SD, na.rm=TRUE) * 1.2
     if(!is.finite(plot_max_y) || plot_max_y <= 0) plot_max_y <- 1
     
-    ggplot(results$summary_data_plot, aes(x = group, y = Mean, fill = group)) +
+    p <- ggplot(results$summary_data_plot, aes(x = group, y = Mean, fill = group)) +
       geom_bar(stat="identity", color="black", width=0.7) +
       geom_errorbar(aes(ymin = pmax(0, Mean - SD), ymax = Mean + SD), width = 0.2, color="black") +
       geom_jitter(data = results$long_data, aes(y = RelExp), width = 0.1, shape=21, size=2.5, alpha=0.7, fill="grey80") +
@@ -859,6 +913,19 @@ server <- function(input, output, session) {
         legend.text=element_text(size=10, color="black"),
         plot.margin = margin(t=40, r=20, b=10, l=10)
       )
+    
+    selected_palette <- input$color_palette_anova
+    if (is.null(selected_palette)) { return(p) }
+    
+    if (selected_palette == "Viridis") {
+      p <- p + scale_fill_viridis_d()
+    } else if (selected_palette == "Grayscale") {
+      p <- p + scale_fill_grey()
+    } else if (selected_palette != "Default") {
+      p <- p + scale_fill_brewer(palette = selected_palette)
+    }
+    
+    return(p)
   })
   
   observeEvent(input$anova_ddCq_analyze, {
@@ -958,7 +1025,7 @@ server <- function(input, output, session) {
     plot_max_y <- if (nrow(results$bracket_data) > 0) max(results$bracket_data$y_label, na.rm=TRUE) * 1.15 else max(results$summary_data_plot$Mean + results$summary_data_plot$SD, na.rm=TRUE) * 1.2
     if(!is.finite(plot_max_y) || plot_max_y <= 0) plot_max_y <- 2
     
-    ggplot(results$summary_data_plot, aes(x = group, y = Mean, fill = group)) +
+    p <- ggplot(results$summary_data_plot, aes(x = group, y = Mean, fill = group)) +
       geom_bar(stat="identity", color="black", width=0.7) +
       geom_errorbar(aes(ymin = pmax(0, Mean - SD), ymax = Mean + SD), width = 0.2, color="black") +
       geom_jitter(data = results$long_data, aes(y = FoldChange), width = 0.1, shape=21, size=2.5, alpha=0.7, fill="grey80", show.legend = FALSE) +
@@ -980,6 +1047,19 @@ server <- function(input, output, session) {
             legend.title=element_text(size=12,face="bold", color="black"),
             legend.text=element_text(size=10, color="black"),
             plot.margin = margin(t=30, r=10, b=10, l=10))
+    
+    selected_palette <- input$color_palette_anova_ddcq
+    if (is.null(selected_palette)) { return(p) }
+    
+    if (selected_palette == "Viridis") {
+      p <- p + scale_fill_viridis_d()
+    } else if (selected_palette == "Grayscale") {
+      p <- p + scale_fill_grey()
+    } else if (selected_palette != "Default") {
+      p <- p + scale_fill_brewer(palette = selected_palette)
+    }
+    
+    return(p)
   })
   
   
