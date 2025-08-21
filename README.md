@@ -59,6 +59,17 @@ Kubota, et al. *bioRxiv*. (2025). <https://doi.org/10.1101/2025.05.29.656779>.
     -   **Two Download Modes:**
         1.  **Download Plot:** Saves an image using your custom dimension and DPI settings.
         2.  **Save Displayed Size:** Saves an image that is an exact replica of the plot shown on the screen.
+    - **Customizable Plot Colors:** Select from several built-in color palettes, including colorblind-friendly and grayscale options, to customize your plot's appearance for presentations or publications.
+
+        | Palette Name                  | Key Features & Recommendations                                                                                                                 |
+        | ----------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+        | **Default (ggplot2)** | The standard, well-recognized `ggplot2` theme. A safe and familiar choice for initial data exploration.                                          |
+        | **Balanced (Set2)** | **(Recommended for General Use)** Provides a set of clear, distinct colors that are easy on the eyes and work well on screen.                     |
+        | **Colorblind-Friendly (Viridis)** | **(Best for Publications & Presentations)** Ensures that your plots are accessible to everyone, including those with color vision deficiencies. |
+        | **Paired Colors** | Consists of light/dark pairs of colors. Ideal for analyses where you have paired or closely related experimental groups to compare.               |
+        | **Pastel (Pastel1)** | A selection of softer, less saturated colors. A great choice for posters or when a less intense visual style is preferred.                      |
+        | **Grayscale (for printing)** | **(Essential for B&W Publications)** Renders the plot in shades of gray. Use this to confirm your figure is interpretable without color.        |
+
 
 -   **Robust & Informative:**
     -   Handles cases with insufficient data or zero variance gracefully without crashing.
