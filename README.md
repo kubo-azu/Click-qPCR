@@ -37,7 +37,7 @@ Kubota, et al. *bioRxiv*. (2025). <https://doi.org/10.1101/2025.05.29.656779>.
         -   Select one or more target genes.
         -   Set up **multiple group comparisons** simultaneously using an intuitive interface.
         -   Calculates relative expression ($2^{-\Delta Cq}$).
-        -   Performs Welch's t-test for statistical significance for each specified pair.
+        -   Performs Welch's *t*-test for statistical significance for each specified pair.
         -   Visualizes all results in a comprehensive bar plot showing mean ± SD, with individual data points overlaid.
 
     -   **ΔΔCq Analysis:**
@@ -63,12 +63,12 @@ Kubota, et al. *bioRxiv*. (2025). <https://doi.org/10.1101/2025.05.29.656779>.
 
         | Palette Name                  | Key Features & Recommendations                                                                                                                 |
         | ----------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
-        | **Default (ggplot2)** | The standard, well-recognized `ggplot2` theme. A safe and familiar choice for initial data exploration.                                          |
-        | **Balanced (Set2)** | **(Recommended for General Use)** Provides a set of clear, distinct colors that are easy on the eyes and work well on screen.                     |
-        | **Colorblind-Friendly (Viridis)** | **(Best for Publications & Presentations)** Ensures that your plots are accessible to everyone, including those with color vision deficiencies. |
+        | **Default (ggplot2)** | The standard, well-recognized `ggplot2` theme.                                          |
+        | **Balanced (Set2)** | Provides a set of clear, distinct colors that are easy on the eyes and work well on screen.                     |
+        | **Colorblind-Friendly (Viridis)** | Ensures that your plots are accessible to everyone, including those with color vision deficiencies. |
         | **Paired Colors** | Consists of light/dark pairs of colors. Ideal for analyses where you have paired or closely related experimental groups to compare.               |
         | **Pastel (Pastel1)** | A selection of softer, less saturated colors. A great choice for posters or when a less intense visual style is preferred.                      |
-        | **Grayscale (for printing)** | **(Essential for B&W Publications)** Renders the plot in shades of gray. Use this to confirm your figure is interpretable without color.        |
+        | **Grayscale (for printing)** | Renders the plot in shades of gray. Use this to confirm your figure is interpretable without color.        |
 
 
 -   **Robust & Informative:**
@@ -78,7 +78,7 @@ Kubota, et al. *bioRxiv*. (2025). <https://doi.org/10.1101/2025.05.29.656779>.
 -   **Diagnostics Tab:**
     -   This tab provides a self-testing function. When you click the "Run Diagnostics" button, the app uses its built-in sample data to automatically test four of its core functions:
         1.  Sample Data Loading
-        2.  ΔCq Analysis (t-test) Validation
+        2.  ΔCq Analysis (*t*-test) Validation
         3.  ΔΔCq Analysis (Fold Change) Validation
         4.  ANOVA and Dunnett's Test Validation
     -   If all tests show "Passed ✅", you can be confident that the app's calculation and statistical capabilities are functioning as intended.
@@ -175,7 +175,7 @@ Each row must represent the Cq value of one gene in one sample. If you have tech
     -   Select a single "Target Gene".
     -   Select the "Base Group (Control)".
     -   Select one or more "Treatment Group(s)".
-    -   Click **"Run ΔΔCq Analysis"**. The fold-change plot and table will appear.
+    -   Click **"Run ΔΔCq Analysis"**. The fold change plot and table will appear.
 
 4.  **Perform ANOVA and Dunnett's post-hoc:**
     -   Navigate to the **"ΔCq ANOVA (Dunnett's post-hoc)"** tab.
@@ -195,7 +195,7 @@ This section demonstrates how to use the app's core functions with the built-in 
 
 ### 1. Load Sample Data and Perform ΔCq Analysis
 
-First, we'll compare the expression of a single gene between two groups using aWelch's t-test.
+First, we'll compare the expression of a single gene between two groups using a Welch's *t*-test.
 
 * On the **"Preprocessing and ΔCq Analysis"** tab, click the **"Use Example Data"** button.
 * Check the box for **"Enable multiple reference genes"**.
@@ -210,7 +210,7 @@ You will see a bar chart and a data table summarizing the analysis. The sample d
 
 **Plot:** The chart will display two bars for the `Hoge` gene: one for the `Control` group and one for the `Treatment_X` group. Individual data points will be scattered over the bars, and the bar for `Treatment_X` will be noticeably lower than the `Control` bar. A significance bracket (`***`) will connect the two bars.
 
-**Statistics Table:** The table below the plot will show the result of the Welch's t-test performed on the ΔCq values. The p-value will be very small, resulting in a high significance level.
+**Statistics Table:** The table below the plot will show the result of the Welch's *t*-test performed on the ΔCq values. The p-value will be very small, resulting in a high significance level.
 
 | gene | group1  | group2      | p_value  | sig |
 | :--- | :------ | :---------- | :------- | :-- |
@@ -234,7 +234,7 @@ This analysis performs a one-way ANOVA to see if there are any differences among
 
 **Plot:** The chart will display four bars for the `Hoge` gene, one for each group (`Control`, `Treatment_X`, `Treatment_Y`, `Treatment_Z`). Significance brackets will be shown comparing each treatment group back to the `Control` bar.
 
-**Statistics Table:** The table will first display the overall result of the ANOVA F-test, which should be highly significant. Below that, it will list the results of Dunnett's test for each treatment-control comparison.
+**Statistics Table:** The table will first display the overall result of the ANOVA *F*-test, which should be highly significant. Below that, it will list the results of Dunnett's test for each treatment-control comparison.
 
 | group1       | group2                               | p_value  | sig |
 | :----------- | :----------------------------------- | :------- | :-- |
