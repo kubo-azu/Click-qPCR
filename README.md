@@ -44,7 +44,7 @@ Kubota, et al. *bioRxiv*. (2025). <https://doi.org/10.1101/2025.05.29.656779>.
         -   Automatically uses the reference gene(s) selected in the "Preproceccing and ΔCq Analysis" tab.
         -   Select a target gene, a base/control group, and one or more treatment groups.
         -   Calculates fold-change ($2^{-\Delta\Delta Cq}$) relative to the base group.
-        -   Performs Welch's t-test for statistical significance.
+        -   Performs Welch's *t*-test for statistical significance.
         -   Visualizes results in a dedicated bar plot.
 
     -   **ANOVA (Dunnett's post-hoc):**
