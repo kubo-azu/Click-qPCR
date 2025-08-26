@@ -99,7 +99,7 @@ ui <- fluidPage(title = "Click-qPCR: Ultra-Simple Tool for Interactive qPCR Data
                     HTML("🧬 Click-qPCR 🧬 <span style='font-size:32px; font-weight:normal;'>(Ultra-Simple Tool for Interactive qPCR Data Analysis)</span>")),
                 br(),
                 div(align = "left", style = "margin-bottom: 15px; font-size: 16px; color: #555;",
-                    HTML("<strong>Notifications:</strong><br># Calculate the mean of Cq values by yourself, if you have technical replicates.<br># Please cite this paper if you use this app in your research. <u>Kubota, et al. bioRxiv. 2025. (<a href='https://doi.org/10.1101/2025.05.29.656779' target='_blank'>https://doi.org/10.1101/2025.05.29.656779</a>).</u>")),
+                    HTML("<strong>Notifications:</strong><br># Calculate the mean of Cq values by yourself, if you have technical replicates.<br># Please cite this paper if you use this app in your research. <u>A. Kubota and A. Tajima, <i>bioRxiv</i>, 2025. (<a href='https://doi.org/10.1101/2025.05.29.656779' target='_blank'>https://doi.org/10.1101/2025.05.29.656779</a>).</u>")),
                 div(align = "left", style = "margin-bottom: 3px;",
                     tags$a(href = "https://github.com/kubo-azu/Click-qPCR", target = "_blank", icon("github"), "View User Guide (English and Japanese) & Source Code on GitHub")),
                 br(),
@@ -154,7 +154,7 @@ ui <- fluidPage(title = "Click-qPCR: Ultra-Simple Tool for Interactive qPCR Data
                                     ΔCq = Cq(Target Gene) - Mean Cq(Reference Genes)
                                     <br><br>
                                     <strong>2. Statistical Test:</strong><br>
-                                    A <strong>Welch's two-sample t-test</strong> is performed on the <strong>ΔCq values</strong> between each treatment group and the control group to calculate the p-value.
+                                    A <strong>Welch's two-sample <i>t</i>-test</strong> is performed on the <strong>ΔCq values</strong> between each treatment group and the control group to calculate the <i>p</i>-value.
                                     <br><br>
                                     <strong>3. Visualization:</strong><br>
                                     The plot displays Relative Expression (2<sup>-ΔCq</sup>) for intuitive visualization.
@@ -212,7 +212,7 @@ ui <- fluidPage(title = "Click-qPCR: Ultra-Simple Tool for Interactive qPCR Data
                                     (where ΔCq = Cq_target - Mean Cq_refs)
                                     <br><br>
                                     <strong>2. Statistical Test:</strong><br>
-                                    A <strong>Welch's two-sample t-test</strong> is performed on the <strong>ΔCq values</strong> between each treatment group and the control group to calculate the p-value.
+                                    A <strong>Welch's two-sample <i>t</i>-test</strong> is performed on the <strong>ΔCq values</strong> between each treatment group and the control group to calculate the <i>p</i>-value.
                                     <br><br>
                                     <strong>3. Visualization:</strong><br>
                                     The plot displays Relative Expression (2<sup>-ΔΔCq</sup>) for intuitive visualization.
@@ -287,7 +287,7 @@ ui <- fluidPage(title = "Click-qPCR: Ultra-Simple Tool for Interactive qPCR Data
                   tabPanel("ΔΔCq ANOVA (Dunnett’s post-hoc)",
                            sidebarLayout(
                              sidebarPanel(width = 4,
-                                          p("This tab visualizes the ANOVA results as Fold Change (2^-ΔΔCq). The statistical test is the same as the 'ANOVA Analysis' tab."),
+                                          p("This tab visualizes the ANOVA results as Fold Change (2<sup>-ΔΔCq</sup>). The statistical test is the same as the 'ANOVA Analysis' tab."),
                                           hr(),
                                           h5(strong("Reference Gene(s):")),
                                           textOutput("anova_ddCq_refgene_display"),
