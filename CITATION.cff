@@ -1,0 +1,15 @@
+cff-version: 1.2.0
+message: "If you use this software, please cite the associated paper."
+title: "Click-qPCR: An interactive Shiny application for qPCR data analysis"
+authors:
+  - family-names: "Kubota"
+    given-names: "Azusa"
+    orcid: "https://orcid.org/0009-0007-8948-4564"
+  - family-names: "Tajima"
+    given-names: "Atsushi"
+    orcid: "https://orcid.org/0000-0001-6808-5491"
+identifiers:
+  - type: doi
+    value: "10.1101/2025.05.29.656779"   # bioRxiv preprint DOI
+repository-code: "https://github.com/kubo-azu/Click-qPCR"
+license: "MIT"
