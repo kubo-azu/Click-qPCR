@@ -81,7 +81,7 @@ A. Kubota and A. Tajima, *bioRxiv*, (2025). <https://doi.org/10.1101/2025.05.29.
         2.  ΔCq Analysis (*t*-test) Validation
         3.  ΔΔCq Analysis (Fold Change) Validation
         4.  ANOVA and Dunnett's Test Validation
-    -   If all tests show "Passed ✅", you can be confident that the app's calculation and statistical capabilities are functioning as intended. This is especially useful for checking the health of your app when installed locally or if you have made changes to the code yourself.
+    -   If all tests show "Passed ✅", you can be confident that the app's calculation and statistical capabilities are functioning as intended. When installed locally or modified, the Diagnostics tab is useful for checking the health of the application.
     
 ## Installation and Usage
 
