@@ -81,7 +81,7 @@ A. Kubota and A. Tajima, *bioRxiv*, (2025). <https://doi.org/10.1101/2025.05.29.
         2.  ΔCq Analysis (*t*-test) Validation
         3.  ΔΔCq Analysis (Fold Change) Validation
         4.  ANOVA and Dunnett's Test Validation
-    -   If all tests show "Passed ✅", you can be confident that the app's calculation and statistical capabilities are functioning as intended.
+    -   If all tests show "Passed ✅", you can be confident that the app's calculation and statistical capabilities are functioning as intended. When installed locally or modified, the Diagnostics tab is useful for checking the health of the application.
     
 ## Installation and Usage
 
@@ -160,7 +160,7 @@ Each row must represent the Cq value of one gene in one sample. If you have tech
 ## How to Use
 
 1.  **Upload Data:**
-    -  On the **"Analysis (t-test)"** tab, click "Upload CSV File" or "Use Example Data". A preview will appear.
+    -  On the **"ΔCq Analysis** tab, click "Upload CSV File" or "Use Example Data". A preview will appear.
 
 2.  **Perform ΔCq Analysis:**
     -   Check "Enable multiple reference genes" to select more than one.
