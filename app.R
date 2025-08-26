@@ -287,7 +287,7 @@ ui <- fluidPage(title = "Click-qPCR: Ultra-Simple Tool for Interactive qPCR Data
                   tabPanel("ΔΔCq ANOVA (Dunnett’s post-hoc)",
                            sidebarLayout(
                              sidebarPanel(width = 4,
-                                          p("This tab visualizes the ANOVA results as Fold Change (2<sup>-ΔΔCq</sup>). The statistical test is the same as the 'ANOVA Analysis' tab."),
+                                          p(HTML("This tab visualizes the ANOVA results as Fold Change (2<sup>-ΔΔCq</sup>). The statistical test is the same as the 'ANOVA Analysis' tab.")),
                                           hr(),
                                           h5(strong("Reference Gene(s):")),
                                           textOutput("anova_ddCq_refgene_display"),
