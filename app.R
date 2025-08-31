@@ -212,7 +212,7 @@ ui <- fluidPage(title = "Click-qPCR: Ultra-Simple Tool for Interactive qPCR Data
                                     (where ΔCq = Cq_target - Mean Cq_refs)
                                     <br><br>
                                     <strong>2. Statistical Test:</strong><br>
-                                    A <strong>Welch's two-sample <i>t</i>-test</strong> is performed on the <strong>ΔCq values</strong> between each treatment group and the control group to calculate the <i>p</i>-value.
+                                    A <strong>Wilcoxon rank-sum test</strong> is performed on the <strong>Fold Change (2^-ΔΔCq)</strong> values between each treatment group and the control group to calculate statistical significance.
                                     <br><br>
                                     <strong>3. Visualization:</strong><br>
                                     The plot displays Relative Expression (2<sup>-ΔΔCq</sup>) for intuitive visualization.
@@ -676,10 +676,12 @@ server <- function(input, output, session) {
       summarise(Mean = mean(FoldChange), SD = sd(FoldChange), N=n(), .groups="drop")
     
     significance_raw <- bind_rows(lapply(ddCq_comparison_groups, function(g) {
-      test_data <- filter(deltaCq_data, group %in% c(input$ddCq_base_group, g))
+      test_data <- filter(ddCq_data, group %in% c(input$ddCq_base_group, g))
+      fold_change_vals_control <- test_data$FoldChange[test_data$group == input$ddCq_base_group]
+      fold_change_vals_treatment <- test_data$FoldChange[test_data$group == g]
       p_val_result <- if (n_distinct(test_data$group) == 2 && all(table(test_data$group) >= 2)) {
         tryCatch({
-          t.test(deltaCq ~ group, data = test_data, na.action = na.omit)$p.value
+          wilcox.test(fold_change_vals_control, fold_change_vals_treatment, na.rm = TRUE)$p.value
         }, error = function(e) {
           if (grepl("essentially constant", e$message)) "Zero variance" else "Calc. Error"
         })
@@ -1432,13 +1434,14 @@ server <- function(input, output, session) {
       ddCq_data <- deltaCq_data %>%
         mutate(deltaDeltaCq = deltaCq - mean_control_deltaCq, FoldChange = 2^(-deltaDeltaCq))
       
-      fold_change_vals <- ddCq_data$FoldChange[ddCq_data$group == comp_group]
-      p_value <- t.test(fold_change_vals, mu = 1, na.rm = TRUE)$p.value
+      fold_change_vals_control <- ddCq_data$FoldChange[ddCq_data$group == base_group]
+      fold_change_vals_treatment <- ddCq_data$FoldChange[ddCq_data$group == comp_group]
+      p_value <- wilcox.test(fold_change_vals_control, fold_change_vals_treatment, na.rm = TRUE)$p.value
       test_passed <- is.numeric(p_value)
       
-      report <- rbind(report, data.frame(Check = "Test 3: ΔΔCq (Fold Change) calculation and t-test runs", Result = ifelse(test_passed, "Passed ✅", "Failed ❌")))
+      report <- rbind(report, data.frame(Check = "Test 3: ΔΔCq (Fold Change) calculation and Wilcoxon test runs", Result = ifelse(test_passed, "Passed ✅", "Failed ❌")))
     }, error = function(e) {
-      report <<- rbind(report, data.frame(Check = "Test 3: ΔΔCq (Fold Change) calculation and t-test runs", Result = paste("Failed ❌:", e$message)))
+      report <<- rbind(report, data.frame(Check = "Test 3: ΔΔCq (Fold Change) calculation and Wilcoxon test runs", Result = paste("Failed ❌:", e$message)))
     })
     
     tryCatch({
