@@ -48,7 +48,7 @@ A. Kubota and A. Tajima, *bioRxiv*. (2025). <https://doi.org/10.1101/2025.05.29.
         -   同じ統計結果は，`ΔΔCq ANOVA (Dunnett's post-hoc)`タブでフォールドチェンジ（2<sup>-ΔΔCq</sup>）として視覚化できます。
 
 -   **高度なダウンロードとプロット作成:**
-    -   **カスタムプロット寸法:** スライダーを使用し，ダウンロードするプロットの幅・高さ・解像度（DPI）をインタラクティブに調整できます。
+    -   **カスタムプロット寸法:** スライダーを使用し，ダウンロードするプロットの幅・高さ・解像度（DPI）をインタラクティブに調整できます。 ※ DPIはPNG形式のみ調整可能
     -   **固定アスペクト比:** サイズ変更中にプロットのアスペクト比をオプションでロックできます。
     -   **2つのダウンロードモード:**
         1.  **プロットのダウンロード:** カスタムの寸法とDPI設定を使用して画像を保存します。
@@ -87,12 +87,14 @@ A. Kubota and A. Tajima, *bioRxiv*. (2025). <https://doi.org/10.1101/2025.05.29.
 ### 前提条件
 
 -   R (バージョン4.1以降を推奨)
--   以下のRパッケージ: `shiny`, `dplyr`, `ggplot2`, `tidyr`, `DT`, `RColorBrewer`, `fontawesome`, `multcomp`
+-   以下のRパッケージ: `shiny`, `shinyjs`, `readr`, `dplyr`, `ggplot2`, `tidyr`, `DT`, `RColorBrewer`, `fontawesome`, `multcomp`
 
 * R (バージョン 4.4.2 以降を推奨)
 * RStudio (使いやすさのため推奨しますが，Rコンソールから実行する場合は必須ではありません)
 * 以下のRパッケージ（およびそれらの依存パッケージ）:
     * `shiny`
+    * `shinyjs`
+    * `readr`
     * `dplyr`
     * `ggplot2`
     * `tidyr`
@@ -104,7 +106,7 @@ A. Kubota and A. Tajima, *bioRxiv*. (2025). <https://doi.org/10.1101/2025.05.29.
 これらのパッケージはRで以下のようにインストールできます:
 
 ```R
-install.packages(c("shiny", "dplyr", "ggplot2", "tidyr", "DT", "RColorBrewer", "fontawesome", "multcomp"))
+install.packages(c("shiny", "shinyjs", "readr", "dplyr", "ggplot2", "tidyr", "DT", "RColorBrewer", "fontawesome", "multcomp"))
 ```
 
 
@@ -185,7 +187,7 @@ shiny::runApp()
 
 5.  **結果のダウンロード:**
     -   ダウンロードボタンを使用して結果を保存します。
-    -   `Download Plot Settings`パネルを使用して，`Download Plot`ボタンの寸法と解像度をカスタマイズ可能です。
+    -   `Download Plot Settings`パネルを使用して，`Download Plot`ボタンの寸法と解像度をカスタマイズ可能です。（解像度はPNGのみ）
 
 
 ## サンプルデータを使用した解析例
@@ -247,3 +249,8 @@ shiny::runApp()
 ## ライセンス
 
 このプロジェクトはMITライセンスの下で公開されています。詳細はLICENSEファイルを参照してください。
+
+## お問い合わせ
+
+GitHub Discussionsをご利用いただくか，直接メールをお送りください。
+
