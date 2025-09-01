@@ -1,5 +1,7 @@
 # 1. Load Libraries
 library(shiny)
+library(shinyjs)
+library(readr)
 library(dplyr)
 library(ggplot2)
 library(tidyr)
@@ -80,26 +82,45 @@ sample_df_global <- read.csv(text = sample_csv_text, stringsAsFactors = FALSE, c
 
 # 3. Define UI (User Interface)
 ui <- fluidPage(title = "Click-qPCR: Ultra-Simple Tool for Interactive qPCR Data Analysis",
+                useShinyjs(),
                 tags$head(
                   tags$script(HTML("setInterval(function(){var d=new Date();var pad=n=>n<10?'0'+n:n;var datetime=d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())+'_'+pad(d.getHours())+pad(d.getMinutes());Shiny.setInputValue('client_time',datetime);},1000);")),
-                  tags$style(HTML("label { font-size: 18px !important; font-weight: normal !important; } .btn{margin-top: 5px; margin-bottom: 5px;}")),
+                  tags$style(HTML("
+                    label { font-size: 18px !important; font-weight: normal !important; } 
+                    .btn{margin-top: 5px; margin-bottom: 5px;}
+                    .btn-container {
+                      display: flex;
+                      flex-wrap: wrap;
+                      align-items: flex-end;
+                      gap: 8px;
+                    }
+                    .btn-container .shiny-input-container {
+                      margin-bottom: 0px !important;
+                    }
+                  ")),
                   tags$script(async = NA, src = "https://www.googletagmanager.com/gtag/js?id=G-7J5FG35PN3"),
                   tags$script(HTML(
                     "
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
-
     gtag('config', 'G-7J5FG35PN3');
     "
                   ))
                 ),
                 br(),
-                div(align = "left", style = "font-size: 40px; font-weight: bold; color: #2c3e50; margin-top: 4px; margin-bottom: 1px; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;",
-                    HTML("🧬 Click-qPCR 🧬 <span style='font-size:32px; font-weight:normal;'>(Ultra-Simple Tool for Interactive qPCR Data Analysis)</span>")),
-                br(),
+                div(
+                  style = "display: flex; align-items: center; margin-bottom: 10px;",
+                  img(src = "Click-qPCR_logo.png", height = "128px", style = "margin-right: 12px;"),
+                  div(
+                    div(align = "left", style = "font-size: 66px; font-weight: bold; color: #2c3e50; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;",
+                        HTML("Click-qPCR")
+                    )
+                  )
+                ),
                 div(align = "left", style = "margin-bottom: 15px; font-size: 16px; color: #555;",
                     HTML("<strong>Notifications:</strong><br># Calculate the mean of Cq values by yourself, if you have technical replicates.<br># Please cite this paper if you use this app in your research. <u>A. Kubota and A. Tajima, <i>bioRxiv</i>, 2025. (<a href='https://doi.org/10.1101/2025.05.29.656779' target='_blank'>https://doi.org/10.1101/2025.05.29.656779</a>).</u>")),
+                div(style = "text-align: left; font-size: 15px; color: #777;", "🧬 App Version: v1.0.1 🧬"),
                 div(align = "left", style = "margin-bottom: 3px;",
                     tags$a(href = "https://github.com/kubo-azu/Click-qPCR", target = "_blank", icon("github"), "View User Guide (English and Japanese) & Source Code on GitHub")),
                 br(),
@@ -115,19 +136,24 @@ ui <- fluidPage(title = "Click-qPCR: Ultra-Simple Tool for Interactive qPCR Data
                                           actionButton("reset_app", "Reset All", icon=icon("sync-alt"), class = "btn-danger"),
                                           br(), br(),
                                           fileInput("file", "1. Select CSV File"),
-                                          actionButton("load_file", "2. Load File", icon=icon("upload")),
-                                          div(style = "max-height: 250px; overflow-y: auto;", tableOutput("data_preview")),
+                                          shinyjs::disabled(
+                                            actionButton("load_file", "2. Load File", icon=icon("upload"))
+                                          ),
+                                          div(style = "max-height: 350px; overflow-y: auto;", DT::dataTableOutput("data_preview")),
                                           br(),
                                           checkboxInput("enable_multi_ref", "Enable multiple reference genes", value = FALSE),
                                           uiOutput("refgene_selector"),
                                           uiOutput("gene_selector"),
                                           h4("3. Comparison Settings", style = "font-weight: bold;"),
                                           uiOutput("group_pairs_ui"),
-                                          actionButton("add_comparison", "Add", icon=icon("plus")),
-                                          actionButton("remove_comparison", "Remove", icon=icon("minus")),
+                                          div(
+                                            actionButton("add_comparison", "Add", icon=icon("plus")),
+                                            actionButton("remove_comparison", "Remove", icon=icon("minus"))
+                                          ),
+                                          div(style = "margin-top: 10px;",
+                                              actionButton("analyze", "Analyze", class="btn-primary btn-lg", icon=icon("play-circle"))
+                                          ),
                                           hr(),
-                                          actionButton("analyze", "Analyze", class="btn-primary btn-lg", icon=icon("play-circle")),
-                                          br(), br(),
                                           selectInput("color_palette_dcq", "Color Palette:",
                                                       choices = c("Default (ggplot2)" = "Default",
                                                                   "Balanced (Set2)" = "Set2",
@@ -135,9 +161,12 @@ ui <- fluidPage(title = "Click-qPCR: Ultra-Simple Tool for Interactive qPCR Data
                                                                   "Paired Colors" = "Paired",
                                                                   "Pastel (Pastel1)" = "Pastel1",
                                                                   "Grayscale (for printing)" = "Grayscale")),
-                                          downloadButton("download_csv", "Download Stats", class="btn-success"),
-                                          div(style="display: inline-block;", downloadButton("download_plot", "Download Plot", class="btn-success")),
-                                          div(style="display: inline-block;", downloadButton("download_plot_asis", "Save Displayed Size", class="btn-info")),
+                                          div(class = "btn-container",
+                                              downloadButton("download_csv", "Download Stats", class="btn-success"),
+                                              downloadButton("download_plot", "Download Plot", class="btn-success"),
+                                              downloadButton("download_plot_asis", "Save Displayed Size", class="btn-info"),
+                                              selectInput("plot_format_dcq", "Format:", choices = c("PNG" = "png", "PDF" = "pdf"), selected = "png", width = "120px")
+                                          ),
                                           hr(),
                                           h4("Download Plot Settings"),
                                           p("Settings for the 'Download Plot' button."),
@@ -180,11 +209,14 @@ ui <- fluidPage(title = "Click-qPCR: Ultra-Simple Tool for Interactive qPCR Data
                                           h4("ΔΔCq Comparison Settings"),
                                           uiOutput("ddCq_base_group_selector"),
                                           uiOutput("ddCq_comparison_groups_ui"),
-                                          actionButton("add_ddCq_comparison", "Add", icon=icon("plus")),
-                                          actionButton("remove_ddCq_comparison", "Remove", icon=icon("minus")),
+                                          div(
+                                            actionButton("add_ddCq_comparison", "Add", icon=icon("plus")),
+                                            actionButton("remove_ddCq_comparison", "Remove", icon=icon("minus"))
+                                          ),
+                                          div(style = "margin-top: 10px;",
+                                              actionButton("ddCq_analyze", "Run ΔΔCq Analysis", class="btn-primary btn-lg", icon=icon("play-circle"))
+                                          ),
                                           hr(),
-                                          actionButton("ddCq_analyze", "Run ΔΔCq Analysis", class="btn-primary btn-lg", icon=icon("play-circle")),
-                                          br(), br(),
                                           selectInput("color_palette_ddcq", "Color Palette:",
                                                       choices = c("Default (ggplot2)" = "Default",
                                                                   "Balanced (Set2)" = "Set2",
@@ -192,9 +224,12 @@ ui <- fluidPage(title = "Click-qPCR: Ultra-Simple Tool for Interactive qPCR Data
                                                                   "Paired Colors" = "Paired",
                                                                   "Pastel (Pastel1)" = "Pastel1",
                                                                   "Grayscale (for printing)" = "Grayscale")),
-                                          downloadButton("ddCq_csv", "Download ΔΔCq Stats", class="btn-success"),
-                                          div(style="display: inline-block;", downloadButton("ddCq_plot", "Download ΔΔCq Plot", class="btn-success")),
-                                          div(style="display: inline-block;", downloadButton("ddCq_plot_asis", "Save Displayed Size", class="btn-info")),
+                                          div(class = "btn-container",
+                                              downloadButton("ddCq_csv", "Download ΔΔCq Stats", class="btn-success"),
+                                              downloadButton("ddCq_plot", "Download ΔΔCq Plot", class="btn-success"),
+                                              downloadButton("ddCq_plot_asis", "Save Displayed Size", class="btn-info"),
+                                              selectInput("plot_format_ddcq", "Format:", choices = c("PNG" = "png", "PDF" = "pdf"), selected = "png", width = "120px")
+                                          ),
                                           hr(),
                                           h4("Download Plot Settings"),
                                           p("Settings for the 'Download ΔΔCq Plot' button."),
@@ -240,9 +275,10 @@ ui <- fluidPage(title = "Click-qPCR: Ultra-Simple Tool for Interactive qPCR Data
                                           h4("ANOVA (3+ Groups) Comparison Settings"),
                                           uiOutput("anova_control_group_selector"),
                                           uiOutput("anova_treatment_group_selector"),
+                                          div(style = "margin-top: 10px;",
+                                              actionButton("anova_analyze", "Run ANOVA", class="btn-primary btn-lg", icon=icon("play-circle"))
+                                          ),
                                           hr(),
-                                          actionButton("anova_analyze", "Run ANOVA", class="btn-primary btn-lg", icon=icon("play-circle")),
-                                          br(),br(),
                                           selectInput("color_palette_anova", "Color Palette:",
                                                       choices = c("Default (ggplot2)" = "Default",
                                                                   "Balanced (Set2)" = "Set2",
@@ -250,9 +286,12 @@ ui <- fluidPage(title = "Click-qPCR: Ultra-Simple Tool for Interactive qPCR Data
                                                                   "Paired Colors" = "Paired",
                                                                   "Pastel (Pastel1)" = "Pastel1",
                                                                   "Grayscale (for printing)" = "Grayscale")),
-                                          downloadButton("anova_csv", "Download ANOVA Stats", class="btn-success"),
-                                          div(style="display: inline-block;", downloadButton("anova_plot", "Download ANOVA Plot", class="btn-success")),
-                                          div(style="display: inline-block;", downloadButton("anova_plot_asis", "Save Displayed Size", class="btn-info")),
+                                          div(class = "btn-container",
+                                              downloadButton("anova_csv", "Download ANOVA Stats", class="btn-success"),
+                                              downloadButton("anova_plot", "Download ANOVA Plot", class="btn-success"),
+                                              downloadButton("anova_plot_asis", "Save Displayed Size", class="btn-info"),
+                                              selectInput("plot_format_anova", "Format:", choices = c("PNG" = "png", "PDF" = "pdf"), selected = "png", width = "120px")
+                                          ),
                                           hr(),
                                           h4("Download Plot Settings"),
                                           p("Settings for the 'Download ANOVA Plot' button."),
@@ -297,9 +336,10 @@ ui <- fluidPage(title = "Click-qPCR: Ultra-Simple Tool for Interactive qPCR Data
                                           h4("ANOVA (ΔΔCq) Comparison Settings"),
                                           uiOutput("anova_ddCq_control_group_selector"),
                                           uiOutput("anova_ddCq_treatment_group_selector"),
+                                          div(style = "margin-top: 10px;",
+                                              actionButton("anova_ddCq_analyze", "Run ANOVA (ΔΔCq)", class="btn-primary btn-lg", icon=icon("play-circle"))
+                                          ),
                                           hr(),
-                                          actionButton("anova_ddCq_analyze", "Run ANOVA (ΔΔCq)", class="btn-primary btn-lg", icon=icon("play-circle")),
-                                          br(),br(),
                                           selectInput("color_palette_anova_ddcq", "Color Palette:",
                                                       choices = c("Default (ggplot2)" = "Default",
                                                                   "Balanced (Set2)" = "Set2",
@@ -307,9 +347,12 @@ ui <- fluidPage(title = "Click-qPCR: Ultra-Simple Tool for Interactive qPCR Data
                                                                   "Paired Colors" = "Paired",
                                                                   "Pastel (Pastel1)" = "Pastel1",
                                                                   "Grayscale (for printing)" = "Grayscale")),
-                                          downloadButton("anova_ddCq_csv", "Download Stats", class="btn-success"),
-                                          div(style="display: inline-block;", downloadButton("anova_ddCq_plot", "Download Plot", class="btn-success")),
-                                          div(style="display: inline-block;", downloadButton("anova_ddCq_plot_asis", "Save Displayed Size", class="btn-info")),
+                                          div(class = "btn-container",
+                                              downloadButton("anova_ddCq_csv", "Download Stats", class="btn-success"),
+                                              downloadButton("anova_ddCq_plot", "Download Plot", class="btn-success"),
+                                              downloadButton("anova_ddCq_plot_asis", "Save Displayed Size", class="btn-info"),
+                                              selectInput("plot_format_anova_ddcq", "Format:", choices = c("PNG" = "png", "PDF" = "pdf"), selected = "png", width = "120px")
+                                          ),
                                           hr(),
                                           h4("Download Plot Settings"),
                                           p("Settings for the 'Download Plot' button."),
@@ -373,6 +416,8 @@ server <- function(input, output, session) {
   comparison_count <- reactiveVal(1)
   ddCq_comparison_count <- reactiveVal(1)
   
+  is_file_valid <- reactiveVal(FALSE)
+  
   `%||%` <- function(a, b) { if (!is.null(a)) a else b }
   
   # --- Data Loading and Reset ---
@@ -389,16 +434,35 @@ server <- function(input, output, session) {
   
   observeEvent(input$file, {
     req(input$file)
-    tryCatch({
-      df <- read.csv(input$file$datapath, stringsAsFactors = FALSE, check.names = FALSE)
+    
+    withCallingHandlers({
+      df <- readr::read_csv(input$file$datapath, col_names = TRUE)
+      
       preview_data(df)
+      showNotification("File preview is ready. Click 'Load File'.", type = "message", duration = 4)
+      shinyjs::enable("load_file")
+      is_file_valid(TRUE)
+      
+    }, warning = function(w) {
+      showNotification(
+        paste("Warning during file read:", w$message),
+        type = "warning", duration = 15
+      )
+      
     }, error = function(e) {
-      showNotification(paste("Could not preview file:", e$message), type = "error")
+      showNotification(
+        paste("Error: Could not read the file.",
+              "Please ensure it is a valid CSV and try re-saving it as 'CSV UTF-8'."),
+        type = "error", duration = 15
+      )
       preview_data(NULL)
+      shinyjs::disable("load_file")
+      is_file_valid(FALSE)
     })
   })
   
   observeEvent(input$load_file, {
+    req(is_file_valid(), cancelOutput = TRUE)
     req(input$file, preview_data())
     tryCatch({
       df <- preview_data()
@@ -425,7 +489,20 @@ server <- function(input, output, session) {
   })
   
   # --- UI Rendering ---
-  output$data_preview <- renderTable({ req(preview_data()); head(preview_data(), 10) })
+  output$data_preview <- DT::renderDataTable({
+    req(preview_data())
+    DT::datatable(
+      head(preview_data(), 10),
+      options = list(
+        scrollX = TRUE,
+        paging = FALSE,
+        searching = FALSE,
+        info = FALSE,
+        ordering = FALSE
+      ),
+      rownames = FALSE
+    )
+  })
   
   output$refgene_selector <- renderUI({
     req(raw_data())
@@ -1273,11 +1350,45 @@ server <- function(input, output, session) {
     }
   }, ignoreInit = TRUE)
   
+  # --- Interactive UI Logic (Enable/Disable DPI Slider) ---
+  observeEvent(input$plot_format_dcq, {
+    if (input$plot_format_dcq == "pdf") {
+      shinyjs::disable("plot_dpi")
+    } else {
+      shinyjs::enable("plot_dpi")
+    }
+  })
+  
+  observeEvent(input$plot_format_ddcq, {
+    if (input$plot_format_ddcq == "pdf") {
+      shinyjs::disable("plot_dpi_ddCq")
+    } else {
+      shinyjs::enable("plot_dpi_ddCq")
+    }
+  })
+  
+  observeEvent(input$plot_format_anova, {
+    if (input$plot_format_anova == "pdf") {
+      shinyjs::disable("plot_dpi_anova")
+    } else {
+      shinyjs::enable("plot_dpi_anova")
+    }
+  })
+  
+  observeEvent(input$plot_format_anova_ddcq, {
+    if (input$plot_format_anova_ddcq == "pdf") {
+      shinyjs::disable("plot_dpi_anova_ddCq")
+    } else {
+      shinyjs::enable("plot_dpi_anova_ddCq")
+    }
+  })
+  
+  
   # --- Downloads & Diagnostics ---
   output$download_csv <- downloadHandler(filename = function() { paste0(input$client_time %||% "analysis", "_stats.csv") }, content = function(file) { write.csv(analysis_results()$raw_data_for_dl, file, row.names = FALSE) })
   
   output$download_plot <- downloadHandler(
-    filename = function() { paste0(input$client_time %||% "analysis", "_plot_custom.png") },
+    filename = function() { paste0(input$client_time %||% "analysis", "_plot_custom.", input$plot_format_dcq) },
     content = function(file) {
       req(deltaCq_plot_obj())
       ggsave(file, plot = deltaCq_plot_obj(),
@@ -1300,7 +1411,7 @@ server <- function(input, output, session) {
   output$ddCq_csv <- downloadHandler(filename = function() { paste0(input$client_time %||% "analysis", "_ddCq_stats.csv") }, content = function(file) { write.csv(ddCq_analysis_results()$summary_table, file, row.names = FALSE) })
   
   output$ddCq_plot <- downloadHandler(
-    filename = function() { paste0(input$client_time %||% "analysis", "_ddCq_plot_custom.png") },
+    filename = function() { paste0(input$client_time %||% "analysis", "_ddCq_plot_custom.", input$plot_format_ddcq) },
     content = function(file) {
       req(ddCq_plot_obj())
       ggsave(file, plot = ddCq_plot_obj(),
@@ -1326,7 +1437,7 @@ server <- function(input, output, session) {
   )
   
   output$anova_plot <- downloadHandler(
-    filename = function() { paste0(input$client_time %||% "analysis", "_anova_plot.png") },
+    filename = function() { paste0(input$client_time %||% "analysis", "_anova_plot.", input$plot_format_anova) },
     content = function(file) {
       req(anova_plot_obj())
       ggsave(file, plot = anova_plot_obj(), width = input$plot_width_anova, height = input$plot_height_anova, dpi = input$plot_dpi_anova)
@@ -1351,7 +1462,7 @@ server <- function(input, output, session) {
   )
   
   output$anova_ddCq_plot <- downloadHandler(
-    filename = function() { paste0(input$client_time %||% "analysis", "_anova_ddCq_plot.png") },
+    filename = function() { paste0(input$client_time %||% "analysis", "_anova_ddCq_plot.", input$plot_format_anova_ddcq) },
     content = function(file) {
       req(anova_ddCq_plot_obj())
       ggsave(file, plot = anova_ddCq_plot_obj(), width = input$plot_width_anova_ddCq, height = input$plot_height_anova_ddCq, dpi = input$plot_dpi_anova_ddCq)
@@ -1425,7 +1536,7 @@ server <- function(input, output, session) {
       deltaCq_data <- sample_df_global %>%
         filter(gene == target_gene, group %in% c(base_group, comp_group)) %>%
         inner_join(mean_ref_cq_diag, by = "sample") %>%
-        mutate(deltaCq = Cq - mean_ref_cq) %>%
+        mutate(deltaCq = Cq - mean_control_deltaCq) %>%
         filter(!is.na(deltaCq))
       
       mean_control_deltaCq <- mean(deltaCq_data$deltaCq[deltaCq_data$group == base_group], na.rm = TRUE)
