@@ -28,6 +28,8 @@ A. Kubota and A. Tajima, *bioRxiv*, (2025). <https://doi.org/10.1101/2025.05.29.
 
 -   **Interactive Data Upload:** Easily upload your qPCR data in CSV format. A template is provided to guide data formatting.
 
+-   **Robust File Upload:** Automatically detects character encoding (e.g., UTF-8, Shift-JIS, etc.) for international compatibility.
+
 -   **Data Preview:** View the first 10 rows of your uploaded data to ensure it's loaded correctly.
 
 -   **Tab-Based Analysis:** The user interface is organized into clear tabs for different analyses.
@@ -54,7 +56,8 @@ A. Kubota and A. Tajima, *bioRxiv*, (2025). <https://doi.org/10.1101/2025.05.29.
         -   The same statistical results can be visualized as Fold Change ($2^{-\Delta\Delta Cq}$) on the **"ΔΔCq ANOVA (Dunnett's post-hoc)"** tab.
 
 -   **Advanced Downloading & Plotting:**
-    -   **Custom Plot Dimensions:** Interactively adjust the width, height, and resolution (DPI) for downloaded plots using sliders.
+    -   **Interactive Plots:** All plots are generated with ggplot2 and can be downloaded in PNG and PDF.
+    -   **Custom Plot Dimensions:** Interactively adjust the width and height for downloaded plots using sliders. Resolution (DPI) of PNG downloading is also available to change.
     -   **Fixed Aspect Ratio:** Optionally lock the plot's aspect ratio while resizing.
     -   **Two Download Modes:**
         1.  **Download Plot:** Saves an image using your custom dimension and DPI settings.
@@ -90,7 +93,7 @@ While the app is available online, you can also run it locally.
 ### Prerequisites
 
 -   R (version 4.1 or later recommended)
--   The following R packages: `shiny`, `dplyr`, `ggplot2`, `tidyr`, `DT`, `RColorBrewer`, `fontawesome`, `multcomp`
+-   The following R packages: `shiny`, `shinyjs`, `readr`, `dplyr`, `ggplot2`, `tidyr`, `DT`, `RColorBrewer`, `fontawesome`, `multcomp`
 
 ### Requirements
 
@@ -98,6 +101,8 @@ While the app is available online, you can also run it locally.
 * RStudio (recommended for ease of use, but not required if running from the R console)
 * The following R packages (and their dependencies):
 * `shiny`
+* `shinyjs`
+* `readr`
 * `dplyr`
 * `ggplot2`
 * `tidyr`
@@ -109,7 +114,7 @@ While the app is available online, you can also run it locally.
 These packages can be installed in R as follows:
 
 ```R
-install.packages(c("shiny", "dplyr", "ggplot2", "tidyr", "DT", "RColorBrewer", "fontawesome", "multcomp"))
+install.packages(c("shiny", "shinyjs", "readr", "dplyr", "ggplot2", "tidyr", "DT", "RColorBrewer", "fontawesome", "multcomp"))
 ```
 
 ### Running the Application
@@ -251,4 +256,4 @@ The Click-qPCR application and corresponding files are under MIT licence.
 
 ## Contact
 
-Feel free to send a email to me or use GitHub Discussions.
+Feel free to use GitHub Discussions.
