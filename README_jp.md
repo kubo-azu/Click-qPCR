@@ -161,6 +161,8 @@ shiny::runApp()
 
 1.  **データのアップロード:**
     -   `Preprocessing and ΔCq Analysis`タブで，`Upload CSV File`または`Use Example Data`をクリックします。プレビューが表示されます。
+    -   プレビューウィンドウで入力データを確認してください。データ形式が適切でない場合はメッセージが表示されます。
+    -   データを確認後，`2. Load File`をクリックしてください。アップロードされたデータがツールに読み込まれます。
 
 2.  **ΔCq解析の実行:**
     -   `Enable multiple reference genes`にチェックを入れて，複数のリファレンス遺伝子を選択可能にします。
