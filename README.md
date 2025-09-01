@@ -165,10 +165,12 @@ Each row must represent the Cq value of one gene in one sample. If you have tech
 ## How to Use
 
 1.  **Upload Data:**
-    -  On the **"ΔCq Analysis** tab, click "Upload CSV File" or "Use Example Data". A preview will appear.
+    -  On the **Preprocessing and ΔCq Analysis** tab, click "Upload CSV File" or "Use Example Data". A preview will appear.
+    -  Confirm the input data in a preview window. Specific messages will appear when the data format is not acceptable.
+    -  After chacking the data, click "2. Load File".
 
 2.  **Perform ΔCq Analysis:**
-    -   Check "Enable multiple reference genes" to select more than one.
+    -   Click "Enable multiple reference genes" to select more than one.
     -   Select your "Reference Gene(s)".
     -   Select one or more "Target Gene(s)".
     -   Under "Comparison Settings," define pairs of groups to compare. Click "Add" to create more pairs.
