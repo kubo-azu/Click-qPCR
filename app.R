@@ -435,30 +435,50 @@ server <- function(input, output, session) {
   observeEvent(input$file, {
     req(input$file)
     
-    withCallingHandlers({
-      df <- readr::read_csv(input$file$datapath, col_names = TRUE)
-      
+    # First, try to read it as standard CSV
+    df <- tryCatch({
+      readr::read_csv(input$file$datapath, col_names = TRUE, show_col_types = FALSE)
+    }, error = function(e) {
+      # Returns NULL if an error occurs
+      NULL
+    })
+    
+    # Check if the load was successful and there are multiple columns
+    if (!is.null(df) && ncol(df) > 1) {
+      # If successful
       preview_data(df)
-      showNotification("File preview is ready. Click 'Load File'.", type = "message", duration = 4)
+      showNotification("File preview is ready (comma-separated). Click 'Load File'.", type = "message", duration = 4)
       shinyjs::enable("load_file")
       is_file_valid(TRUE)
+    } else {
+      # If standard CSV fails, retry as semicolon-delimited CSV
+      showNotification("Could not parse as comma-separated. Retrying as semicolon-separated...", type = "default", duration = 2)
       
-    }, warning = function(w) {
-      showNotification(
-        paste("Warning during file read:", w$message),
-        type = "warning", duration = 15
-      )
+      df <- tryCatch({
+        readr::read_csv2(input$file$datapath, col_names = TRUE, show_col_types = FALSE)
+      }, error = function(e) {
+        # If an error occurs even after retrying, return NULL
+        showNotification(paste("Error reading file:", e$message), type = "error", duration = 10)
+        NULL
+      })
       
-    }, error = function(e) {
-      showNotification(
-        paste("Error: Could not read the file.",
-              "Please ensure it is a valid CSV and try re-saving it as 'CSV UTF-8'."),
-        type = "error", duration = 15
-      )
-      preview_data(NULL)
-      shinyjs::disable("load_file")
-      is_file_valid(FALSE)
-    })
+      if (!is.null(df) && ncol(df) > 1) {
+        # If successful, use semicolon separator
+        preview_data(df)
+        showNotification("File preview is ready (semicolon-separated). Click 'Load File'.", type = "message", duration = 4)
+        shinyjs::enable("load_file")
+        is_file_valid(TRUE)
+      } else {
+        # If both formats fail
+        showNotification(
+          "Error: Could not correctly parse the CSV file. Please ensure it uses commas or semicolons as delimiters.",
+          type = "error", duration = 15
+        )
+        preview_data(NULL)
+        shinyjs::disable("load_file")
+        is_file_valid(FALSE)
+      }
+    }
   })
   
   observeEvent(input$load_file, {
