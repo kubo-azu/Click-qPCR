@@ -1,4 +1,4 @@
-# 🧬 Click-qPCR 🧬
+# 🧬 Click-qPCR (v1.1.0) 🧬
 
 An ultra-simple tool for interactive qPCR data analysis developed with R and Shiny.
 
