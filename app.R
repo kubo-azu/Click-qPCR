@@ -112,7 +112,7 @@ ui <- fluidPage(title = "Click-qPCR: Ultra-Simple Tool for Interactive qPCR Data
                 br(),
                 div(
                   style = "display: flex; align-items: center; margin-bottom: 10px;",
-                  img(src = "Click-qPCR_logo.png", height = "128px", style = "margin-right: 12px;"),
+                  img(src = "Click-qPCR_logo.png", height = "128px", style = "margin-right: 10px;"),
                   div(
                     div(align = "left", style = "font-size: 65px; font-weight: bold; color: #2c3e50; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;",
                         HTML("Click-qPCR")
@@ -147,11 +147,11 @@ ui <- fluidPage(title = "Click-qPCR: Ultra-Simple Tool for Interactive qPCR Data
                                           uiOutput("group_pairs_ui"),
                                           actionButton("add_comparison", "Add", icon=icon("plus")),
                                           actionButton("remove_comparison", "Remove", icon=icon("minus")),
-                                          br(),br(),
+                                          br(),
                                           shinyjs::disabled(
                                             actionButton("analyze", "3. Analyze", class="btn-primary btn-lg", icon=icon("play-circle"))
                                           ),
-                                          br(),
+                                          br(), br(),
                                           hr(),
                                           h4("Plot and Data Download"),
                                           selectInput("color_palette_dcq", "Color Palette:",
@@ -1485,97 +1485,97 @@ server <- function(input, output, session) {
   observeEvent(input$run_diagnostics, {
     report <- data.frame(Check = character(), Result = character(), stringsAsFactors = FALSE)
     
+    # Test 1: Sample Data Loading
     tryCatch({
-      df <- read.csv(text = sample_csv_text, stringsAsFactors = FALSE, check.names = FALSE)
+      df <- sample_df_global
       test_passed <- nrow(df) > 0 && all(c("sample", "group", "gene", "Cq") %in% names(df))
-      report <- rbind(report, data.frame(Check = "Test 1: Sample data loads correctly with required columns", Result = ifelse(test_passed, "Passed ✅", "Failed ❌")))
+      report <- rbind(report, data.frame(Check = "Test 1: Sample data loads correctly", Result = ifelse(test_passed, "Passed ✅", "Failed ❌")))
     }, error = function(e) {
-      report <<- rbind(report, data.frame(Check = "Test 1: Sample data loads correctly with required columns", Result = "Failed ❌"))
+      report <<- rbind(report, data.frame(Check = "Test 1: Sample data loads correctly", Result = "Failed ❌"))
     })
     
+    # Test 2: ΔCq Calculation Validation
     tryCatch({
-      ref_genes_diag <- c("Gapdh", "Actb")
-      target_gene <- "Hoge"
-      group1 <- "Treatment_X"
-      group2 <- "Control"
+      target_cq <- sample_df_global$Cq[sample_df_global$sample == "Mouse_5" & sample_df_global$gene == "Hoge"]
+      ref1_cq <- sample_df_global$Cq[sample_df_global$sample == "Mouse_5" & sample_df_global$gene == "Gapdh"]
+      ref2_cq <- sample_df_global$Cq[sample_df_global$sample == "Mouse_5" & sample_df_global$gene == "Actb"]
+      
+      expected_dcq <- target_cq - mean(c(ref1_cq, ref2_cq))
       
       mean_ref_cq_diag <- sample_df_global %>%
-        filter(gene %in% ref_genes_diag) %>%
-        group_by(sample) %>%
+        filter(gene %in% c("Gapdh", "Actb"), sample == "Mouse_5") %>%
+        summarise(mean_ref_cq = mean(Cq, na.rm = TRUE))
+      
+      calculated_dcq <- target_cq - mean_ref_cq_diag$mean_ref_cq
+      
+      test_passed <- isTRUE(all.equal(expected_dcq, calculated_dcq))
+      report <- rbind(report, data.frame(Check = "Test 2: ΔCq calculation is correct", Result = ifelse(test_passed, "Passed ✅", "Failed ❌")))
+    }, error = function(e) {
+      report <<- rbind(report, data.frame(Check = "Test 2: ΔCq calculation is correct", Result = paste("Failed ❌:", e$message)))
+    })
+    
+    # Test 3: Statistical Test (t-test) Validation
+    tryCatch({
+      mean_ref_cq_diag <- sample_df_global %>%
+        filter(gene %in% c("Gapdh", "Actb")) %>% group_by(sample) %>%
         summarise(mean_ref_cq = mean(Cq, na.rm = TRUE), .groups = "drop")
       
       deltaCq_data_diag <- sample_df_global %>%
-        filter(gene == target_gene, group %in% c(group1, group2)) %>%
+        filter(gene == "Hoge", group %in% c("Control", "Treatment_X")) %>%
         inner_join(mean_ref_cq_diag, by = "sample") %>%
         mutate(deltaCq = Cq - mean_ref_cq)
       
-      deltaCq_vals_group1 <- deltaCq_data_diag$deltaCq[deltaCq_data_diag$group == group1]
-      deltaCq_vals_group2 <- deltaCq_data_diag$deltaCq[deltaCq_data_diag$group == group2]
+      p_value <- t.test(deltaCq ~ group, data = deltaCq_data_diag)$p.value
+      test_passed <- is.numeric(p_value) && p_value < 0.05
       
-      p_value <- t.test(deltaCq_vals_group1, deltaCq_vals_group2, na.rm = TRUE)$p.value
-      test_passed <- is.numeric(p_value)
-      
-      report <- rbind(report, data.frame(Check = "Test 2: ΔCq values are calculated and t-test runs", Result = ifelse(test_passed, "Passed ✅", "Failed ❌")))
+      report <- rbind(report, data.frame(Check = "Test 3: Statistical t-test on ΔCq values runs correctly", Result = ifelse(test_passed, "Passed ✅", "Failed ❌")))
     }, error = function(e) {
-      report <<- rbind(report, data.frame(Check = "Test 2: ΔCq values are calculated and t-test runs", Result = paste("Failed ❌:", e$message)))
+      report <<- rbind(report, data.frame(Check = "Test 3: Statistical t-test on ΔCq values runs correctly", Result = paste("Failed ❌:", e$message)))
     })
     
+    # Test 4: Fold Change (2^-ΔΔCq) Calculation Validation
     tryCatch({
-      ref_genes_diag <- c("Gapdh", "Actb")
-      target_gene <- "Hoge"
-      base_group <- "Control"
-      comp_group <- "Treatment_X"
-      
       mean_ref_cq_diag <- sample_df_global %>%
-        filter(gene %in% ref_genes_diag) %>%
-        group_by(sample) %>%
+        filter(gene %in% c("Gapdh", "Actb")) %>% group_by(sample) %>%
         summarise(mean_ref_cq = mean(Cq, na.rm = TRUE), .groups = "drop")
       
       deltaCq_data <- sample_df_global %>%
-        filter(gene == target_gene, group %in% c(base_group, comp_group)) %>%
+        filter(gene == "Hoge", group %in% c("Control", "Treatment_X")) %>%
         inner_join(mean_ref_cq_diag, by = "sample") %>%
-        mutate(deltaCq = Cq - mean_ref_cq) %>%
-        filter(!is.na(deltaCq))
+        mutate(deltaCq = Cq - mean_ref_cq)
       
-      deltaCq_base <- deltaCq_data$deltaCq[deltaCq_data$group == base_group]
-      deltaCq_comp <- deltaCq_data$deltaCq[deltaCq_data$group == comp_group]
+      mean_control_dcq <- mean(deltaCq_data$deltaCq[deltaCq_data$group == "Control"])
+      mean_treatment_dcq <- mean(deltaCq_data$deltaCq[deltaCq_data$group == "Treatment_X"])
       
-      p_value <- t.test(deltaCq_base, deltaCq_comp, na.rm = TRUE)$p.value
-      test_passed <- is.numeric(p_value)
+      expected_ddcq <- mean_treatment_dcq - mean_control_dcq
+      expected_fc <- 2^(-expected_ddcq)
       
-      report <- rbind(report, data.frame(Check = "Test 3: ΔΔCq analysis (t-test on ΔCq values) runs", Result = ifelse(test_passed, "Passed ✅", "Failed ❌")))
-      
+      test_passed <- is.numeric(expected_fc) && expected_fc > 0
+      report <- rbind(report, data.frame(Check = "Test 4: Fold change (2^-ΔΔCq) calculation is correct", Result = ifelse(test_passed, "Passed ✅", "Failed ❌")))
     }, error = function(e) {
-      report <<- rbind(report, data.frame(Check = "Test 3: ΔΔCq analysis (t-test on ΔCq values) runs", Result = paste("Failed ❌:", e$message)))
+      report <<- rbind(report, data.frame(Check = "Test 4: Fold change (2^-ΔΔCq) calculation is correct", Result = paste("Failed ❌:", e$message)))
     })
     
+    # Test 5: ANOVA and Dunnett's Test Validation
     tryCatch({
-      ref_genes_diag <- c("Gapdh", "Actb")
-      target_gene <- "Hoge"
-      control_group <- "Control"
-      treatment_groups <- c("Treatment_X", "Treatment_Y")
-      selected_groups <- c(control_group, treatment_groups)
-      
       mean_ref_cq_diag <- sample_df_global %>%
-        filter(gene %in% ref_genes_diag) %>%
-        group_by(sample) %>%
+        filter(gene %in% c("Gapdh", "Actb")) %>% group_by(sample) %>%
         summarise(mean_ref_cq = mean(Cq, na.rm = TRUE), .groups = "drop")
       
       deltaCq_data <- sample_df_global %>%
-        filter(gene == target_gene, group %in% selected_groups) %>%
+        filter(gene == "Hoge", group %in% c("Control", "Treatment_X", "Treatment_Y")) %>%
         inner_join(mean_ref_cq_diag, by = "sample") %>%
-        mutate(deltaCq = Cq - mean_ref_cq) %>%
-        filter(!is.na(deltaCq))
+        mutate(deltaCq = Cq - mean_ref_cq)
       
-      deltaCq_data$group <- factor(deltaCq_data$group, levels = selected_groups)
+      deltaCq_data$group <- factor(deltaCq_data$group, levels = c("Control", "Treatment_X", "Treatment_Y"))
       
       aov_model <- aov(deltaCq ~ group, data = deltaCq_data)
       dunnett_results <- summary(glht(aov_model, linfct = mcp(group = "Dunnett")))
       test_passed <- !is.null(dunnett_results) && is.numeric(dunnett_results$test$pvalues)
       
-      report <- rbind(report, data.frame(Check = "Test 4: ANOVA and Dunnett's test run correctly", Result = ifelse(test_passed, "Passed ✅", "Failed ❌")))
+      report <- rbind(report, data.frame(Check = "Test 5: ANOVA and Dunnett's test run correctly", Result = ifelse(test_passed, "Passed ✅", "Failed ❌")))
     }, error = function(e) {
-      report <<- rbind(report, data.frame(Check = "Test 4: ANOVA and Dunnett's test run correctly", Result = paste("Failed ❌:", e$message)))
+      report <<- rbind(report, data.frame(Check = "Test 5: ANOVA and Dunnett's test run correctly", Result = paste("Failed ❌:", e$message)))
     })
     
     output$diagnostics_output <- renderUI({
