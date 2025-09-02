@@ -78,12 +78,13 @@ A. Kubota and A. Tajima, *bioRxiv*, (2025). <https://doi.org/10.1101/2025.05.29.
     -   Provides clear messages in the results table (e.g., "Zero variance") when statistics cannot be calculated.
 
 -   **Diagnostics Tab:**
-    -   This tab provides a self-testing function. When you click the "Run Diagnostics" button, the app uses its built-in sample data to automatically test four of its core functions:
+    -   This tab provides a self-testing function. When you click the "Run Diagnostics" button, the app uses its built-in sample data to automatically test its core calculation steps:
         1.  Sample Data Loading
-        2.  ΔCq Analysis (*t*-test) Validation
-        3.  ΔΔCq Analysis (Statistical Test) Validation
-        4.  ANOVA and Dunnett's Test Validation
-    -   This confirms that all statistical tests are performed correctly on the appropriate ΔCq values. If all tests show "Passed ✅", you can be confident that the app's calculation and statistical capabilities are functioning as intended. When installed locally or modified, the Diagnostics tab is useful for checking the health of the application.
+        2.  ΔCq Calculation Validation
+        3.  Statistical Test (t-test) Validation
+        4.  Fold Change (2⁻ΔΔCq) Calculation Validation
+        5.  ANOVA and Dunnett's Test Validation
+    -   This ensures that each key part of the analysis pipeline—normalization, statistical comparison, and relative scaling—is functioning correctly. If all tests show "Passed ✅", you can be confident that the app's capabilities are working as intended.
     
 ## Installation and Usage
 
