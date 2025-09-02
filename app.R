@@ -104,6 +104,7 @@ ui <- fluidPage(title = "Click-qPCR: Ultra-Simple Tool for Interactive qPCR Data
     window.dataLayer = window.dataLayer || [];
     function gtag(){dataLayer.push(arguments);}
     gtag('js', new Date());
+
     gtag('config', 'G-7J5FG35PN3');
     "
                   ))
@@ -113,14 +114,14 @@ ui <- fluidPage(title = "Click-qPCR: Ultra-Simple Tool for Interactive qPCR Data
                   style = "display: flex; align-items: center; margin-bottom: 10px;",
                   img(src = "Click-qPCR_logo.png", height = "128px", style = "margin-right: 12px;"),
                   div(
-                    div(align = "left", style = "font-size: 66px; font-weight: bold; color: #2c3e50; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;",
+                    div(align = "left", style = "font-size: 65px; font-weight: bold; color: #2c3e50; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;",
                         HTML("Click-qPCR")
                     )
                   )
                 ),
                 div(align = "left", style = "margin-bottom: 15px; font-size: 16px; color: #555;",
                     HTML("<strong>Notifications:</strong><br># Calculate the mean of Cq values by yourself, if you have technical replicates.<br># Please cite this paper if you use this app in your research. <u>A. Kubota and A. Tajima, <i>bioRxiv</i>, 2025. (<a href='https://doi.org/10.1101/2025.05.29.656779' target='_blank'>https://doi.org/10.1101/2025.05.29.656779</a>).</u>")),
-                div(style = "text-align: left; font-size: 15px; color: #777;", "🧬 App Version: v1.0.1 🧬"),
+                div(style = "text-align: left; font-size: 15px; color: #777;", "🧬 App Version: v1.1.0 🧬"),
                 div(align = "left", style = "margin-bottom: 3px;",
                     tags$a(href = "https://github.com/kubo-azu/Click-qPCR", target = "_blank", icon("github"), "View User Guide (English and Japanese) & Source Code on GitHub")),
                 br(),
@@ -135,25 +136,24 @@ ui <- fluidPage(title = "Click-qPCR: Ultra-Simple Tool for Interactive qPCR Data
                                           downloadButton("download_template", "Template CSV"),
                                           actionButton("reset_app", "Reset All", icon=icon("sync-alt"), class = "btn-danger"),
                                           br(), br(),
-                                          fileInput("file", "1. Select CSV File"),
-                                          shinyjs::disabled(
-                                            actionButton("load_file", "2. Load File", icon=icon("upload"))
-                                          ),
+                                          h4("1. Select CSV File to Analyze", style = "font-weight: bold;"),
+                                          fileInput("file", NULL),
                                           div(style = "max-height: 350px; overflow-y: auto;", DT::dataTableOutput("data_preview")),
                                           br(),
                                           checkboxInput("enable_multi_ref", "Enable multiple reference genes", value = FALSE),
                                           uiOutput("refgene_selector"),
                                           uiOutput("gene_selector"),
-                                          h4("3. Comparison Settings", style = "font-weight: bold;"),
+                                          h4("2. Comparison Settings", style = "font-weight: bold;"),
                                           uiOutput("group_pairs_ui"),
-                                          div(
-                                            actionButton("add_comparison", "Add", icon=icon("plus")),
-                                            actionButton("remove_comparison", "Remove", icon=icon("minus"))
+                                          actionButton("add_comparison", "Add", icon=icon("plus")),
+                                          actionButton("remove_comparison", "Remove", icon=icon("minus")),
+                                          br(),br(),
+                                          shinyjs::disabled(
+                                            actionButton("analyze", "3. Analyze", class="btn-primary btn-lg", icon=icon("play-circle"))
                                           ),
-                                          div(style = "margin-top: 10px;",
-                                              actionButton("analyze", "Analyze", class="btn-primary btn-lg", icon=icon("play-circle"))
-                                          ),
+                                          br(),
                                           hr(),
+                                          h4("Plot and Data Download"),
                                           selectInput("color_palette_dcq", "Color Palette:",
                                                       choices = c("Default (ggplot2)" = "Default",
                                                                   "Balanced (Set2)" = "Set2",
@@ -209,13 +209,10 @@ ui <- fluidPage(title = "Click-qPCR: Ultra-Simple Tool for Interactive qPCR Data
                                           h4("ΔΔCq Comparison Settings"),
                                           uiOutput("ddCq_base_group_selector"),
                                           uiOutput("ddCq_comparison_groups_ui"),
-                                          div(
-                                            actionButton("add_ddCq_comparison", "Add", icon=icon("plus")),
-                                            actionButton("remove_ddCq_comparison", "Remove", icon=icon("minus"))
-                                          ),
-                                          div(style = "margin-top: 10px;",
-                                              actionButton("ddCq_analyze", "Run ΔΔCq Analysis", class="btn-primary btn-lg", icon=icon("play-circle"))
-                                          ),
+                                          actionButton("add_ddCq_comparison", "Add", icon=icon("plus")),
+                                          actionButton("remove_ddCq_comparison", "Remove", icon=icon("minus")),
+                                          actionButton("ddCq_analyze", "Run ΔΔCq Analysis", class="btn-primary btn-lg", icon=icon("play-circle")),
+                                          br(), br(),
                                           hr(),
                                           selectInput("color_palette_ddcq", "Color Palette:",
                                                       choices = c("Default (ggplot2)" = "Default",
@@ -275,9 +272,8 @@ ui <- fluidPage(title = "Click-qPCR: Ultra-Simple Tool for Interactive qPCR Data
                                           h4("ANOVA (3+ Groups) Comparison Settings"),
                                           uiOutput("anova_control_group_selector"),
                                           uiOutput("anova_treatment_group_selector"),
-                                          div(style = "margin-top: 10px;",
-                                              actionButton("anova_analyze", "Run ANOVA", class="btn-primary btn-lg", icon=icon("play-circle"))
-                                          ),
+                                          actionButton("anova_analyze", "Run ANOVA", class="btn-primary btn-lg", icon=icon("play-circle")),
+                                          br(),br(),
                                           hr(),
                                           selectInput("color_palette_anova", "Color Palette:",
                                                       choices = c("Default (ggplot2)" = "Default",
@@ -336,9 +332,8 @@ ui <- fluidPage(title = "Click-qPCR: Ultra-Simple Tool for Interactive qPCR Data
                                           h4("ANOVA (ΔΔCq) Comparison Settings"),
                                           uiOutput("anova_ddCq_control_group_selector"),
                                           uiOutput("anova_ddCq_treatment_group_selector"),
-                                          div(style = "margin-top: 10px;",
-                                              actionButton("anova_ddCq_analyze", "Run ANOVA (ΔΔCq)", class="btn-primary btn-lg", icon=icon("play-circle"))
-                                          ),
+                                          actionButton("anova_ddCq_analyze", "Run ANOVA (ΔΔCq)", class="btn-primary btn-lg", icon=icon("play-circle")),
+                                          br(),br(),
                                           hr(),
                                           selectInput("color_palette_anova_ddcq", "Color Palette:",
                                                       choices = c("Default (ggplot2)" = "Default",
@@ -416,92 +411,69 @@ server <- function(input, output, session) {
   comparison_count <- reactiveVal(1)
   ddCq_comparison_count <- reactiveVal(1)
   
-  is_file_valid <- reactiveVal(FALSE)
-  
   `%||%` <- function(a, b) { if (!is.null(a)) a else b }
   
   # --- Data Loading and Reset ---
   observeEvent(input$load_example, {
     df <- read.csv(text = sample_csv_text, stringsAsFactors = FALSE)
-    raw_data(df)
+    
     preview_data(df)
+    raw_data(df)
     analysis_results(NULL)
     ddCq_analysis_results(NULL)
     anova_results(NULL)
     anova_ddCq_results(NULL)
+    
     showNotification("Sample data loaded.", type = "message", duration = 3)
+    shinyjs::enable("analyze")
   })
   
   observeEvent(input$file, {
     req(input$file)
     
-    # First, try to read it as standard CSV
+    # First, try reading as a standard comma-separated CSV
     df <- tryCatch({
       readr::read_csv(input$file$datapath, col_names = TRUE, show_col_types = FALSE)
-    }, error = function(e) {
-      # Returns NULL if an error occurs
-      NULL
-    })
+    }, error = function(e) { NULL })
     
-    # Check if the load was successful and there are multiple columns
-    if (!is.null(df) && ncol(df) > 1) {
-      # If successful
-      preview_data(df)
-      showNotification("File preview is ready (comma-separated). Click 'Load File'.", type = "message", duration = 4)
-      shinyjs::enable("load_file")
-      is_file_valid(TRUE)
-    } else {
-      # If standard CSV fails, retry as semicolon-delimited CSV
+    # If the standard read fails or results in a single column, try as a semicolon-separated CSV
+    if (is.null(df) || ncol(df) <= 1) {
       showNotification("Could not parse as comma-separated. Retrying as semicolon-separated...", type = "default", duration = 2)
-      
       df <- tryCatch({
         readr::read_csv2(input$file$datapath, col_names = TRUE, show_col_types = FALSE)
-      }, error = function(e) {
-        # If an error occurs even after retrying, return NULL
-        showNotification(paste("Error reading file:", e$message), type = "error", duration = 10)
-        NULL
-      })
-      
-      if (!is.null(df) && ncol(df) > 1) {
-        # If successful, use semicolon separator
-        preview_data(df)
-        showNotification("File preview is ready (semicolon-separated). Click 'Load File'.", type = "message", duration = 4)
-        shinyjs::enable("load_file")
-        is_file_valid(TRUE)
-      } else {
-        # If both formats fail
-        showNotification(
-          "Error: Could not correctly parse the CSV file. Please ensure it uses commas or semicolons as delimiters.",
-          type = "error", duration = 15
-        )
-        preview_data(NULL)
-        shinyjs::disable("load_file")
-        is_file_valid(FALSE)
-      }
+      }, error = function(e) { NULL })
     }
-  })
-  
-  observeEvent(input$load_file, {
-    req(is_file_valid(), cancelOutput = TRUE)
-    req(input$file, preview_data())
-    tryCatch({
-      df <- preview_data()
-      req(all(c("sample", "group", "gene", "Cq") %in% names(df)))
+    
+    # Validate the resulting data frame
+    if (!is.null(df) && all(c("sample", "group", "gene", "Cq") %in% names(df))) {
       if (!is.numeric(df$Cq)) {
         df$Cq <- suppressWarnings(as.numeric(as.character(df$Cq)))
         if(any(is.na(df$Cq))) {
-          showNotification("Warning: Non-numeric Cq values were converted to NA.", type="warning")
+          showNotification("Warning: Non-numeric Cq values were found and will be ignored during calculations.", type="warning", duration=10)
         }
       }
+      
+      preview_data(df)
       raw_data(df)
+      
+      showNotification("File successfully loaded and validated.", type = "message", duration = 4)
+      shinyjs::enable("analyze")
+      
+    } else {
+      # If all attempts fail or columns are missing, reset and show error
+      error_message <- if (is.null(df)) {
+        "Error: Could not parse the file. Please ensure it is a valid CSV."
+      } else {
+        "Error: File is missing one or more required columns: 'sample', 'group', 'gene', 'Cq'."
+      }
+      
+      showNotification(error_message, type = "error", duration = 15)
+      
+      preview_data(NULL)
+      raw_data(NULL)
       analysis_results(NULL)
-      ddCq_analysis_results(NULL)
-      anova_results(NULL)
-      anova_ddCq_results(NULL)
-      showNotification("File successfully loaded for analysis.", type = "message", duration=3)
-    }, error = function(e) {
-      showNotification(paste("Error loading file:", e$message), type = "error", duration=10)
-    })
+      shinyjs::disable("analyze")
+    }
   })
   
   observeEvent(input$reset_app, {
@@ -1405,7 +1377,10 @@ server <- function(input, output, session) {
   
   
   # --- Downloads & Diagnostics ---
-  output$download_csv <- downloadHandler(filename = function() { paste0(input$client_time %||% "analysis", "_stats.csv") }, content = function(file) { write.csv(analysis_results()$raw_data_for_dl, file, row.names = FALSE) })
+  output$download_csv <- downloadHandler(
+    filename = function() { paste0(input$client_time %||% "analysis", "_stats.csv") },
+    content = function(file) { write.csv(analysis_results()$raw_data_for_dl, file, row.names = FALSE, fileEncoding = "UTF-8") }
+  )
   
   output$download_plot <- downloadHandler(
     filename = function() { paste0(input$client_time %||% "analysis", "_plot_custom.", input$plot_format_dcq) },
@@ -1428,7 +1403,10 @@ server <- function(input, output, session) {
     }
   )
   
-  output$ddCq_csv <- downloadHandler(filename = function() { paste0(input$client_time %||% "analysis", "_ddCq_stats.csv") }, content = function(file) { write.csv(ddCq_analysis_results()$summary_table, file, row.names = FALSE) })
+  output$ddCq_csv <- downloadHandler(
+    filename = function() { paste0(input$client_time %||% "analysis", "_ddCq_stats.csv") },
+    content = function(file) { write.csv(ddCq_analysis_results()$summary_table, file, row.names = FALSE, fileEncoding = "UTF-8") }
+  )
   
   output$ddCq_plot <- downloadHandler(
     filename = function() { paste0(input$client_time %||% "analysis", "_ddCq_plot_custom.", input$plot_format_ddcq) },
@@ -1453,7 +1431,7 @@ server <- function(input, output, session) {
   
   output$anova_csv <- downloadHandler(
     filename = function() { paste0(input$client_time %||% "analysis", "_anova_stats.csv") },
-    content = function(file) { write.csv(anova_results()$summary_table, file, row.names = FALSE) }
+    content = function(file) { write.csv(anova_results()$summary_table, file, row.names = FALSE, fileEncoding = "UTF-8") }
   )
   
   output$anova_plot <- downloadHandler(
@@ -1478,7 +1456,7 @@ server <- function(input, output, session) {
   
   output$anova_ddCq_csv <- downloadHandler(
     filename = function() { paste0(input$client_time %||% "analysis", "_anova_ddCq_stats.csv") },
-    content = function(file) { write.csv(anova_ddCq_results()$summary_table, file, row.names = FALSE) }
+    content = function(file) { write.csv(anova_ddCq_results()$summary_table, file, row.names = FALSE, fileEncoding = "UTF-8") }
   )
   
   output$anova_ddCq_plot <- downloadHandler(
@@ -1501,7 +1479,7 @@ server <- function(input, output, session) {
     }
   )
   
-  output$download_template <- downloadHandler(filename = "Click-qPCR_template.csv", content = function(file){ write.csv(read.csv(text=sample_csv_text), file, row.names=FALSE) })
+  output$download_template <- downloadHandler(filename = "Click-qPCR_template.csv", content = function(file){ write.csv(read.csv(text=sample_csv_text), file, row.names=FALSE, fileEncoding = "UTF-8") })
   
   # --- Diagnostics Section ---
   observeEvent(input$run_diagnostics, {
@@ -1556,20 +1534,19 @@ server <- function(input, output, session) {
       deltaCq_data <- sample_df_global %>%
         filter(gene == target_gene, group %in% c(base_group, comp_group)) %>%
         inner_join(mean_ref_cq_diag, by = "sample") %>%
-        mutate(deltaCq = Cq - mean_control_deltaCq) %>%
+        mutate(deltaCq = Cq - mean_ref_cq) %>%
         filter(!is.na(deltaCq))
       
-      mean_control_deltaCq <- mean(deltaCq_data$deltaCq[deltaCq_data$group == base_group], na.rm = TRUE)
-      ddCq_data <- deltaCq_data %>%
-        mutate(deltaDeltaCq = deltaCq - mean_control_deltaCq, FoldChange = 2^(-deltaDeltaCq))
+      deltaCq_base <- deltaCq_data$deltaCq[deltaCq_data$group == base_group]
+      deltaCq_comp <- deltaCq_data$deltaCq[deltaCq_data$group == comp_group]
       
-      fold_change_vals <- ddCq_data$FoldChange[ddCq_data$group == comp_group]
-      p_value <- t.test(fold_change_vals, mu = 1, na.rm = TRUE)$p.value
+      p_value <- t.test(deltaCq_base, deltaCq_comp, na.rm = TRUE)$p.value
       test_passed <- is.numeric(p_value)
       
-      report <- rbind(report, data.frame(Check = "Test 3: ΔΔCq (Fold Change) calculation and t-test runs", Result = ifelse(test_passed, "Passed ✅", "Failed ❌")))
+      report <- rbind(report, data.frame(Check = "Test 3: ΔΔCq analysis (t-test on ΔCq values) runs", Result = ifelse(test_passed, "Passed ✅", "Failed ❌")))
+      
     }, error = function(e) {
-      report <<- rbind(report, data.frame(Check = "Test 3: ΔΔCq (Fold Change) calculation and t-test runs", Result = paste("Failed ❌:", e$message)))
+      report <<- rbind(report, data.frame(Check = "Test 3: ΔΔCq analysis (t-test on ΔCq values) runs", Result = paste("Failed ❌:", e$message)))
     })
     
     tryCatch({
