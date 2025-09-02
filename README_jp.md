@@ -20,7 +20,7 @@ A. Kubota and A. Tajima, *bioRxiv*. (2025). <https://doi.org/10.1101/2025.05.29.
 
 ## 特徴
 
--   **インタラクティブなデータアップロード:** CSV形式のqPCRデータを簡単にアップロードできます。データフォーマットを理解するためのテンプレートが提供されています。
+-   **ファイルアップロード:** 国際的な互換性のために，文字コード（例：UTF-8、Shift-JISなど）を自動検出します。
 
 -   **データプレビュー:** アップロードしたデータの最初の10行を表示し, 正しく読み込まれていることを確認できます。
 
@@ -47,7 +47,8 @@ A. Kubota and A. Tajima, *bioRxiv*. (2025). <https://doi.org/10.1101/2025.05.29.
         -   結果は，`ΔCq ANOVA (Dunnett's post-hoc)`タブで相対発現量（2<sup>-ΔCq</sup>）として視覚化されます。
         -   同じ統計結果は，`ΔΔCq ANOVA (Dunnett's post-hoc)`タブでフォールドチェンジ（2<sup>-ΔΔCq</sup>）として視覚化できます。
 
--   **高度なダウンロードとプロット作成:**
+-   **高度なプロットダウンロード:**
+    -   **ファイルフォーマット:**全てのプロットは`ggplot2`で生成され，PNG形式およびPDF形式でダウンロード可能です。
     -   **カスタムプロット寸法:** スライダーを使用し，ダウンロードするプロットの幅・高さ・解像度（DPI）をインタラクティブに調整できます。 ※ DPIはPNG形式のみ調整可能
     -   **固定アスペクト比:** サイズ変更中にプロットのアスペクト比をオプションでロックできます。
     -   **2つのダウンロードモード:**
@@ -74,7 +75,7 @@ A. Kubota and A. Tajima, *bioRxiv*. (2025). <https://doi.org/10.1101/2025.05.29.
     -   このタブはアプリの自己診断機能を提供します。`Run Diagnostics`ボタンを押すと，アプリに内蔵されたサンプルデータを用いて，以下の4つの主要な機能が正しく動作しているかを自動でテストします。
         1. サンプルデータの読み込み
         2. ΔCq解析（ *t* 検定）の検証
-        3. ΔΔCq解析（フォールドチェンジ）の検証
+        3. ΔΔCq解析（ *t* 検定）の検証
         4. ANOVAとDunnettの検定の検証
     -   各テストの結果が**Passed ✅**と表示されれば，アプリの基本的な計算・統計処理機能が正常に動作していることを確認できます。これは，特にローカル環境でインストールした際の動作確認や，自身でコードを改変したりした場合に，アプリの健全性を確認するのに役立ちます。
 
@@ -84,26 +85,12 @@ A. Kubota and A. Tajima, *bioRxiv*. (2025). <https://doi.org/10.1101/2025.05.29.
 アプリはオンラインで利用可能ですが，ローカルで実行することもできます。
 
 
-### 前提条件
+### 必要なパッケージ
 
--   R (バージョン4.1以降を推奨)
--   以下のRパッケージ: `shiny`, `shinyjs`, `readr`, `dplyr`, `ggplot2`, `tidyr`, `DT`, `RColorBrewer`, `fontawesome`, `multcomp`
-
-* R (バージョン 4.4.2 以降を推奨)
-* RStudio (使いやすさのため推奨しますが，Rコンソールから実行する場合は必須ではありません)
-* 以下のRパッケージ（およびそれらの依存パッケージ）:
-    * `shiny`
-    * `shinyjs`
-    * `readr`
-    * `dplyr`
-    * `ggplot2`
-    * `tidyr`
-    * `DT`
-    * `RColorBrewer`
-    * `fontawesome`
-    * `multcomp`
-
-これらのパッケージはRで以下のようにインストールできます:
+* R (バージョン 4.1 以降を推奨)
+* RStudio (使いやすさのため推奨)
+* 以下のRパッケージ（下記のコマンドで一度にインストールできます）:
+    * `shiny`, `shinyjs`, `readr`, `dplyr`, `ggplot2`, `tidyr`, `DT`, `RColorBrewer`, `fontawesome`, `multcomp`
 
 ```R
 install.packages(c("shiny", "shinyjs", "readr", "dplyr", "ggplot2", "tidyr", "DT", "RColorBrewer", "fontawesome", "multcomp"))
@@ -159,37 +146,30 @@ shiny::runApp()
 
 ## 使用方法
 
-1.  **データのアップロード:**
-    -   `Preprocessing and ΔCq Analysis`タブで，`Upload CSV File`または`Use Example Data`をクリックします。プレビューが表示されます。
-    -   プレビューウィンドウで入力データを確認してください。データ形式が適切でない場合はメッセージが表示されます。
-    -   データを確認後，`2. Load File`をクリックしてください。アップロードされたデータがツールに読み込まれます。
+1.  **解析データの選択:**
+    -   `Preprocessing and ΔCq Analysis`タブで`Use Example Data`ボタンをクリックするか`Browse...`をクリックしてCSVファイルを選択します。
+    -   アプリケーションが自動でファイルを検証し，プレビューを表示します。ファイルが有効な場合，`3. Analyze`ボタンがクリック可能になります。
 
 2.  **ΔCq解析の実行:**
-    -   `Enable multiple reference genes`にチェックを入れて，複数のリファレンス遺伝子を選択可能にします。
-    -   `Reference Gene(s)`を選択します。
-    -   1つ以上の`Target Gene(s)`を選択します。
-    -   `Comparison Settings`で比較するグループのペアを定義します。`Add`をクリックして、さらに比較ペアを作成することも可能です。
-    -   `Analyze`をクリックします。プロットと統計テーブルがメインパネルに表示されます。
+    -   `Reference Gene(s)」と「Target Gene(s)」を選択します。複数の参照遺伝子を使用する場合はチェックボックスをオンにしてください。
+    -   `2. Comparison Settings`で比較したいグループのペアを定義します。`Add`・`Remove`ボタンでペアを追加できます。
+    -   青い`3. Analyze`ボタンをクリックします。プロットと統計テーブルが表示されます。
 
 3.  **ΔΔCq解析の実行:**
     -   `ΔΔCq Analysis`タブに移動します。
-    -   リファレンス遺伝子はメインの解析から自動的に継承されます。
-    -   単一の`Target Gene`を選択します。
-    -   発現量の基準として扱われる`Base Group (Control)`を選択します。
-    -   1つ以上の`Treatment Group(s)`を選択します。
-    -   `Run ΔΔCq Analysis`をクリックします。フォールドチェンジのプロットとテーブルが表示されます。
+    -   リファレンス遺伝子は自動的に継承されます。
+    -   単一の`Target Gene`，発現量の基準となる`Base Group (Control)`および1つ以上の`Treatment Group(s)`を選択します。
+    -   `Run ΔΔCq Analysis`をクリックします。
 
 4.  **ANOVAとDunnettの多重比較検定の実行:**
     -   `ΔCq ANOVA (Dunnett's post-hoc)`タブに移動します。
-    -   単一の`Target Gene`を選択します。
-    -   `Control Group`を選択します。
-    -   2つ以上の`Treatment Group(s)`を選択します。
-    -   `Run ANOVA`をクリックします。相対発現量のプロットと，ANOVAおよびDunnettの検定結果を含むテーブルが表示されます。
+    -   単一の`Target Gene`，`Control Group`，および2つ以上の`Treatment Group(s)`を選択します。
+    -   `Run ANOVA`をクリックします。
     -   `ΔΔCq ANOVA (Dunnett's post-hoc)`タブに移動すると，同じ結果がフォールドチェンジとして視覚化されます。
 
 5.  **結果のダウンロード:**
-    -   ダウンロードボタンを使用して結果を保存します。
-    -   `Download Plot Settings`パネルを使用して，`Download Plot`ボタンの寸法と解像度をカスタマイズ可能です。（解像度はPNGのみ）
+    -   ダウンロードボタンとFormatセレクタを使用し，結果をPNGまたはPDFファイルとして保存します。
+    -   `Download Plot Settings`パネルを使用し，プロットの寸法と解像度をカスタマイズできます。
 
 
 ## サンプルデータを使用した解析例
