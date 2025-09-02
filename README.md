@@ -30,7 +30,7 @@ A. Kubota and A. Tajima, *bioRxiv*, (2025). <https://doi.org/10.1101/2025.05.29.
 
 -   **Robust File Upload:** Automatically detects character encoding (e.g., UTF-8, Shift-JIS, etc.) for international compatibility.
 
--   **Data Preview:** View the first 10 rows of your uploaded data to ensure it's loaded correctly.
+-   **Data Preview:** Automatically displays the first 10 rows of your selected file, allowing you to verify the data before analysis.
 
 -   **Tab-Based Analysis:** The user interface is organized into clear tabs for different analyses.
 
@@ -73,7 +73,6 @@ A. Kubota and A. Tajima, *bioRxiv*, (2025). <https://doi.org/10.1101/2025.05.29.
         | **Pastel (Pastel1)** | A selection of softer, less saturated colors. A great choice for posters or when a less intense visual style is preferred.                      |
         | **Grayscale (for printing)** | Renders the plot in shades of gray. Use this to confirm your figure is interpretable without color.        |
 
-
 -   **Robust & Informative:**
     -   Handles cases with insufficient data or zero variance gracefully without crashing.
     -   Provides clear messages in the results table (e.g., "Zero variance") when statistics cannot be calculated.
@@ -82,36 +81,20 @@ A. Kubota and A. Tajima, *bioRxiv*, (2025). <https://doi.org/10.1101/2025.05.29.
     -   This tab provides a self-testing function. When you click the "Run Diagnostics" button, the app uses its built-in sample data to automatically test four of its core functions:
         1.  Sample Data Loading
         2.  ΔCq Analysis (*t*-test) Validation
-        3.  ΔΔCq Analysis (Fold Change) Validation
+        3.  ΔΔCq Analysis (Statistical Test) Validation
         4.  ANOVA and Dunnett's Test Validation
-    -   If all tests show "Passed ✅", you can be confident that the app's calculation and statistical capabilities are functioning as intended. When installed locally or modified, the Diagnostics tab is useful for checking the health of the application.
+    -   This confirms that all statistical tests are performed correctly on the appropriate ΔCq values. If all tests show "Passed ✅", you can be confident that the app's calculation and statistical capabilities are functioning as intended. When installed locally or modified, the Diagnostics tab is useful for checking the health of the application.
     
 ## Installation and Usage
 
 While the app is available online, you can also run it locally.
 
-### Prerequisites
-
--   R (version 4.1 or later recommended)
--   The following R packages: `shiny`, `shinyjs`, `readr`, `dplyr`, `ggplot2`, `tidyr`, `DT`, `RColorBrewer`, `fontawesome`, `multcomp`
-
 ### Requirements
 
-* R (version 4.4.2 or later recommended)
-* RStudio (recommended for ease of use, but not required if running from the R console)
-* The following R packages (and their dependencies):
-* `shiny`
-* `shinyjs`
-* `readr`
-* `dplyr`
-* `ggplot2`
-* `tidyr`
-* `DT`
-* `RColorBrewer`
-* `fontawesome`
-* `multcomp`
-
-These packages can be installed in R as follows:
+* R (version 4.1 or later recommended)
+* RStudio (recommended for ease of use)
+* The following R packages, which can be installed by running the command below:
+    * `shiny`, `shinyjs`, `readr`, `dplyr`, `ggplot2`, `tidyr`, `DT`, `RColorBrewer`, `fontawesome`, `multcomp`
 
 ```R
 install.packages(c("shiny", "shinyjs", "readr", "dplyr", "ggplot2", "tidyr", "DT", "RColorBrewer", "fontawesome", "multcomp"))
@@ -153,47 +136,42 @@ shiny::runApp()
     
 ## Data Format
 
-Prepare your data as a CSV file with the following four columns:
+Prepare your data as a CSV file with the following four columns: `sample`, `group`, `gene`, and `Cq`. A template file ([Click-qPCR_template.csv](Click-qPCR_template.csv)) can be downloaded from the application sidebar.
 
--   `sample`: Unique identifier for each sample (e.g., Mouse_A, CellLine_1).
--   `group`: The experimental group or condition (e.g., Control, Treatment_X).
--   `gene`: The name of the gene being measured (e.g., Gapdh, Actb).
--   `Cq`: The Quantification Cycle value (numeric). **Note:** This column must be named `Cq`.
+Click-qPCR automatically handles the two most common CSV formats, so you do not need to worry about the delimiter or decimal mark when saving from Excel:
+
+-   **Comma-separated values** with a **period** as the decimal mark (e.g., `20.01`).
+-   **Semicolon-separated values** with a **comma** as the decimal mark (e.g., `20,01`).
+
+**Note:**
 
 Each row must represent the Cq value of one gene in one sample. If you have technical replicates, please calculate and use their mean value. A template file ([Click-qPCR_template.csv](Click-qPCR_template.csv)) can be downloaded from the application sidebar.
 
 ## How to Use
 
-1.  **Upload Data:**
-    -  On the **Preprocessing and ΔCq Analysis** tab, click "Upload CSV File" or "Use Example Data". A preview will appear.
-    -  Confirm the input data in a preview window. Specific messages will appear when the data format is not acceptable.
-    -  After checking the data, click "2. Load File".
+1.  **Select Data to Analyze:**
+    -   On the **Preprocessing and ΔCq Analysis** tab, click **"Use Example Data"** or click **"Browse..."** to select your own CSV file.
+    -   The application will automatically validate the file and display a preview. If the file is valid, the "3. Analyze" button will become clickable.
 
 2.  **Perform ΔCq Analysis:**
-    -   Click "Enable multiple reference genes" to select more than one.
-    -   Select your "Reference Gene(s)".
-    -   Select one or more "Target Gene(s)".
-    -   Under "Comparison Settings," define pairs of groups to compare. Click "Add" to create more pairs.
-    -   Click **"Analyze"**. The plot and statistical table will appear.
+    -   Select your "Reference Gene(s)" and "Target Gene(s)". You can check the box to enable multiple reference genes.
+    -   Under "2. Comparison Settings," define pairs of groups to compare. Click "Add" to create more pairs.
+    -   Click the blue **"3. Analyze"** button. The plot and statistical table will appear.
 
 3.  **Perform ΔΔCq Analysis:**
     -   Click on the **"ΔΔCq Analysis"** tab.
     -   The Reference Gene(s) are automatically inherited.
-    -   Select a single "Target Gene".
-    -   Select the "Base Group (Control)".
-    -   Select one or more "Treatment Group(s)".
-    -   Click **"Run ΔΔCq Analysis"**. The fold change plot and table will appear.
+    -   Select a single "Target Gene", the "Base Group (Control)", and one or more "Treatment Group(s)".
+    -   Click **"Run ΔΔCq Analysis"**.
 
 4.  **Perform ANOVA and Dunnett's post-hoc:**
     -   Navigate to the **"ΔCq ANOVA (Dunnett's post-hoc)"** tab.
-    -   Select a single "Target Gene".
-    -   Select the "Control Group".
-    -   Select two or more "Treatment Group(s)".
-    -   Click **"Run ANOVA"**. The relative expression plot and a table with ANOVA and Dunnett's test results will appear.
+    -   Select a "Target Gene", the "Control Group", and two or more "Treatment Group(s)".
+    -   Click **"Run ANOVA"**.
     -   Navigate to the **"ΔΔCq ANOVA (Dunnett's post-hoc)"** tab to see the same results visualized as fold change.
 
 5.  **Download Results:**
-    -   In any tab, use the download buttons to save your results.
+    -   In any analysis tab, use the download buttons and the "Format" selector to save your results as PNG or PDF files.
     -   Use the **"Download Plot Settings"** panel to customize the dimensions and resolution for the "Download Plot" button.
     
 ## Example Analysis with Sample Data
