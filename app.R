@@ -122,7 +122,6 @@ ui <- fluidPage(title = "Click-qPCR: Ultra-Simple Tool for Interactive qPCR Data
                 div(align = "left", style = "margin-bottom: 15px; font-size: 16px; color: #555;",
                     HTML("<strong>Notifications:</strong>
           <ul style='padding-left: 20px; margin-top: 5px;'>
-            <li>Calculate the mean of Cq values by yourself, if you have technical replicates.</li>
             <li>Data with very low (e.g., <15) or high (e.g., >35) Cq values, or amplification efficiencies outside the 90-110% range, may be unreliable. We recommend following quality criteria, such as the MIQE guidelines (<a href='https://doi.org/10.1373/clinchem.2008.112797' target='_blank'>Bustin et al., <i>Clin Chem</i>, 2009</a>; updated <a href='https://doi.org/10.1093/clinchem/hvaf043' target='_blank'>MIQE 2.0, 2025</a>).</li>
             <li>This tool does not include any validation step for assessing the quality of uploaded data.</li>
             <li>Uploaded data are processed only in memory during your session and are never recorded on the server.</li>
@@ -157,6 +156,9 @@ ui <- fluidPage(title = "Click-qPCR: Ultra-Simple Tool for Interactive qPCR Data
                                           actionButton("add_comparison", "Add", icon=icon("plus")),
                                           actionButton("remove_comparison", "Remove", icon=icon("minus")),
                                           br(), br(),
+                                          h4("Plotting Order (Optional)", style = "font-weight: bold;"),
+                                          uiOutput("group_order_selector_ui"),
+                                          br(),
                                           shinyjs::disabled(
                                             actionButton("analyze", "3. Analyze", class="btn-primary btn-lg", icon=icon("play-circle"))
                                           ),
@@ -185,6 +187,9 @@ ui <- fluidPage(title = "Click-qPCR: Ultra-Simple Tool for Interactive qPCR Data
                                             column(6, sliderInput("plot_height", "Height (inches):", min = 4, max = 20, value = 8))
                                           ),
                                           sliderInput("plot_dpi", "Resolution (DPI):", min = 72, max = 600, value = 300),
+                                          hr(),
+                                          h4("Tips: Gene-based Graphical Order"),
+                                          p("The display order on the x-axis of the graph corresponds to the order of gene names in the Target Gene(s): window, so you can rearrange the graph by changing the input order of target genes."),
                                           hr(),
                                           h4("Appendix: Statistical Method"),
                                           p(HTML("<div style='font-size: 14px; color: #555; line-height: 1.5;'>
@@ -248,17 +253,25 @@ ui <- fluidPage(title = "Click-qPCR: Ultra-Simple Tool for Interactive qPCR Data
                                           ),
                                           sliderInput("plot_dpi_ddCq", "Resolution (DPI):", min = 72, max = 600, value = 300),
                                           hr(),
+                                          h4("Tips: Graphical Order"),
+                                          p(HTML("<div style='font-size: 14px; color: #555; line-height: 1.5;'>
+                                    <strong>1. Gene-based Order:</strong><br>
+                                    The display order on the x-axis of the graph corresponds to the order of gene names in the Target Gene(s): window, so you can rearrange the graph by changing the input order of target genes.
+                                    <br><br>
+                                    <strong>2. Group-based Order:</strong><br>
+                                    It also corresponds to the order of group names in the Treatment Group(s): window, so you can rearrange the graph by changing the input order of treatment groups.
+                                    </div>")),
+                                          hr(),
                                           h4("Appendix: Statistical Method"),
                                           p(HTML("<div style='font-size: 14px; color: #555; line-height: 1.5;'>
-                                    <strong>1. ΔΔCq Calculation:</strong><br>
-                                    ΔΔCq = ΔCq(Sample) - Mean ΔCq(Control Group)<br>
-                                    (where ΔCq = Cq_target - Mean Cq_refs)
-                                    <br><br>
+                                    <strong>1. ΔCq Calculation:</strong><br>
+                                    ΔCq = Cq(Target Gene) - Mean Cq(Reference Genes)
+                                    <br>
                                     <strong>2. Statistical Test:</strong><br>
                                     A <strong>Welch's two-sample <i>t</i>-test</strong> is performed on the <strong>ΔCq values</strong> between each treatment group and the control group to calculate the <i>p</i>-value.
                                     <br><br>
                                     <strong>3. Visualization:</strong><br>
-                                    The plot displays Relative Expression (2<sup>-ΔΔCq</sup>) for intuitive visualization.
+                                    The plot displays Relative Expression (2<sup>-ΔCq</sup>) for intuitive visualization.
                                     </div>"))
                              ),
                              mainPanel(width = 8,
@@ -310,6 +323,15 @@ ui <- fluidPage(title = "Click-qPCR: Ultra-Simple Tool for Interactive qPCR Data
                                             column(6, sliderInput("plot_height_anova", "Height (inches):", min = 4, max = 20, value = 8))
                                           ),
                                           sliderInput("plot_dpi_anova", "Resolution (DPI):", min = 72, max = 600, value = 300),
+                                          hr(),
+                                          h4("Tips: Graphical Order"),
+                                          p(HTML("<div style='font-size: 14px; color: #555; line-height: 1.5;'>
+                                    <strong>1. Gene-based Order:</strong><br>
+                                    The display order on the x-axis of the graph corresponds to the order of gene names in the Target Gene(s): window, so you can rearrange the graph by changing the input order of target genes.
+                                    <br><br>
+                                    <strong>2. Group-based Order:</strong><br>
+                                    It also corresponds to the order of group names in the Treatment Group(s): window, so you can rearrange the graph by changing the input order of treatment groups.
+                                    </div>")),
                                           hr(),
                                           h4("Appendix: Statistical Method"),
                                           p(HTML("<div style='font-size: 14px; color: #555; line-height: 1.5;'>
@@ -372,6 +394,15 @@ ui <- fluidPage(title = "Click-qPCR: Ultra-Simple Tool for Interactive qPCR Data
                                             column(6, sliderInput("plot_height_anova_ddCq", "Height (inches):", min = 4, max = 20, value = 8))
                                           ),
                                           sliderInput("plot_dpi_anova_ddCq", "Resolution (DPI):", min = 72, max = 600, value = 300),
+                                          hr(),
+                                          h4("Tips: Graphical Order"),
+                                          p(HTML("<div style='font-size: 14px; color: #555; line-height: 1.5;'>
+                                    <strong>1. Gene-based Order:</strong><br>
+                                    The display order on the x-axis of the graph corresponds to the order of gene names in the Target Gene(s): window, so you can rearrange the graph by changing the input order of target genes.
+                                    <br><br>
+                                    <strong>2. Group-based Order:</strong><br>
+                                    It also corresponds to the order of group names in the Treatment Group(s): window, so you can rearrange the graph by changing the input order of treatment groups.
+                                    </div>")),
                                           hr(),
                                           h4("Appendix: Statistical Method"),
                                           p(HTML("<div style='font-size: 14px; color: #555; line-height: 1.5;'>
@@ -541,6 +572,27 @@ server <- function(input, output, session) {
   observeEvent(input$add_comparison, { comparison_count(comparison_count() + 1) })
   observeEvent(input$remove_comparison, { if (comparison_count() > 1) comparison_count(comparison_count() - 1) })
   
+  # --- ▼▼▼ ここからが変更箇所です ▼▼▼ ---
+  output$group_order_selector_ui <- renderUI({
+    req(raw_data())
+    
+    # 比較対象として選択されているグループのみをリストアップ
+    comparison_pairs <- lapply(1:comparison_count(), function(i) {
+      c(input[[paste0("group1_comp", i)]], input[[paste0("group2_comp", i)]])
+    })
+    all_selected_groups <- unique(unlist(comparison_pairs))
+    
+    # 選択されたグループが存在する場合のみUIを表示
+    if (length(all_selected_groups) > 0) {
+      selectInput("group_order_select",
+                  "Select groups in desired display order:",
+                  choices = all_selected_groups,
+                  selected = all_selected_groups,
+                  multiple = TRUE)
+    }
+  })
+  # --- ▲▲▲ ここまでが変更箇所です ▲▲▲ ---
+  
   output$ddCq_refgene_display <- renderText({ req(input$refgene); paste(input$refgene, collapse = ", ") })
   output$anova_refgene_display <- renderText({ req(input$refgene); paste(input$refgene, collapse = ", ") })
   output$anova_ddCq_refgene_display <- renderText({ req(input$refgene); paste(input$refgene, collapse = ", ") })
@@ -659,8 +711,26 @@ server <- function(input, output, session) {
       ) %>%
       dplyr::select(gene, group1, group2, p_value, sig)
     
-    summary_data_plot <- summary_data %>% mutate(label = factor(paste0(gene, " (", group, ")"), levels = unique(paste0(gene, " (", group, ")"))))
+    # --- ▼▼▼ ここからが変更箇所です ▼▼▼ ---
+    # selectInputから順序を取得
+    if (!is.null(input$group_order_select) && length(input$group_order_select) > 0) {
+      ordered_groups <- input$group_order_select
+    } else {
+      # UIがまだ表示されていない場合などのフォールバック
+      ordered_groups <- all_selected_groups
+    }
+    
+    # 目的遺伝子とグループの順序に基づいて、プロットのX軸ラベルの順序を決定
+    ordered_labels <- unlist(lapply(input$goi, function(gene) {
+      paste0(gene, " (", ordered_groups, ")")
+    }))
+    
+    summary_data_plot <- summary_data %>%
+      mutate(label = factor(paste0(gene, " (", group, ")"), levels = ordered_labels)) %>%
+      filter(!is.na(label))
+    
     data_levels <- levels(summary_data_plot$label)
+    # --- ▲▲▲ ここまでが変更箇所です ▲▲▲ ---
     
     max_vals <- summary_data_plot %>% group_by(label) %>% summarise(y_pos = Mean + ifelse(is.na(SD), 0, SD))
     
@@ -1432,19 +1502,25 @@ server <- function(input, output, session) {
       req(analysis_results())
       results <- analysis_results()
       
+      # テーブルをファイルに書き込むための準備
       desc_stats <- results$raw_data_for_dl
       stat_results <- results$summary_table
       
+      # ファイルへの接続を開く
       con <- file(file, "w", encoding = "UTF-8")
       
+      # 1つ目のテーブルを書き込む
       writeLines("Descriptive Statistics (gene, group, Mean_RelExp, SD_RelExp, N)", con)
       write.csv(desc_stats, con, row.names = FALSE)
       
+      # テーブル間の区切りとして改行を2つ入れる
       writeLines("\n\n", con)
       
+      # 2つ目のテーブルを書き込む
       writeLines("Statistical Analysis Results", con)
       write.csv(stat_results, con, row.names = FALSE)
       
+      # 接続を閉じる
       close(con)
     }
   )
@@ -1473,13 +1549,15 @@ server <- function(input, output, session) {
   output$ddCq_csv <- downloadHandler(
     filename = function() { paste0(input$client_time %||% "analysis", "_ddCq_stats.csv") },
     content = function(file) {
-
+      # ダウンロードボタンが押された時に初めて、表示用の統計結果とFold Changeのデータを結合する
       req(ddCq_analysis_results())
       results <- ddCq_analysis_results()
       
+      # results$summary_table にはp値などの統計情報が、
+      # results$raw_data_for_dl にはFold Changeの平均値などが入っている
       download_df <- results$summary_table %>%
         left_join(results$raw_data_for_dl, by = c("gene", "group2" = "group")) %>%
-        
+        # ダウンロードするCSVの列を整える
         dplyr::select(
           gene, 
           group1, 
@@ -1522,20 +1600,26 @@ server <- function(input, output, session) {
       req(anova_results())
       results <- anova_results()
       
+      # 2つのテーブルを準備
       desc_stats <- results$summary_data_all %>%
         rename(Mean_RelExp = Mean, SD_RelExp = SD)
       stat_results <- results$summary_table
       
+      # ファイルへの接続を開く
       con <- file(file, "w", encoding = "UTF-8")
       
+      # 1つ目のテーブルを書き込む
       writeLines("Descriptive Statistics (gene, group, Mean_RelExp, SD_RelExp, N)", con)
       write.csv(desc_stats, con, row.names = FALSE)
       
+      # テーブル間の区切りとして改行を2つ入れる
       writeLines("\n\n", con)
       
+      # 2つ目のテーブルを書き込む
       writeLines("Statistical Analysis Results (ANOVA + Dunnett's Test)", con)
       write.csv(stat_results, con, row.names = FALSE)
       
+      # 接続を閉じる
       close(con)
     }
   )
@@ -1563,11 +1647,13 @@ server <- function(input, output, session) {
   output$anova_ddCq_csv <- downloadHandler(
     filename = function() { paste0(input$client_time %||% "analysis", "_anova_ddCq_stats.csv") },
     content = function(file) {
+      # ダウンロード時に統計結果とFold Changeデータを結合
       req(anova_ddCq_results())
       results <- anova_ddCq_results()
       
       download_df <- results$summary_table %>%
         left_join(results$summary_data_all, by = c("gene", "group2" = "group")) %>%
+        # ダウンロードするCSVの列を整える
         dplyr::select(
           gene, 
           group1, 
