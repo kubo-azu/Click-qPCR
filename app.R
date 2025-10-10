@@ -123,8 +123,9 @@ ui <- fluidPage(title = "Click-qPCR: Ultra-Simple Tool for Interactive qPCR Data
                     HTML("<strong>Notifications:</strong>
           <ul style='padding-left: 20px; margin-top: 5px;'>
             <li>Calculate the mean of Cq values by yourself, if you have technical replicates.</li>
-            <li>Data with very low (e.g., <15) or high (e.g., >35) Cq values, or amplification efficiencies outside the 90-110% range for ΔΔCq analysis, may be unreliable. We recommend following quality criteria, such as the MIQE guidelines (<a href='https://doi.org/10.1373/clinchem.2008.112797' target='_blank'>Bustin et al., <i>Clin Chem</i>, 2009</a>; updated <a href='https://doi.org/10.1093/clinchem/hvaf043' target='_blank'>MIQE 2.0, 2025</a>).</li>
-            <li>Privacy by Design: Data is processed only in memory during your session and is never recorded on the server.</li>
+            <li>Data with very low (e.g., <15) or high (e.g., >35) Cq values, or amplification efficiencies outside the 90-110% range, may be unreliable. We recommend following quality criteria, such as the MIQE guidelines (<a href='https://doi.org/10.1373/clinchem.2008.112797' target='_blank'>Bustin et al., <i>Clin Chem</i>, 2009</a>; updated <a href='https://doi.org/10.1093/clinchem/hvaf043' target='_blank'>MIQE 2.0, 2025</a>).</li>
+            <li>This tool does not include any validation step for assessing the quality of uploaded data.</li>
+            <li>Uploaded data are processed only in memory during your session and are never recorded on the server.</li>
             <li>Please <strong>cite this paper</strong> if you use this app in your research: <u>A. Kubota and A. Tajima, <i>bioRxiv</i>, 2025. (<a href='https://doi.org/10.1101/2025.05.29.656779' target='_blank'>https://doi.org/10.1101/2025.05.29.656779</a>).</u></li>
           </ul>"
                     )
