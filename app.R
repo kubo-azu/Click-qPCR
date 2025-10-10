@@ -1431,25 +1431,19 @@ server <- function(input, output, session) {
       req(analysis_results())
       results <- analysis_results()
       
-      # テーブルをファイルに書き込むための準備
       desc_stats <- results$raw_data_for_dl
       stat_results <- results$summary_table
       
-      # ファイルへの接続を開く
       con <- file(file, "w", encoding = "UTF-8")
       
-      # 1つ目のテーブルを書き込む
       writeLines("Descriptive Statistics (gene, group, Mean_RelExp, SD_RelExp, N)", con)
       write.csv(desc_stats, con, row.names = FALSE)
       
-      # テーブル間の区切りとして改行を2つ入れる
       writeLines("\n\n", con)
       
-      # 2つ目のテーブルを書き込む
       writeLines("Statistical Analysis Results", con)
       write.csv(stat_results, con, row.names = FALSE)
       
-      # 接続を閉じる
       close(con)
     }
   )
@@ -1478,15 +1472,13 @@ server <- function(input, output, session) {
   output$ddCq_csv <- downloadHandler(
     filename = function() { paste0(input$client_time %||% "analysis", "_ddCq_stats.csv") },
     content = function(file) {
-      # ダウンロードボタンが押された時に初めて、表示用の統計結果とFold Changeのデータを結合する
+
       req(ddCq_analysis_results())
       results <- ddCq_analysis_results()
       
-      # results$summary_table にはp値などの統計情報が、
-      # results$raw_data_for_dl にはFold Changeの平均値などが入っている
       download_df <- results$summary_table %>%
         left_join(results$raw_data_for_dl, by = c("gene", "group2" = "group")) %>%
-        # ダウンロードするCSVの列を整える
+        
         dplyr::select(
           gene, 
           group1, 
@@ -1529,26 +1521,20 @@ server <- function(input, output, session) {
       req(anova_results())
       results <- anova_results()
       
-      # 2つのテーブルを準備
       desc_stats <- results$summary_data_all %>%
         rename(Mean_RelExp = Mean, SD_RelExp = SD)
       stat_results <- results$summary_table
       
-      # ファイルへの接続を開く
       con <- file(file, "w", encoding = "UTF-8")
       
-      # 1つ目のテーブルを書き込む
       writeLines("Descriptive Statistics (gene, group, Mean_RelExp, SD_RelExp, N)", con)
       write.csv(desc_stats, con, row.names = FALSE)
       
-      # テーブル間の区切りとして改行を2つ入れる
       writeLines("\n\n", con)
       
-      # 2つ目のテーブルを書き込む
       writeLines("Statistical Analysis Results (ANOVA + Dunnett's Test)", con)
       write.csv(stat_results, con, row.names = FALSE)
       
-      # 接続を閉じる
       close(con)
     }
   )
@@ -1576,13 +1562,11 @@ server <- function(input, output, session) {
   output$anova_ddCq_csv <- downloadHandler(
     filename = function() { paste0(input$client_time %||% "analysis", "_anova_ddCq_stats.csv") },
     content = function(file) {
-      # ダウンロード時に統計結果とFold Changeデータを結合
       req(anova_ddCq_results())
       results <- anova_ddCq_results()
       
       download_df <- results$summary_table %>%
         left_join(results$summary_data_all, by = c("gene", "group2" = "group")) %>%
-        # ダウンロードするCSVの列を整える
         dplyr::select(
           gene, 
           group1, 
