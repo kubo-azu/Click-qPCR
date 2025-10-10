@@ -1,4 +1,4 @@
-# 🧬 Click-qPCR (v1.1.0) 🧬
+# 🧬 Click-qPCR (v1.2.0) 🧬
 
 An ultra-simple tool for interactive qPCR data analysis developed with R and Shiny.
 
@@ -30,6 +30,8 @@ A. Kubota and A. Tajima, *bioRxiv*, (2025). <https://doi.org/10.1101/2025.05.29.
 
 -   **Robust File Upload:** Automatically detects character encoding (e.g., UTF-8, Shift-JIS, etc.) for international compatibility.
 
+-   **Data Privacy (Web app):** No server-side storage, temporary and in-memory processing, automatic deletion upon session end.
+
 -   **Data Preview:** Automatically displays the first 10 rows of your selected file, allowing you to verify the data before analysis.
 
 -   **Tab-Based Analysis:** The user interface is organized into clear tabs for different analyses.
@@ -44,7 +46,7 @@ A. Kubota and A. Tajima, *bioRxiv*, (2025). <https://doi.org/10.1101/2025.05.29.
 
     -   **ΔΔCq Analysis:**
         -   Automatically uses the reference gene(s) selected in the "Preproceccing and ΔCq Analysis" tab.
-        -   Select a target gene, a base/control group, and one or more treatment groups.
+        -   Select target genes, a base/control group, and one or more treatment groups.
         -   Calculates fold-change ($2^{-\Delta\Delta Cq}$) relative to the base group.
         -   Performs Welch's *t*-test for statistical significance.
         -   Visualizes results in a dedicated bar plot.
@@ -66,12 +68,13 @@ A. Kubota and A. Tajima, *bioRxiv*, (2025). <https://doi.org/10.1101/2025.05.29.
 
         | Palette Name                  | Key Features & Recommendations                                                                                                                 |
         | ----------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
-        | **Default (ggplot2)** | The standard, well-recognized `ggplot2` theme.                                          |
-        | **Balanced (Set2)** | Provides a set of clear, distinct colors that are easy on the eyes and work well on screen.                     |
-        | **Colorblind-Friendly (Viridis)** | Ensures that your plots are accessible to everyone, including those with color vision deficiencies. |
+        | **Default** | The standard, well-recognized `ggplot2` theme.                                          |
+        | **Balanced** | Provides a set of clear, distinct colors that are easy on the eyes and work well on screen.                     |
+        | **Colorblind-Friendly** | Ensures that your plots are accessible to everyone, including those with color vision deficiencies. |
         | **Paired Colors** | Consists of light/dark pairs of colors. Ideal for analyses where you have paired or closely related experimental groups to compare.               |
-        | **Pastel (Pastel1)** | A selection of softer, less saturated colors. A great choice for posters or when a less intense visual style is preferred.                      |
-        | **Grayscale (for printing)** | Renders the plot in shades of gray. Use this to confirm your figure is interpretable without color.        |
+        | **Pastel** | A selection of softer, less saturated colors. A great choice for posters or when a less intense visual style is preferred.          |
+        | **Grayscale** | Renders the plot in shades of gray. Use this to confirm your figure is interpretable without color.        |
+        | **No Fill** | Renders the plot with white-filled bars and black outlines. It is ideal for black-and-white publications or for post-processing in a vector graphic editor.        |
 
 -   **Robust & Informative:**
     -   Handles cases with insufficient data or zero variance gracefully without crashing.
@@ -81,7 +84,7 @@ A. Kubota and A. Tajima, *bioRxiv*, (2025). <https://doi.org/10.1101/2025.05.29.
     -   This tab provides a self-testing function. When you click the "Run Diagnostics" button, the app uses its built-in sample data to automatically test its core calculation steps:
         1.  Sample Data Loading
         2.  ΔCq Calculation Validation
-        3.  Statistical Test (t-test) Validation
+        3.  Statistical Test (*t*-test) Validation
         4.  Fold Change (2⁻ΔΔCq) Calculation Validation
         5.  ANOVA and Dunnett's Test Validation
     -   This ensures that each key part of the analysis pipeline—normalization, statistical comparison, and relative scaling—is functioning correctly. If all tests show "Passed ✅", you can be confident that the app's capabilities are working as intended.
@@ -144,9 +147,7 @@ Click-qPCR automatically handles the two most common CSV formats, so you do not 
 -   **Comma-separated values** with a **period** as the decimal mark (e.g., `20.01`).
 -   **Semicolon-separated values** with a **comma** as the decimal mark (e.g., `20,01`).
 
-**Note:**
-
-Each row must represent the Cq value of one gene in one sample. If you have technical replicates, please calculate and use their mean value. A template file ([Click-qPCR_template.csv](Click-qPCR_template.csv)) can be downloaded from the application sidebar.
+**Note:** Each row must represent the Cq value of one gene in one sample. If you have technical replicates, please calculate and use their mean value. A template file ([Click-qPCR_template.csv](Click-qPCR_template.csv)) can be downloaded from the application sidebar.
 
 ## How to Use
 
@@ -162,19 +163,26 @@ Each row must represent the Cq value of one gene in one sample. If you have tech
 3.  **Perform ΔΔCq Analysis:**
     -   Click on the **"ΔΔCq Analysis"** tab.
     -   The Reference Gene(s) are automatically inherited.
-    -   Select a single "Target Gene", the "Base Group (Control)", and one or more "Treatment Group(s)".
+    -   Select "Target Gene(s)", the "Base Group (Control)", and one or more "Treatment Group(s)".
     -   Click **"Run ΔΔCq Analysis"**.
 
 4.  **Perform ANOVA and Dunnett's post-hoc:**
     -   Navigate to the **"ΔCq ANOVA (Dunnett's post-hoc)"** tab.
-    -   Select a "Target Gene", the "Control Group", and two or more "Treatment Group(s)".
+    -   Select "Target Gene(s)", the "Control Group", and two or more "Treatment Group(s)".
     -   Click **"Run ANOVA"**.
     -   Navigate to the **"ΔΔCq ANOVA (Dunnett's post-hoc)"** tab to see the same results visualized as fold change.
 
 5.  **Download Results:**
     -   In any analysis tab, use the download buttons and the "Format" selector to save your results as PNG or PDF files.
     -   Use the **"Download Plot Settings"** panel to customize the dimensions and resolution for the "Download Plot" button.
-    
+
+**📊 <ins>Tips: How to change the order of bar plot</ins> 📊**
+
+The display order on the x-axis of the graph corresponds to the order of gene names in the `Target Gene(s):` window, so you can rearrange the graph by changing the input order of target genes.
+
+It also corresponds to the order of gene names in the `Treatment Group(s):` window, so you can rearrange the graph by changing the input order of treatment groups.
+
+
 ## Example Analysis with Sample Data
 
 This section demonstrates how to use the app's core functions with the built-in sample data.
@@ -206,7 +214,7 @@ You will see a bar chart and a data table summarizing the analysis. The sample d
 
 ### 2. Perform ANOVA with Dunnett's Post-Hoc Test
 
-Next, we'll compare one gene across multiple treatment groups against a single control group. The reference genes selected in the first tab (`Gapdh` and `Actb`) will be automatically used.
+Next, we'll compare one target gene across multiple treatment groups against a single control group. The reference genes selected in the first tab (`Gapdh` and `Actb`) will be automatically used.
 
 * Navigate to the **"ΔCq ANOVA (Dunnett's post-hoc)"** tab.
 * Select `Hoge` as the "Target Gene".
