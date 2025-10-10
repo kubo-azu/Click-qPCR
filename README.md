@@ -180,7 +180,7 @@ Click-qPCR automatically handles the two most common CSV formats, so you do not 
 
 The display order on the x-axis of the graph corresponds to the order of gene names in the `Target Gene(s):` window, so you can rearrange the graph by changing the input order of target genes.
 
-It also corresponds to the order of gene names in the `Treatment Group(s):` window, so you can rearrange the graph by changing the input order of treatment groups.
+It also corresponds to the order of group names in the `Treatment Group(s):` window, so you can rearrange the graph by changing the input order of treatment groups.
 
 
 ## Example Analysis with Sample Data
