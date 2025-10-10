@@ -711,16 +711,12 @@ server <- function(input, output, session) {
       ) %>%
       dplyr::select(gene, group1, group2, p_value, sig)
     
-    # --- ▼▼▼ ここからが変更箇所です ▼▼▼ ---
-    # selectInputから順序を取得
     if (!is.null(input$group_order_select) && length(input$group_order_select) > 0) {
       ordered_groups <- input$group_order_select
     } else {
-      # UIがまだ表示されていない場合などのフォールバック
       ordered_groups <- all_selected_groups
     }
     
-    # 目的遺伝子とグループの順序に基づいて、プロットのX軸ラベルの順序を決定
     ordered_labels <- unlist(lapply(input$goi, function(gene) {
       paste0(gene, " (", ordered_groups, ")")
     }))
@@ -730,7 +726,6 @@ server <- function(input, output, session) {
       filter(!is.na(label))
     
     data_levels <- levels(summary_data_plot$label)
-    # --- ▲▲▲ ここまでが変更箇所です ▲▲▲ ---
     
     max_vals <- summary_data_plot %>% group_by(label) %>% summarise(y_pos = Mean + ifelse(is.na(SD), 0, SD))
     
@@ -907,11 +902,20 @@ server <- function(input, output, session) {
     req(ddCq_analysis_results())
     results <- ddCq_analysis_results()
     
+    ordered_genes <- levels(results$summary_data_plot$gene)
+    ordered_groups <- levels(results$summary_data_plot$group)
+    
+    ordered_labels <- unlist(lapply(ordered_genes, function(g) {
+      paste0(g, " (", ordered_groups, ")")
+    }))
+    
     plot_data <- results$summary_data_plot %>%
-      mutate(label = factor(paste0(gene, " (", group, ")"), levels = unique(paste0(gene, " (", group, ")"))))
+      mutate(label = factor(paste0(gene, " (", group, ")"), levels = ordered_labels)) %>%
+      filter(!is.na(label))
     
     jitter_data <- results$ddCq_data %>%
-      mutate(label = factor(paste0(gene, " (", group, ")"), levels = levels(plot_data$label)))
+      mutate(label = factor(paste0(gene, " (", group, ")"), levels = ordered_labels)) %>%
+      filter(!is.na(label))
     
     plot_max_y <- max(results$star_data$y_pos, na.rm = TRUE) * 1.25
     if(!is.finite(plot_max_y) || plot_max_y <= 0) plot_max_y <- 2
@@ -927,7 +931,7 @@ server <- function(input, output, session) {
       geom_hline(yintercept=1, linetype="dashed", color="red", linewidth=1) +
       geom_text(data=star_positions, aes(x=x_pos, y=y_pos, label=sig), inherit.aes=FALSE, vjust=-0.5, size=6) +
       coord_cartesian(ylim=c(0, plot_max_y), clip="off") +
-      labs(y=expression("Fold Change (2"^{-ΔΔCq}*")"), x="Gene (Group)", fill="Group") +
+      labs(y=expression("Fold Change (2"^{-Delta*Delta*Cq}*")"), x="Gene (Group)", fill="Group") +
       theme_classic(base_size = 14) +
       theme(axis.text.x=element_text(size=12, color="black", angle=45, hjust=1),
             axis.text.y=element_text(color="black"),
