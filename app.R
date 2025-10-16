@@ -572,17 +572,14 @@ server <- function(input, output, session) {
   observeEvent(input$add_comparison, { comparison_count(comparison_count() + 1) })
   observeEvent(input$remove_comparison, { if (comparison_count() > 1) comparison_count(comparison_count() - 1) })
   
-  # --- ▼▼▼ ここからが変更箇所です ▼▼▼ ---
   output$group_order_selector_ui <- renderUI({
     req(raw_data())
     
-    # 比較対象として選択されているグループのみをリストアップ
     comparison_pairs <- lapply(1:comparison_count(), function(i) {
       c(input[[paste0("group1_comp", i)]], input[[paste0("group2_comp", i)]])
     })
     all_selected_groups <- unique(unlist(comparison_pairs))
     
-    # 選択されたグループが存在する場合のみUIを表示
     if (length(all_selected_groups) > 0) {
       selectInput("group_order_select",
                   "Select groups in desired display order:",
@@ -591,7 +588,6 @@ server <- function(input, output, session) {
                   multiple = TRUE)
     }
   })
-  # --- ▲▲▲ ここまでが変更箇所です ▲▲▲ ---
   
   output$ddCq_refgene_display <- renderText({ req(input$refgene); paste(input$refgene, collapse = ", ") })
   output$anova_refgene_display <- renderText({ req(input$refgene); paste(input$refgene, collapse = ", ") })
@@ -609,7 +605,7 @@ server <- function(input, output, session) {
     req(raw_data(), input$ddCq_base_group)
     other_groups <- setdiff(unique(raw_data()$group), input$ddCq_base_group)
     lapply(1:ddCq_comparison_count(), function(i) {
-      selectInput(paste0("ddCq_comp_group", i), if(i==1) "Treatment Group(s)" else NULL, choices = other_groups, selected = input[[paste0("ddCq_comp_group", i)]] %||% if(length(other_groups) >= i) other_groups[i] else NULL)
+      selectInput(paste0("ddCq_comp_group", i), if(i==1) "Treatment Group(s):" else NULL, choices = other_groups, selected = input[[paste0("ddCq_comp_group", i)]] %||% if(length(other_groups) >= i) other_groups[i] else NULL)
     })
   })
   observeEvent(input$add_ddCq_comparison, { ddCq_comparison_count(ddCq_comparison_count() + 1) })
