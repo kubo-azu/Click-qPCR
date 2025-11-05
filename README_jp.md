@@ -12,9 +12,9 @@ Click-qPCRは，リアルタイム定量PCR（qPCR）データ解析のために
 
 ### <ins>注意</ins>
 
-このリポジトリには，プレプリントに付随する Shiny アプリのソースコードが含まれています。
+このリポジトリには，下記論文に付随する Shiny アプリのソースコードが含まれています。
 
-A. Kubota and A. Tajima, *bioRxiv*. (2025). <https://doi.org/10.1101/2025.05.29.656779>.
+A. Kubota and A. Tajima, *Bio-protocol*. (2025). <https://doi.org/10.21769/BioProtoc.5513>.
 
 **このアプリやコードを研究で使用する場合は，この論文を必ず引用してください。（学会発表や卒業研究含む）**
 
