@@ -1,4 +1,4 @@
-# 🧬 Click-qPCR (v1.2.0) 🧬
+# 🧬 Click-qPCR (v1.2.1) 🧬
 
 An ultra-simple tool for interactive qPCR data analysis developed with R and Shiny.
 
@@ -12,15 +12,21 @@ Click-qPCR is a user-friendly Shiny web application designed for the straightfor
 
 It allows users to upload their Cq (quantification cycle) values, perform ΔCq and ΔΔCq calculations, visualize results as bar plots with individual data points, and download both the statistical summaries and publication-quality plots.
 
-For users who prefer to run or modify the application locally, the source code is also available (see Installation and Usage section below).
+For users who prefer to run or modify the application locally, the source code is also available (see 'Installation and Usage' section below).
 
 This tool aims to simplify common qPCR data analysis workflows, making them more accessible to researchers without requiring extensive programming knowledge.
+
+### 📣 Announcements 📣
+
+Want to prepare input data for Click-qPCR more efficiently? <b>Click-Prep</b> makes it easy.
+
+Try it here: [https://kubo-azu.shinyapps.io/Click-Prep/](https://kubo-azu.shinyapps.io/Click-Prep/)
 
 ### <ins>Notice</ins>
 
 This repository contains the source code for the Shiny app accompanying the paper as follows:
 
-A. Kubota and A. Tajima, *Bio-protocol*, (2025). <https://doi.org/10.21769/BioProtoc.5513>.
+Kubota, A. and Tajima, A. (2025). *Bio-protocol*, 15(1384). <https://doi.org/10.21769/BioProtoc.5513>.
 
 **Please cite this paper if you use this app or code in your research.**
 
@@ -245,4 +251,4 @@ The Click-qPCR application and corresponding files are under MIT licence.
 
 ## Contact
 
-Feel free to use GitHub Discussions.
+Feel free to use [GitHub Discussions](https://github.com/kubo-azu/Click-qPCR/discussions).
