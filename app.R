@@ -132,7 +132,7 @@ ui <- fluidPage(title = "Click-qPCR: Ultra-Simple Tool for Interactive qPCR Data
                 div(style = "text-align: left; font-size: 17px; font-weight: bold; color: #2c3e50;", "🧬 App Version: v1.2.1 🧬"),
                 div(
                   align = "left",
-                  style = "margin-top: 3px; margin-bottom: 16px; font-size: 15px;",
+                  style = "margin-top: 3px; margin-bottom: 16px; font-size: 17px;",
                   tags$a(
                     href = "https://github.com/kubo-azu/Click-qPCR",
                     target = "_blank",
