@@ -1,4 +1,4 @@
-# 🧬 Click-qPCR 日本語版ユーザーガイド (v1.2.0) 🧬
+# 🧬 Click-qPCR 日本語版ユーザーガイド (v1.2.1) 🧬
 
 Click-qPCRは，リアルタイム定量PCR（qPCR）データ解析のために設計されたユーザーフレンドリーなShinyウェブアプリケーションです。
 
@@ -10,13 +10,19 @@ Click-qPCRは，リアルタイム定量PCR（qPCR）データ解析のために
 
 このツールは，一般的なqPCRデータ解析のワークフローを簡素化し，表計算ソフトによる煩雑な解析やプログラミングの知識なしに再現性ある解析を実行することを目的としています。
 
+### 📣 お知らせ 📣
+
+Click-qPCR用のインプットファイル作成を補助するツールとして<b>Click-Prep</b>を公開しました。機器が出力した表形式のファイルを加工することに特化しています。
+
+リンク: [https://kubo-azu.shinyapps.io/Click-Prep/](https://kubo-azu.shinyapps.io/Click-Prep/)
+
 ### <ins>注意</ins>
 
 このリポジトリには，下記論文に付随する Shiny アプリのソースコードが含まれています。
 
-A. Kubota and A. Tajima, *Bio-protocol*. (2025). <https://doi.org/10.21769/BioProtoc.5513>.
+Kubota, A. and Tajima, A. (2025). *Bio-protocol*, 15(1384). <https://doi.org/10.21769/BioProtoc.5513>.
 
-**このアプリやコードを研究で使用する場合は，この論文を必ず引用してください。（学会発表や卒業研究含む）**
+**本ツールの出力結果を使用する場合，<ins>この論文を必ず引用</ins>してください。（学会発表や卒業研究なども含む）**
 
 ## 特徴
 
@@ -246,4 +252,4 @@ shiny::runApp()
 
 ## お問い合わせ
 
-GitHub Discussionsをご利用いただくか，直接メールをお送りください。
+[GitHub Discussions](https://github.com/kubo-azu/Click-qPCR/discussions)をご利用いただくか，直接メールをお送りください。
