@@ -119,19 +119,37 @@ ui <- fluidPage(title = "Click-qPCR: Ultra-Simple Tool for Interactive qPCR Data
                     )
                   )
                 ),
-                div(align = "left", style = "margin-bottom: 15px; font-size: 16px; color: #555;",
+                div(align = "left", style = "margin-top: 5px; margin-bottom: 15px; font-size: 18px; color: #2c3e50;",
                     HTML("<strong>Notifications:</strong>
           <ul style='padding-left: 20px; margin-top: 5px;'>
             <li>Data with very low (e.g., <15) or high (e.g., >35) Cq values, or amplification efficiencies outside the 90-110% range, may be unreliable. We recommend following quality criteria, such as the MIQE guidelines (<a href='https://doi.org/10.1373/clinchem.2008.112797' target='_blank'>Bustin et al., <i>Clin Chem</i>, 2009</a>; updated <a href='https://doi.org/10.1093/clinchem/hvaf043' target='_blank'>MIQE 2.0, 2025</a>).</li>
             <li>This tool does not include any validation step for assessing the quality of uploaded data.</li>
             <li>Uploaded data are processed only in memory during your session and are never recorded on the server.</li>
-            <li>Please <strong>cite this paper</strong> if you use this app in your research: <u>A. Kubota and A. Tajima, <i>bioRxiv</i>, 2025. (<a href='https://doi.org/10.1101/2025.05.29.656779' target='_blank'>https://doi.org/10.1101/2025.05.29.656779</a>).</u></li>
+            <li>Please <strong>cite this paper</strong> if you use this app in your research: <u>Kubota, A. and Tajima, A. (2025). <i>Bio-protocol</i>, 15(1384). (<a href='https://doi.org/10.21769/BioProtoc.5513' target='_blank'>https://doi.org/10.21769/BioProtoc.5513</a>).</u>
           </ul>"
                     )
                 ),
-                div(style = "text-align: left; font-size: 15px; color: #777;", "🧬 App Version: v1.2.0 🧬"),
-                div(align = "left", style = "margin-bottom: 3px;",
-                    tags$a(href = "https://github.com/kubo-azu/Click-qPCR", target = "_blank", icon("github"), "View User Guide (English and Japanese) & Source Code on GitHub")),
+                div(style = "text-align: left; font-size: 17px; font-weight: bold; color: #2c3e50;", "🧬 App Version: v1.2.1 🧬"),
+                div(
+                  align = "left",
+                  style = "margin-top: 3px; margin-bottom: 16px; font-size: 15px;",
+                  tags$a(
+                    href = "https://github.com/kubo-azu/Click-qPCR",
+                    target = "_blank",
+                    icon("github"),
+                    "View User Guide (English and Japanese) & Source Code on GitHub"
+                  )
+                ),
+                
+                div(style = "text-align: left; font-size: 17px; font-weight: bold; color: #2c3e50;", "📣 Announcements 📣"),
+                
+                div(
+                  align = "left",
+                  style = "margin-top: 2px; margin-bottom: 10px; font-size: 17px;",
+                  HTML("Want to prepare input data for Click-qPCR more efficiently?
+                       <b>Click-Prep</b> makes it easy.<br>
+                       Try it here: <a href='https://kubo-azu.shinyapps.io/Click-Prep/' target='_blank'>https://kubo-azu.shinyapps.io/Click-Prep/</a>")
+                ),
                 br(),
                 tabsetPanel(
                   id = "main_tabs",
