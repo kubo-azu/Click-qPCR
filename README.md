@@ -244,9 +244,9 @@ This analysis performs a one-way ANOVA to see if there are any differences among
 | Control      | Treatment_Z - Control = 0            | 2.00e-07 | *** |
 
 
-## Licence
+## License
 
-The Click-qPCR application and corresponding files are under MIT licence.
+The Click-qPCR application and corresponding files are under MIT license.
 
 
 ## Contact
