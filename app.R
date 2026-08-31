@@ -129,7 +129,7 @@ ui <- fluidPage(title = "Click-qPCR: Ultra-Simple Tool for Interactive qPCR Data
           </ul>"
                     )
                 ),
-                div(style = "text-align: left; font-size: 17px; font-weight: bold; color: #2c3e50;", "🧬 App Version: v1.2.1 🧬"),
+                div(style = "text-align: left; font-size: 17px; font-weight: bold; color: #2c3e50;", "🧬 App Version: v1.3.0 🧬"),
                 div(
                   align = "left",
                   style = "margin-top: 3px; margin-bottom: 16px; font-size: 17px;",
@@ -909,6 +909,7 @@ server <- function(input, output, session) {
                                raw_data_for_dl = summary_data,
                                star_data = star_data,
                                summary_data_plot = summary_data_plot,
+                               calculation_data = ddCq_data,
                                ddCq_data = ddCq_data %>% filter(group %in% ddCq_comparison_groups)))
   })
   
@@ -1168,7 +1169,9 @@ server <- function(input, output, session) {
         
         mean_control_deltaCq <- mean(deltaCq_data_gene$deltaCq[deltaCq_data_gene$group == input$anova_ddCq_control], na.rm = TRUE)
         ddCq_data <- deltaCq_data_gene %>%
-          mutate(deltaDeltaCq = deltaCq - mean_control_deltaCq, FoldChange = 2^(-deltaDeltaCq))
+          mutate(mean_control_deltaCq = mean_control_deltaCq,
+                 deltaDeltaCq = deltaCq - mean_control_deltaCq,
+                 FoldChange = 2^(-deltaDeltaCq))
         
         list(
           gene = current_gene,
@@ -1215,6 +1218,7 @@ server <- function(input, output, session) {
                             summary_data_all = summary_data_all,
                             summary_data_plot = summary_data_plot,
                             star_data = star_data,
+                            calculation_data = long_data_all,
                             long_data = long_data_all %>% filter(group %in% input$anova_ddCq_treatments),
                             f_test_text = f_test_text))
   })
@@ -1515,31 +1519,46 @@ server <- function(input, output, session) {
   
   # --- Downloads & Diagnostics ---
   output$download_csv <- downloadHandler(
-    filename = function() { paste0(input$client_time %||% "analysis", "_stats.csv") },
+    filename = function() { paste0(input$client_time %||% "analysis", "_deltaCq_tables.zip") },
+    contentType = "application/zip",
     content = function(file) {
       req(analysis_results())
       results <- analysis_results()
+      timestamp <- input$client_time %||% "analysis"
       
-      # テーブルをファイルに書き込むための準備
       desc_stats <- results$raw_data_for_dl
       stat_results <- results$summary_table
+      calculation_df <- results$long_data %>%
+        dplyr::select(sample, group, gene, Cq, mean_ref_cq,
+                      deltaCq = deltaCq_val, RelExp)
       
-      # ファイルへの接続を開く
-      con <- file(file, "w", encoding = "UTF-8")
+      temp_dir <- tempfile("deltaCq_download_")
+      dir.create(temp_dir)
+      on.exit(unlink(temp_dir, recursive = TRUE), add = TRUE)
       
-      # 1つ目のテーブルを書き込む
+      stats_name <- paste0(timestamp, "_deltaCq_stats.csv")
+      calculations_name <- paste0(timestamp, "_deltaCq_calculation_values.csv")
+      stats_path <- file.path(temp_dir, stats_name)
+      calculations_path <- file.path(temp_dir, calculations_name)
+      
+      con <- file(stats_path, "w", encoding = "UTF-8")
+      
       writeLines("Descriptive Statistics (gene, group, Mean_RelExp, SD_RelExp, N)", con)
       write.csv(desc_stats, con, row.names = FALSE)
-      
-      # テーブル間の区切りとして改行を2つ入れる
       writeLines("\n\n", con)
-      
-      # 2つ目のテーブルを書き込む
       writeLines("Statistical Analysis Results", con)
       write.csv(stat_results, con, row.names = FALSE)
-      
-      # 接続を閉じる
       close(con)
+      
+      write.csv(calculation_df, calculations_path, row.names = FALSE, fileEncoding = "UTF-8")
+      
+      old_working_directory <- setwd(temp_dir)
+      on.exit(setwd(old_working_directory), add = TRUE)
+      zip_path <- paste0(file, ".zip")
+      utils::zip(zip_path, files = c(stats_name, calculations_name))
+      if (!file.copy(zip_path, file, overwrite = TRUE)) {
+        stop("Failed to prepare the ΔCq ZIP download.")
+      }
     }
   )
   
@@ -1565,17 +1584,15 @@ server <- function(input, output, session) {
   )
   
   output$ddCq_csv <- downloadHandler(
-    filename = function() { paste0(input$client_time %||% "analysis", "_ddCq_stats.csv") },
+    filename = function() { paste0(input$client_time %||% "analysis", "_ddCq_tables.zip") },
+    contentType = "application/zip",
     content = function(file) {
-      # ダウンロードボタンが押された時に初めて、表示用の統計結果とFold Changeのデータを結合する
       req(ddCq_analysis_results())
       results <- ddCq_analysis_results()
+      timestamp <- input$client_time %||% "analysis"
       
-      # results$summary_table にはp値などの統計情報が、
-      # results$raw_data_for_dl にはFold Changeの平均値などが入っている
       download_df <- results$summary_table %>%
         left_join(results$raw_data_for_dl, by = c("gene", "group2" = "group")) %>%
-        # ダウンロードするCSVの列を整える
         dplyr::select(
           gene, 
           group1, 
@@ -1587,7 +1604,38 @@ server <- function(input, output, session) {
           sig
         )
       
-      write.csv(download_df, file, row.names = FALSE, fileEncoding = "UTF-8")
+      calculation_df <- results$calculation_data %>%
+        dplyr::select(
+          sample,
+          group,
+          gene,
+          Cq,
+          mean_ref_cq,
+          deltaCq,
+          mean_control_deltaCq,
+          deltaDeltaCq,
+          FoldChange
+        )
+      
+      temp_dir <- tempfile("ddCq_download_")
+      dir.create(temp_dir)
+      on.exit(unlink(temp_dir, recursive = TRUE), add = TRUE)
+      
+      stats_name <- paste0(timestamp, "_ddCq_stats.csv")
+      calculations_name <- paste0(timestamp, "_ddCq_calculation_values.csv")
+      stats_path <- file.path(temp_dir, stats_name)
+      calculations_path <- file.path(temp_dir, calculations_name)
+      
+      write.csv(download_df, stats_path, row.names = FALSE, fileEncoding = "UTF-8")
+      write.csv(calculation_df, calculations_path, row.names = FALSE, fileEncoding = "UTF-8")
+      
+      old_working_directory <- setwd(temp_dir)
+      on.exit(setwd(old_working_directory), add = TRUE)
+      zip_path <- paste0(file, ".zip")
+      utils::zip(zip_path, files = c(stats_name, calculations_name))
+      if (!file.copy(zip_path, file, overwrite = TRUE)) {
+        stop("Failed to prepare the ΔΔCq ZIP download.")
+      }
     }
   )
   
@@ -1613,32 +1661,46 @@ server <- function(input, output, session) {
   )
   
   output$anova_csv <- downloadHandler(
-    filename = function() { paste0(input$client_time %||% "analysis", "_anova_stats.csv") },
+    filename = function() { paste0(input$client_time %||% "analysis", "_anova_deltaCq_tables.zip") },
+    contentType = "application/zip",
     content = function(file) {
       req(anova_results())
       results <- anova_results()
+      timestamp <- input$client_time %||% "analysis"
       
-      # 2つのテーブルを準備
       desc_stats <- results$summary_data_all %>%
         rename(Mean_RelExp = Mean, SD_RelExp = SD)
       stat_results <- results$summary_table
+      calculation_df <- results$long_data %>%
+        dplyr::select(sample, group, gene, Cq, mean_ref_cq, deltaCq, RelExp)
       
-      # ファイルへの接続を開く
-      con <- file(file, "w", encoding = "UTF-8")
+      temp_dir <- tempfile("anova_deltaCq_download_")
+      dir.create(temp_dir)
+      on.exit(unlink(temp_dir, recursive = TRUE), add = TRUE)
       
-      # 1つ目のテーブルを書き込む
+      stats_name <- paste0(timestamp, "_anova_deltaCq_stats.csv")
+      calculations_name <- paste0(timestamp, "_anova_deltaCq_calculation_values.csv")
+      stats_path <- file.path(temp_dir, stats_name)
+      calculations_path <- file.path(temp_dir, calculations_name)
+      
+      con <- file(stats_path, "w", encoding = "UTF-8")
+      
       writeLines("Descriptive Statistics (gene, group, Mean_RelExp, SD_RelExp, N)", con)
       write.csv(desc_stats, con, row.names = FALSE)
-      
-      # テーブル間の区切りとして改行を2つ入れる
       writeLines("\n\n", con)
-      
-      # 2つ目のテーブルを書き込む
       writeLines("Statistical Analysis Results (ANOVA + Dunnett's Test)", con)
       write.csv(stat_results, con, row.names = FALSE)
-      
-      # 接続を閉じる
       close(con)
+      
+      write.csv(calculation_df, calculations_path, row.names = FALSE, fileEncoding = "UTF-8")
+      
+      old_working_directory <- setwd(temp_dir)
+      on.exit(setwd(old_working_directory), add = TRUE)
+      zip_path <- paste0(file, ".zip")
+      utils::zip(zip_path, files = c(stats_name, calculations_name))
+      if (!file.copy(zip_path, file, overwrite = TRUE)) {
+        stop("Failed to prepare the ANOVA ΔCq ZIP download.")
+      }
     }
   )
   
@@ -1663,15 +1725,15 @@ server <- function(input, output, session) {
   )
   
   output$anova_ddCq_csv <- downloadHandler(
-    filename = function() { paste0(input$client_time %||% "analysis", "_anova_ddCq_stats.csv") },
+    filename = function() { paste0(input$client_time %||% "analysis", "_anova_ddCq_tables.zip") },
+    contentType = "application/zip",
     content = function(file) {
-      # ダウンロード時に統計結果とFold Changeデータを結合
       req(anova_ddCq_results())
       results <- anova_ddCq_results()
+      timestamp <- input$client_time %||% "analysis"
       
       download_df <- results$summary_table %>%
         left_join(results$summary_data_all, by = c("gene", "group2" = "group")) %>%
-        # ダウンロードするCSVの列を整える
         dplyr::select(
           gene, 
           group1, 
@@ -1683,7 +1745,29 @@ server <- function(input, output, session) {
           sig
         )
       
-      write.csv(download_df, file, row.names = FALSE, fileEncoding = "UTF-8")
+      calculation_df <- results$calculation_data %>%
+        dplyr::select(sample, group, gene, Cq, mean_ref_cq, deltaCq,
+                      mean_control_deltaCq, deltaDeltaCq, FoldChange)
+      
+      temp_dir <- tempfile("anova_ddCq_download_")
+      dir.create(temp_dir)
+      on.exit(unlink(temp_dir, recursive = TRUE), add = TRUE)
+      
+      stats_name <- paste0(timestamp, "_anova_ddCq_stats.csv")
+      calculations_name <- paste0(timestamp, "_anova_ddCq_calculation_values.csv")
+      stats_path <- file.path(temp_dir, stats_name)
+      calculations_path <- file.path(temp_dir, calculations_name)
+      
+      write.csv(download_df, stats_path, row.names = FALSE, fileEncoding = "UTF-8")
+      write.csv(calculation_df, calculations_path, row.names = FALSE, fileEncoding = "UTF-8")
+      
+      old_working_directory <- setwd(temp_dir)
+      on.exit(setwd(old_working_directory), add = TRUE)
+      zip_path <- paste0(file, ".zip")
+      utils::zip(zip_path, files = c(stats_name, calculations_name))
+      if (!file.copy(zip_path, file, overwrite = TRUE)) {
+        stop("Failed to prepare the ANOVA ΔΔCq ZIP download.")
+      }
     }
   )
   

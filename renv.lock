@@ -1091,7 +1091,7 @@
     },
     "survival": {
       "Package": "survival",
-      "Version": "3.7-0",
+      "Version": "3.8-9",
       "Source": "Repository",
       "Repository": "CRAN",
       "Requirements": [
@@ -1103,7 +1103,7 @@
         "stats",
         "utils"
       ],
-      "Hash": "5aaa9cbaf4aba20f8e06fdea1850a398"
+      "Hash": "163cf9c62560d8431d2715d9b94f2a45"
     },
     "sys": {
       "Package": "sys",
